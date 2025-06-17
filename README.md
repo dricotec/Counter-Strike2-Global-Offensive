@@ -40,7 +40,7 @@
 - Download the cs2go zip file from releases tab and extract it where csgo.exe is
 - In HLAE go to Tools > Developer > Custom Loader and find your CS:GO install. Then paste these launch options: -language cs2panorama -game cs2go/csgo -afxdetourpanorama
 - If done correctly you should hear the CS2 startup logo and the custom UI should work.
-- That's it! Have fun playing with this UI!
+- That's it! Have fun playing this mod, and GO GO GO!
 
 # QNA
 
