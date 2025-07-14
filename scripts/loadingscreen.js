@@ -11,7 +11,8 @@ var LoadingScreen = ( function() {
 
 		var elOverview = $('#LoadingScreenOverview');
 		elOverview.RemoveAndDeleteChildren();
-		                                                                  
+		//$('#LoadingScreenContents').AddClass("hidden_no_info");      
+        //$('#ProgressBar').AddClass("hidden_no_info");		
 
 		$('#LoadingScreenMapName').text = "";
 		$( '#LoadingScreenGameMode' ).SetLocalizationString( "Loading..." );
@@ -19,7 +20,7 @@ var LoadingScreen = ( function() {
 		$('#LoadingScreenGameModeIcon').SetImage("");
 
 		var elBackgroundImage = $.GetContextPanel().FindChildInLayoutFile('BackgroundMapImage');
-		elBackgroundImage.SetImage("file://{images}/map_icons/screenshots/1080p/default.png");
+		elBackgroundImage.SetImage("file://{images}/map_icons/screenshots/1080p/background.png");
 
 	    $('#LoadingScreenIcon').visible = false;
 	}
@@ -60,6 +61,9 @@ var LoadingScreen = ( function() {
 			$('#LoadingScreenMapName').RemoveClass("loading-screen-content__info__text-title-long");
 			$('#LoadingScreenMapName').AddClass("loading-screen-content__info__text-title-short");
 			$('#LoadingScreenIcon').SetImage('file://{images}/map_icons/map_icon_' + mapName + '.svg');
+			
+			//$('#LoadingScreenContents').RemoveClass("hidden_no_info");
+			//$('#ProgressBar').RemoveClass("hidden_no_info");
 			
 		                  
 			var mapOverviewLoaded = function () {

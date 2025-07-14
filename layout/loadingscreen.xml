@@ -17,7 +17,7 @@
 			<Image id="BackgroundMapImage"
 					class="full-width full-height"
 					src=""
-					defaultsrc="file://{images}/map_icons/screenshots/1080p/default.png"
+					defaultsrc="file://{images}/map_icons/screenshots/1080p/background.png"
 					scaling="stretch-to-cover-preserve-aspect"/>
       
     </CSGOBlurTarget>

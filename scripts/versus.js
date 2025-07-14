@@ -6,7 +6,7 @@ var Versus = ( function()
 
 	var _m_totalTime;
 
-	var _m_bInitialized = false;
+	var _m_bInitialized = true;
 
 	var _m_cP;
 
@@ -24,9 +24,9 @@ var Versus = ( function()
 	function _Init ( mockdata )
 	{
 		if ( _m_bInitialized )
-			$.Msg('Pizdec1');
+			return false;
 		
-		_m_totalTime = Number( GameInterfaceAPI.GetSettingString( "sv_warmup_to_freezetime_delay" ) ) + 0.5;
+		_m_totalTime = Number( GameInterfaceAPI.GetSettingString( "sv_warmup_to_freezetime_delay" ) ) + 2.0;
 
 		if ( $.GetContextPanel().id == "LayoutPanel_CSGOVersus" && mockdata )
 		{
@@ -45,21 +45,21 @@ var Versus = ( function()
 
 		}
 		else
-			$.Msg('Pizdec2');
+			return false;
 		
 		if ( !_SelectScene() )
-			$.Msg('Pizdec3');
+			return false;
 
 		  
 		                                                      
 		  
-		_m_sTeamName = 'CT';
+		_m_sTeamName = MockAdapter.GetPlayerTeamName( MockAdapter.GetLocalPlayerXuid() );
 		                                                   
 		if ( _m_sTeamName !== 'TERRORIST' && _m_sTeamName !== 'CT' )
-			$.Msg('Pizdec4');
-
-		_m_elContentRoot = _m_cP.FindChildTraverse( "id-vs-content-container" );
+			return false;
 		
+		_m_elContentRoot = _m_cP.FindChildTraverse( "id-vs-content-container" );
+
 		_m_elContentRoot.RemoveAndDeleteChildren();
 
 		_m_elMyTeam = $.CreatePanel( "Panel", _m_elContentRoot, 'versus-team--MyTeam' );
@@ -76,7 +76,7 @@ var Versus = ( function()
 
 		             
 		_m_elMyTeam.AddClass( _m_sTeamName );
-		_m_elMyTeam.SetDialogVariable( "teamname", 'CT' );
+		_m_elMyTeam.SetDialogVariable( "teamname", MockAdapter.GetTeamClanName( _m_sTeamName ) );
 
 		return true;
 	}
@@ -84,345 +84,15 @@ var Versus = ( function()
 	function _SelectScene ()
 	{
 		                                                         
-		_m_oPlayersData = JSON.parse(`
-			{
-			  "allplayerdata": [
-			    {
-			      "entindex": 1,
-			      "xuid": "76561199100370329",
-			      "name": "shashlik226",
-			      "teamnumber": 3,
-			      "nomination": {
-			        "eaccolade": 17,
-			        "value": 750,
-			        "position": 1
-			      },
-			      "items": [
-			        {
-			          "itemid": "17293822569102709720",
-			          "stickers": []
-			        },
-			        {
-			          "itemid": "17293822569102709669",
-			          "stickers": []
-			        },
-			        {
-			          "itemid": "17293822569102704641",
-			          "stickers": []
-			        },
-			        {
-			          "itemid": "17293822569102704682",
-			          "stickers": []
-			        }
-			      ],
-			      "isbot": false
-			    },
-			    {
-			      "entindex": 11,
-			      "xuid": "11",
-			      "name": "Pat",
-			      "teamnumber": 2,
-			      "nomination": {
-			        "eaccolade": 1,
-			        "value": 0,
-			        "position": 1
-			      },
-			      "items": [
-			        {
-			          "itemid": "17293822569102709742",
-			          "stickers": []
-			        },
-			        {
-			          "itemid": "17293822569102709668",
-			          "stickers": []
-			        },
-			        {
-			          "itemid": "17293822569102704668",
-			          "stickers": []
-			        },
-			        {
-			          "itemid": "17293822569102704699",
-			          "stickers": []
-			        }
-			      ],
-			      "isbot": true
-			    },
-				{
-			      "entindex": 2,
-			      "xuid": "76561199468284152",
-			      "name": "еpl⃰c gamеr",
-			      "teamnumber": 3,
-			      "nomination": {
-			        "eaccolade": 17,
-			        "value": 750,
-			        "position": 2
-			      },
-			      "items": [
-			        {
-			          "itemid": "17293822569102709720",
-			          "stickers": []
-			        },
-			        {
-			          "itemid": "17293822569102709669",
-			          "stickers": []
-			        },
-			        {
-			          "itemid": "17293822569102704641",
-			          "stickers": []
-			        },
-			        {
-			          "itemid": "17293822569102704682",
-			          "stickers": []
-			        }
-			      ],
-			      "isbot": false
-			    },
-				{
-			      "entindex": 3,
-			      "xuid": "76561197990390018",
-			      "name": "ZooL",
-			      "teamnumber": 3,
-			      "nomination": {
-			        "eaccolade": 17,
-			        "value": 750,
-			        "position": 3
-			      },
-			      "items": [
-			        {
-			          "itemid": "17293822569102709720",
-			          "stickers": []
-			        },
-			        {
-			          "itemid": "17293822569102709669",
-			          "stickers": []
-			        },
-			        {
-			          "itemid": "17293822569102704641",
-			          "stickers": []
-			        },
-			        {
-			          "itemid": "17293822569102704682",
-			          "stickers": []
-			        }
-			      ],
-			      "isbot": false
-			    },
-				{
-			      "entindex": 4,
-			      "xuid": "76561197964741488",
-			      "name": "Theeto",
-			      "teamnumber": 3,
-			      "nomination": {
-			        "eaccolade": 17,
-			        "value": 750,
-			        "position": 4
-			      },
-			      "items": [
-			        {
-			          "itemid": "17293822569102709720",
-			          "stickers": []
-			        },
-			        {
-			          "itemid": "17293822569102709669",
-			          "stickers": []
-			        },
-			        {
-			          "itemid": "17293822569102704641",
-			          "stickers": []
-			        },
-			        {
-			          "itemid": "17293822569102704682",
-			          "stickers": []
-			        }
-			      ],
-			      "isbot": false
-			    },
-				{
-			      "entindex": 5,
-			      "xuid": "76561198110423264",
-			      "name": "DeMolitioner",
-			      "teamnumber": 3,
-			      "nomination": {
-			        "eaccolade": 17,
-			        "value": 750,
-			        "position": 5
-			      },
-			      "items": [
-			        {
-			          "itemid": "17293822569102709720",
-			          "stickers": []
-			        },
-			        {
-			          "itemid": "17293822569102709669",
-			          "stickers": []
-			        },
-			        {
-			          "itemid": "17293822569102704641",
-			          "stickers": []
-			        },
-			        {
-			          "itemid": "17293822569102704682",
-			          "stickers": []
-			        }
-			      ],
-			      "isbot": false
-			    },
-				{
-			      "entindex": 12,
-			      "xuid": "12",
-			      "name": "asd",
-			      "teamnumber": 2,
-			      "nomination": {
-			        "eaccolade": 1,
-			        "value": 0,
-			        "position": 1
-			      },
-			      "items": [
-			        {
-			          "itemid": "17293822569102709742",
-			          "stickers": []
-			        },
-			        {
-			          "itemid": "17293822569102709668",
-			          "stickers": []
-			        },
-			        {
-			          "itemid": "17293822569102704668",
-			          "stickers": []
-			        },
-			        {
-			          "itemid": "17293822569102704699",
-			          "stickers": []
-			        }
-			      ],
-			      "isbot": true
-			    },
-				{
-			      "entindex": 13,
-			      "xuid": "13",
-			      "name": "hfgh",
-			      "teamnumber": 2,
-			      "nomination": {
-			        "eaccolade": 1,
-			        "value": 0,
-			        "position": 1
-			      },
-			      "items": [
-			        {
-			          "itemid": "17293822569102709742",
-			          "stickers": []
-			        },
-			        {
-			          "itemid": "17293822569102709668",
-			          "stickers": []
-			        },
-			        {
-			          "itemid": "17293822569102704668",
-			          "stickers": []
-			        },
-			        {
-			          "itemid": "17293822569102704699",
-			          "stickers": []
-			        }
-			      ],
-			      "isbot": true
-			    },
-				{
-			      "entindex": 14,
-			      "xuid": "14",
-			      "name": "dfhgfgh",
-			      "teamnumber": 2,
-			      "nomination": {
-			        "eaccolade": 1,
-			        "value": 0,
-			        "position": 1
-			      },
-			      "items": [
-			        {
-			          "itemid": "17293822569102709742",
-			          "stickers": []
-			        },
-			        {
-			          "itemid": "17293822569102709668",
-			          "stickers": []
-			        },
-			        {
-			          "itemid": "17293822569102704668",
-			          "stickers": []
-			        },
-			        {
-			          "itemid": "17293822569102704699",
-			          "stickers": []
-			        }
-			      ],
-			      "isbot": true
-			    },
-				{
-			      "entindex": 15,
-			      "xuid": "15",
-			      "name": "kjhhjkhj",
-			      "teamnumber": 2,
-			      "nomination": {
-			        "eaccolade": 1,
-			        "value": 0,
-			        "position": 1
-			      },
-			      "items": [
-			        {
-			          "itemid": "17293822569102709742",
-			          "stickers": []
-			        },
-			        {
-			          "itemid": "17293822569102709668",
-			          "stickers": []
-			        },
-			        {
-			          "itemid": "17293822569102704668",
-			          "stickers": []
-			        },
-			        {
-			          "itemid": "17293822569102704699",
-			          "stickers": []
-			        }
-			      ],
-			      "isbot": true
-			    },
-				{
-			      "entindex": 16,
-			      "xuid": "16",
-			      "name": "Gabe",
-			      "teamnumber": 2,
-			      "nomination": {
-			        "eaccolade": 1,
-			        "value": 0,
-			        "position": 1
-			      },
-			      "items": [
-			        {
-			          "itemid": "17293822569102709742",
-			          "stickers": []
-			        },
-			        {
-			          "itemid": "17293822569102709668",
-			          "stickers": []
-			        },
-			        {
-			          "itemid": "17293822569102704668",
-			          "stickers": []
-			        },
-			        {
-			          "itemid": "17293822569102704699",
-			          "stickers": []
-			        }
-			      ],
-			      "isbot": true
-			    }
-			  ]
-			}`);
+		_m_oPlayersData = MockAdapter.GetAllPlayersMatchDataJSO();
+		if ( !_m_oPlayersData || !_m_oPlayersData.scene ||
+			!_m_oPlayersData.allplayerdata || !_m_oPlayersData.allplayerdata.length )
+			return false;
 
-		_m_oScene = $.LoadKeyValuesFile( 'resource/characterscenes/5.res', 'MOD' );
+		                                                                                                   
+		_m_oScene = $.LoadKeyValuesFile( 'resource/characterscenes/' + _m_oPlayersData.scene + '.res', 'MOD' );
 		if ( !_m_oScene )
-			$.Msg('Pizdec5');
+			return false;
 		
 		                                
 		var numModelsCT = 0;
@@ -438,12 +108,16 @@ var Versus = ( function()
 				++ numModelsT;
 		}
 
+		                                                                                       
 		var numModelsMax = ( numModelsCT > numModelsT ) ? numModelsCT : numModelsT;
 		if ( numModelsMax <= 0 )                                       
-			$.Msg('Pizdec6');
+			return false;
 		if ( numModelsCT != numModelsT )                        
-			$.Msg('Pizdec7');
+			return false;
 
+		  
+		                                                   
+		  
 		_m_oScene.players = {};
 		_m_oScene.players.TERRORIST = [];
 		_m_oScene.players.CT = [];
@@ -475,7 +149,7 @@ var Versus = ( function()
 		var elTeamPanel = $( "#versus-team--MyTeam" );
 
 		if ( n >= _m_oScene.players[ team ].length )
-			$.Msg('Pizdec8');                                        
+			return false;                                        
 
 		var thisPlayer = _m_oScene.players[ team ][n];
 		var xuid = thisPlayer.xuid;
@@ -519,7 +193,7 @@ var Versus = ( function()
 		var elAvatarImage = elIdentity.FindChildTraverse( "id-player__avatar" );
 		if ( elAvatarImage )
 		{
-			if ( xuid > 1000 )
+			if ( MockAdapter.IsXuidValid( xuid ) )
 			{
 				elAvatarImage.steamid = xuid;
 			}
@@ -571,7 +245,7 @@ var Versus = ( function()
 			return;
 
 		                                 
-		_m_elMovie.SetMovie( "file://{videos}/videos/vs_bg.webm" );
+		_m_elMovie.SetMovie( "file://{resources}/videos/vs_bg.webm" );
 
 		for ( var i = 0; i < _m_oScene[ 'numModels']; i++ )
 		{

@@ -1,13 +1,17 @@
 .PopupPanel
 {
 	width: 900px;
-	height: 820px;
+	height: 720px;
 }
 
 .popup-leaderboard-title-bar
 {
 	width: 100%;
 	height: fit-children;
+}
+#VerticalScrollBar
+{
+	margin-left: 72px;
 }
 
 #id-popup-leaderboard-title

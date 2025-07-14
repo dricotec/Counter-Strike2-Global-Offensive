@@ -157,7 +157,7 @@ var LoadoutGrid;
             UpdateFilters();
         }
         UiToolkitAPI.HideCustomLayoutTooltip('JsLoadoutItemTooltip');
-        $.DispatchEvent('CSGOPlaySoundEffect', 'UIPanorama.submenu_select', 'MOUSE');
+        $.DispatchEvent('PlaySoundEffect', 'UIPanorama.submenu_select', 'MOUSE');
     }
     function OnActivateSideItem(slotName, TeamName) {
         if (m_selectedTeam !== TeamName) {
@@ -487,7 +487,7 @@ var LoadoutGrid;
         let elItemList = $('#id-loadout-item-list');
         elItemList.hittest = false;
         elItemList.hittestchildren = false;
-        $.DispatchEvent('CSGOPlaySoundEffect', 'UIPanorama.inventory_item_pickup', 'MOUSE');
+        $.DispatchEvent('PlaySoundEffect', 'UIPanorama.inventory_item_pickup', 'MOUSE');
     }
     function OnDragEnd(elDragImage) {
         elDragImage.DeleteAsync(0.1);
@@ -558,10 +558,10 @@ var LoadoutGrid;
     }
     function PlayDropSounds(equipSuccess, isSameId) {
         if (equipSuccess && !isSameId) {
-            $.DispatchEvent('CSGOPlaySoundEffect', 'UIPanorama.inventory_item_putdown', 'MOUSE');
+            $.DispatchEvent('PlaySoundEffect', 'UIPanorama.inventory_item_putdown', 'MOUSE');
         }
         else {
-            $.DispatchEvent('CSGOPlaySoundEffect', 'UIPanorama.inventory_item_notequipped', 'MOUSE');
+            $.DispatchEvent('PlaySoundEffect', 'UIPanorama.inventory_item_notequipped', 'MOUSE');
         }
     }
     const m_aActiveUsedColumns = [

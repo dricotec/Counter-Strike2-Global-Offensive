@@ -227,7 +227,7 @@
                             <Label text="#play_setting_workshop" />
                             <Panel id="GameModeAlert" class="navbar-btn__notification-dot hidden" />
                         </RadioButton>
-                        <Button id="PlayCommunity" class="mainmenu-top-navbar__radio-iconbtn" data-type="workshop" onactivate="PlayMenu.OnPressServerBrowser(); $.DispatchEvent('PlaySoundEffect', 'UIPanorama.submenu_select', 'MOUSE');">
+                         <Button id="PlayCommunity" class="mainmenu-top-navbar__radio-iconbtn visible-if-not-perfectworld" data-type="workshop" onactivate="$.DispatchEvent('UIPopupButtonClicked', ''); $.DispatchEvent('PlaySoundEffect', 'UIPanorama.submenu_select', 'MOUSE'); GameInterfaceAPI.ConsoleCommand( 'gamemenucommand openserverbrowser' );" onmouseover="UiToolkitAPI.ShowTextTooltip( &apos;PlayCommunity&apos;, &apos;#play_setting_community&apos; );" onmouseout="UiToolkitAPI.HideTextTooltip();">
                             <Image class="mainmenu-top-navbar__radio-btn__icon" src="file://{images}/icons/ui/community_servers.svg" />
                         </Button>
                     </Panel>
@@ -236,7 +236,7 @@
             <Panel id="id-navbar-tabs" class="content-navbar__tabs content-navbar__tabs--dark content-navbar__tabs--noflow">
                 <Panel id="GameModeSelectionRadios" class="left-right-flow vertical-center horizontal-center full-height">
 				     <RadioButton id="premier" group="gamemodes" class="content-navbar__tabs__btn DEVModeONLY">
-                        <Label text="PREMIER (W.I.P)" />
+                        <Label text="#SFUI_GameModePremier" />
                         <Panel id="GameModeAlert" class="navbar-btn__notification-dot hidden" />
                     </RadioButton>
                     <RadioButton id="competitive" group="gamemodes" class="content-navbar__tabs__btn">
@@ -250,6 +250,10 @@
                     <Panel class="mainmenu-top-navbar__play_seperator" />
                     <RadioButton id="casual" group="gamemodes" class="content-navbar__tabs__btn ">
                         <Label text="#SFUI_GameModeCasual" />
+					</RadioButton>
+                    <Panel class="mainmenu-top-navbar__play_seperator" />
+                    <RadioButton id="survival" group="gamemodes" class="content-navbar__tabs__btn ">
+                        <Label text="#SFUI_GameModeSurvival" />
                     </RadioButton>
                     <RadioButton id="deathmatch" group="gamemodes" class="content-navbar__tabs__btn">
                         <Label text="#SFUI_Deathmatch" />
@@ -375,6 +379,12 @@
                     </Panel>
                 </Panel>
                 <Panel id="PlayMenuActionBar" class="play-menu-controls-actions-bar">
+					<ItemPreviewPanel id="GoBtnParticle"
+										class="UIMenuPlayActionBar hidden"
+										manifest="resource/ui/econ/ItemModelPanelCharWeaponInspect.res"
+										hittest="false"
+										item=""
+										mouse_rotate="false"/>
                     <Panel class="play-menu-controls-actions-bar__right">
                         <Panel class="full-height">
                             <Panel class="play-menu-controls-action-bar__right__go-cancel right-left-flow">

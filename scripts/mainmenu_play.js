@@ -45,39 +45,63 @@ var PlayMenu;
     function inDirectChallenge() {
         return _GetDirectChallengeKey() != '';
     }
-	   function StartSearch() {
-        const btnStartSearch = $('#StartMatchBtn');
-        if (btnStartSearch === null)
-            return;
-        btnStartSearch.AddClass('pressed');
-        $.DispatchEvent('PlaySoundEffect', 'mainmenu_press_GO', 'MOUSE');
-        if (inDirectChallenge()) {
-            _DirectChallengeStartSearch();
-            return;
-        }
-        if (m_isWorkshop) {
-            _DisplayWorkshopModePopup();
-        }
-        else {
-            if (m_gameModeSetting !== 'premier') {
-                if (!_CheckContainerHasAnyChildChecked(_GetMapListForServerTypeAndGameMode(m_activeMapGroupSelectionPanelID))) {
-                    _NoMapSelectedPopup();
-                    btnStartSearch.RemoveClass('pressed');
-                    return;
-                }
-            }
-            if (GameModeFlags.DoesModeUseFlags(_RealGameMode()) && !m_gameModeFlags[m_serverSetting + _RealGameMode()]) {
+function StartSearch() {
+    const btnStartSearch = $('#StartMatchBtn');
+    if (btnStartSearch === null)
+        return;
+    btnStartSearch.AddClass('pressed');
+    //_GoBtnParticle(); disabled for further debugging
+    $.DispatchEvent('PlaySoundEffect', 'mainmenu_press_GO', 'MOUSE');
+    if (inDirectChallenge()) {
+        _DirectChallengeStartSearch();
+        return;
+    }
+    if (m_isWorkshop) {
+        _DisplayWorkshopModePopup();
+    }
+    else {
+        if (m_gameModeSetting !== 'premier') {
+            if (!_CheckContainerHasAnyChildChecked(_GetMapListForServerTypeAndGameMode(m_activeMapGroupSelectionPanelID))) {
+                _NoMapSelectedPopup();
                 btnStartSearch.RemoveClass('pressed');
-                const resumeSearchFnHandle = UiToolkitAPI.RegisterJSCallback(StartSearch);
-                $.OnGameModeFlagsBtnClicked(resumeSearchFnHandle);
                 return;
             }
-            let settings = (LobbyAPI.IsSessionActive() && !_GetTournamentOpponent()) ? LobbyAPI.GetSessionSettings() : null;
-            let stage = _GetTournamentStage();
-            LobbyAPI.StartMatchmaking(MyPersonaAPI.GetMyOfficialTournamentName(), MyPersonaAPI.GetMyOfficialTeamName(), _GetTournamentOpponent(), stage);
         }
+        if (GameModeFlags.DoesModeUseFlags(_RealGameMode()) && !m_gameModeFlags[m_serverSetting + _RealGameMode()]) {
+            btnStartSearch.RemoveClass('pressed');
+            const resumeSearchFnHandle = UiToolkitAPI.RegisterJSCallback(StartSearch);
+            $.OnGameModeFlagsBtnClicked(resumeSearchFnHandle);
+            return;
+        }
+        let settings = (LobbyAPI.IsSessionActive() && !_GetTournamentOpponent()) ? LobbyAPI.GetSessionSettings() : null;
+        let stage = _GetTournamentStage();
+        LobbyAPI.StartMatchmaking(MyPersonaAPI.GetMyOfficialTournamentName(), MyPersonaAPI.GetMyOfficialTeamName(), _GetTournamentOpponent(), stage);
     }
-function StartSearchFake() 
+}
+function _GoBtnParticle () //plays the particle when the GO button is pressed, this function is called through StartSearch.
+{
+    var elModel = $.GetContextPanel().GetParent().FindChildTraverse( 'GoBtnParticle' );
+    if ( !elModel || !elModel.IsValid() )
+        return;
+
+		elModel.RemoveClass( 'hidden_Particle' );
+		elModel.SetCameraPosition( -15.10, 0.00, 0.00 );
+		elModel.SetCameraAngles( 0.00,  0.00,  0.00 );
+		elModel.AddParticleSystem( 'nuke_sparks1_glow', '', true );
+		elModel.AddParticleSystem( 'nuke_sparks1_core', '', true );
+
+		function hide ( panel )
+		{
+			if ( !panel || !panel.IsValid() )
+				return;
+			
+			panel.AddClass( 'hidden_Particle' );		
+		}
+		
+		$.Schedule( 1.0, hide.bind( undefined, elModel ));
+}
+
+function StartSearchFake() // this is fake matchmaking which i primarily used for debugging the styles of the match accept popups.. nothing special, most of the magic is in the popup_accept_match_fake.js script.
 {
     var btnStartSearch = $('#StartMatchBtn');
     $.DispatchEvent('PlaySoundEffect', 'mainmenu_press_GO', 'MOUSE');
@@ -112,8 +136,6 @@ function StartSearchFake()
             stage
         );
     }
-
-    // ✅ Delay only the panel popup and sound effect
     $.Schedule(3, function() {
         $.DispatchEvent('PlaySoundEffect', 'popup_accept_match_found', 'MOUSE');
 
@@ -526,7 +548,7 @@ function StartSearchFake()
                 isAvailable = true;
             }
             else if (MyPersonaAPI.GetCurrentLevel() < 2) {
-                isAvailable = (gameMode == 'deathmatch' || gameMode == 'casual' || gameMode == 'gungameprogressive');
+                isAvailable = ( gameMode == 'deathmatch' || gameMode == 'casual' || gameMode == 'survival' || gameMode == 'skirmish' );
             }
         }
         else if (!_IsValveOfficialServer(serverType)) {
@@ -878,7 +900,7 @@ function StartSearchFake()
             return [];
         const mapgroup = isPlayingOnValveOfficial ? gameModeCfg.mapgroupsMP : gameModeCfg.mapgroupsSP;
         if (mapgroup !== undefined && mapgroup !== null) {
-            delete mapgroup['mg_lobby_mapveto'];
+            //delete mapgroup['mg_lobby_mapveto']; (before this used to delete the premier mapgroup in the play menu, now it doesn't and premier is available in bot competitive with friends or bots and in matchmaking competitive)
             return Object.keys(mapgroup);
         }
         if ((gameMode === "cooperative" || gameMode === "coopmission") && GetMatchmakingQuestId() > 0) {
@@ -2381,7 +2403,7 @@ $.OnGameModeFlagsBtnClicked = function (resumeMatchmakingHandle = '') {
     PlayMenu.OnPressWorkshop = OnPressWorkshop;
     function OnPressServerBrowser() {
         if ('0' === GameInterfaceAPI.GetSettingString('player_nevershow_communityservermessage')) {
-            UiToolkitAPI.ShowCustomLayoutPopup('', 'file://{resources}/layout/server_browser/server_browser.xml');
+            UiToolkitAPI.ShowCustomLayoutPopup('server_browser_popup', 'file://{resources}/layout/popups/popup_serverbrowser.xml');
         }
         else {
             if (m_bPerfectWorld) {

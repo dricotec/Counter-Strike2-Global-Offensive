@@ -6,6 +6,7 @@
 	vertical-align: bottom;
 	margin-left: 24px;
 	flow-children: right;
+	visibility: collapse;
 }
 
 .hudpassiveitem
@@ -26,6 +27,6 @@
 
 .hudpassiveitems-visible
 {
-	visibility: visible;
+	visibility: collapse;
 	opacity: 1;
 }

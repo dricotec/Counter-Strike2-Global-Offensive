@@ -5,6 +5,7 @@ var WelcomeLaunch = (function () {
         GameInterfaceAPI.SetSettingString('ui_popup_weaponupdate_version', strGoalVersion);
         $.DispatchEvent('UIPopupButtonClicked', '');
 		$.DispatchEvent('PlayMainMenuMusic', true, true );
+		_PlayMenuSong();
     }
 
     function _OnCancelPressed() {
@@ -14,6 +15,10 @@ var WelcomeLaunch = (function () {
     function _OnGithubButtonPressed() {
         SteamOverlayAPI.OpenUrlInOverlayOrExternalBrowser("https://github.com/DeformedSAS/CS-GO-Custom-Panorama-CS2-");
     }
+	
+	function _PlayMenuSong() {
+	 $.DispatchEvent('PlayMainMenuMusic', true, false );
+	 }
 
     return {
         OnOKPressed: _OnOKPressed,

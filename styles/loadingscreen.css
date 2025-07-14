@@ -130,7 +130,6 @@
   horizontal-align: right;
   vertical-align: center;
 
-
   background-color: rgba(0,0,0,0.5) 
 
   opacity: 1
@@ -140,6 +139,10 @@
   transition-duration: .5s;
   transition-timing-function: ease-in-out;
  }
+ .hidden_no_info
+{
+	opacity: 0;
+}
 
  .loading-screen-contents-bottom{
 
@@ -228,6 +231,7 @@
   transition-duration: .25s;
   transition-timing-function: ease-in-out;
  }
+
 
 
   .loading-screen-content__info .loading-screen-content__titles{

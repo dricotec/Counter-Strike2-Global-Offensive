@@ -36,7 +36,7 @@
 					<Label allowrawtext="true" text="Anim"/>
 				</RadioButton>
 
-				<RadioButton selected="false" class="content-navbar__tabs__btn" group="tests" onactivate="PanelTypeTab('CSGOEndOfMatch', 'max'); $.DispatchEvent( 'DbgTestEndOfMatch' )" >
+				<RadioButton selected="false" class="content-navbar__tabs__btn" group="tests" onactivate="LayoutTab('CSGOEndOfMatch', 'file://{resources}/layout/endofmatch.xml'); $.DispatchEvent( 'StartTestShow' )" >
 					<Label text="EndOfMatch"/>
 				</RadioButton>
 

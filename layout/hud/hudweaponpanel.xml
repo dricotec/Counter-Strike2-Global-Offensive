@@ -32,9 +32,9 @@
 							<Label id="KillCount" class="Kills__Text" />
 						</Panel>
 					</Panel>
-					<Panel id="KillEaterContent" class="Kills__KillEater WeaponPanel-apply-hud-color">
+					<Panel id="KillEaterContent" class="Kills__KillEater cl-hud-wash-color">
 						<Label class="Kills__KillEaterText" text="#csgo_killeater_hud" />
-						<Label id="KillEaterCount" class="Kills__KillEaterText WeaponPanel-apply-hud-color-bg" text="0" />
+						<Label id="KillEaterCount" class="Kills__KillEaterText cl-hud-wash-color" text="0" />
 					</Panel>
 				</Panel>
 				                  
@@ -42,9 +42,9 @@
          		                  
 				             
 				<Panel id="AmmoContent" class="Ammo">
-					<Label id="AmmoTextClip" class="Ammo__Clip WeaponPanel-apply-hud-color" text="10" />
-					<Label id="AmmoTextTotal" class="Ammo__Total WeaponPanel-apply-hud-color-bg" text=" 20" />
-					<Panel id="AmmoBurstIcons" class="Ammo__Burst Ammo__Burst--Single WeaponPanel-apply-hud-color">
+					<Label id="AmmoTextClip" class="Ammo__Clip cl-hud-wash-color" text="10" />
+					<Label id="AmmoTextTotal" class="Ammo__Total cl-hud-wash-color" text="20" />
+					<Panel id="AmmoBurstIcons" class="Ammo__Burst Ammo__Burst--Single cl-hud-wash-color">
 						<Panel class="Ammo__BurstIcon" />
 						<Panel class="Ammo__BurstIcon" />
 						<Panel class="Ammo__BurstIcon" />

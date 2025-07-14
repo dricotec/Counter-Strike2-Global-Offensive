@@ -49,29 +49,7 @@ var BuyMenu = ( function() {
 		
 		                                                                                           
         if ( bResetAgentAngles )
-            elPreviewPanel.SetSceneAngles( 0.0, 0.0, 0.0, true );
-
-
-                                           
-                                                                                                                                
-                                                                                                                                
-                                                           
-                                                           
-                                              
-                                                          
-                                                          
-                                                               
-                                           
-                                           
-                                            
-                                            
-                                                  
-                                                          
-        
-                                                                                                                         
-        
-
-                                                                     
+            elPreviewPanel.SetSceneAngles( 0.0, 0.0, 0.0, true );                                                   
         m_oldWeaponItemId = weaponItemId;
 
     }

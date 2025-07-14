@@ -96,6 +96,7 @@
 @define debug2: 1px solid green;
 @define debug3: 1px solid yellow;
 @define debug4: 1px solid blue;
+@define new-item-gradient: gradient( linear, 0% 0%, 100% 0%, from( rgb(85, 150, 224) ), to( blueColor) );
 @define alert-width: 300px;
 @define spec-width: 460px;
 Label,TextEntry
@@ -416,6 +417,13 @@ Label.MonoNumbersFont,TextEntry.MonoNumbersFont
 .csgo-hud--cl-hud-color-9  .cl-hud-wash-color { wash-color-fast: color-hud-9; }
 .csgo-hud--cl-hud-color-10 .cl-hud-wash-color { wash-color-fast: color-hud-10; }
 .csgo-hud--cl-hud-color-11 .cl-hud-wash-color { wash-color-fast: color-hud-11; }
+
+.hud-team-ct .csgo-hud--cl-hud-color-22 .cl-hud-color { color: ct-color; }
+.hud-team-ct .csgo-hud--cl-hud-color-22 .cl-hud-background-color { background-color: ct-color; }
+.hud-team-ct .csgo-hud--cl-hud-color-22 .cl-hud-wash-color { wash-color-fast: ct-color; }                            
+.hud-team-t .csgo-hud--cl-hud-color-22 .cl-hud-color { color: t-color; }
+.hud-team-t .csgo-hud--cl-hud-color-22 .cl-hud-background-color { background-color: t-color; }
+.hud-team-t .csgo-hud--cl-hud-color-22 .cl-hud-wash-color { wash-color-fast: t-color; }                       
 
 .csgo-hud--cl_hud_background_alpha
 {
@@ -1484,7 +1492,7 @@ CSGOSettingsEnumDropDown.PopupButton
 
 .PopupButton:active
 {
-	sound: "UIPanorama.submenu_select";
+	sound: "UIPanorama.generic_button_press";
 }
 
 Button.PopupButton.Activated

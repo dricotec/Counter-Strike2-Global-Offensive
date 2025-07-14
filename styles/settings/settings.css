@@ -178,24 +178,23 @@ CSGOSettingsSlider#DatacenterPingThresholdSlider
 
 .Highlight
 {
-    animation-name: settings-highlight;
-    animation-duration: 2s;
-    animation-timing-function: ease-in-out;
-    animation-iteration-count: 1;
+	animation-name: settings-highlight;
+	animation-duration: 1s;
+	animation-timing-function: ease-in-out;
+	animation-iteration-count: 1;
 }
 
 @keyframes 'settings-highlight'
 {
-    0%
-    {
-        background-color: rgba(255, 255, 255, 0.10) ;
-    }
-    
-    100%
-    {
-        background-color: rgba(255, 255, 255, 0.000);
-    }
-    
+	0%
+	{
+		background-color: rgba(255, 255, 255, 0.25);
+	}
+
+	100%
+	{
+		background-color: rgba(255, 255, 255, 0.000);
+	}
 }
 
 .SettingsSectionTitleContianer

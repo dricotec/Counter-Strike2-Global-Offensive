@@ -5,15 +5,17 @@
     vertical-align: bottom;
     width: 620px;
     flow-children: up;
-    visibility: visible;
-    transition-property: opacity;
+    visibility: collapse;
+	transform: translateX(0);
+    opacity: 0; 
+    transition-property: opacity, transform;
     transition-duration: .25s;
     transition-timing-function: ease-in-out;
 }
 
 .mainmenu-left-column.hidden
 {
-    opacity: 0;
+    transform: translateX(-100%);
 }
 
 

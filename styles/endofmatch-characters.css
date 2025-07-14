@@ -97,21 +97,6 @@ Label
 	flow-children: right;
 }
 
-  
-                               
-
-	                               
-	             
-	                 
-	                  
-
-	                 
-
-	                                
-	                          
- 
-  
-
 @keyframes 'char-highlight'
 {
 	from
@@ -152,8 +137,8 @@ Label
 	opacity: 0;
 
 	
-	transition-property: opacity;
-	transition-duration: 1s;
+	/*transition-property: opacity;*/
+	/*transition-duration: 1s;*/
 }
 
 .eom-characters__model-preview-panel.reveal{
@@ -203,13 +188,12 @@ Label
   	                  
 	flow-children: down;
  
-	opacity: 0;
-
+    opacity: 1;
 	visibility: collapse;
 
 	pre-transform-scale2d: 1.5, 1.5;
 
-	transition-property: pre-transform-scale2d,transform,opacity,brightness;
+	transition-property: pre-transform-scale2d,transform,brightness;
 	transition-duration: 0.1s;
 
 	                      
@@ -256,7 +240,7 @@ Label
 
 .eom-chars__accolade--label{
 	color: gradient( linear, 0% 100%, 0% 0%, from( white ), to( lightgray));
-	font-family: 'Noto Sans ExtCond';                                                                    
+	font-family: 'Stratum2';                                                                    
 	font-style: italic;
 	letter-spacing: 2.5px;                       
 	text-align: center;
@@ -280,7 +264,7 @@ Label
 	font-size: 46px;
 	text-align: left;
 	text-transform: uppercase;
-	vertical-align: top;
+	vertical-align: bottom;
 	text-overflow: shrink;
 	white-space: nowrap;
 	text-align: left;
@@ -291,25 +275,25 @@ Label
 	font-size: 18px;
 	color: lightgray;
   	                    
-	vertical-align: top;
+	vertical-align: bottom;
 	horizontal-align: left;
   	                     
 	margin-left: 3px;
 	margin-top:-8px;
 	line-height: 18px;
-	letter-spacing: 1.5px;
+	letter-spacing: 0px;
 }
 
 
 .eom-chars__accolade--score {
 	font-size: 18px;
 	color: lightgray;
-	vertical-align: top;
+	vertical-align: bottom;
 	horizontal-align: left;
 	margin-left: 3px;
 	margin-top:-8px;
 	line-height: 18px;
-	letter-spacing: 1.5px;
+	letter-spacing: 0px;
 
 	margin-top: 15px;
 }

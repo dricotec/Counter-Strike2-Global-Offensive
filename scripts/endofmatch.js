@@ -67,66 +67,67 @@ var EndOfMatch = ( function()
 		_m_cP.Data()._m_arrPanelObjects.push( panel );
 	}
 
-	function _Initialize()
+function _Initialize()
+{
+	$.Schedule( 1, _=> { $.DispatchEvent( "EndOfMatch_Latch" ) } );
+
+	if ( _m_cP.Data()._m_arrPanelObjects )
+		_m_cP.Data()._m_arrPanelObjects.length = 0;
+
+	_m_cP.Data()._m_currentPanelIndex = -1;
+	_m_cP.Data()._m_elActiveTab = null;
+
+	if ( _m_cP.Data()._m_jobStart !== null )
 	{
-
-		                                                      
-		$.Schedule( 1, _=> {$.DispatchEvent( "EndOfMatch_Latch" )} );
-
-		if ( _m_cP.Data()._m_arrPanelObjects )
-			_m_cP.Data()._m_arrPanelObjects.length = 0;
-			
-		_m_cP.Data()._m_currentPanelIndex = -1;
-		_m_cP.Data()._m_elActiveTab = null;
-
-		if ( _m_cP.Data()._m_jobStart !== null )
-		{
-			$.CancelScheduled( _m_cP.Data()._m_jobStart );
-			_m_cP.Data()._m_jobStart = null;
-		}
-
-		_m_cP.SetHasClass( 'scoreboard-visible', true );
-
-		var elLayout = _m_cP.FindChildTraverse( "id-eom-layout" );
-		elLayout.RemoveAndDeleteChildren();
-		elLayout.BLoadLayoutSnippet( "snippet-eom-layout--default" );
-
-		                                
-		var mode = MockAdapter.GetGameModeInternalName( false );
-
-		_m_cP.Data()._m_scoreboardVisible = mode == "cooperative" || mode == "coopmission";
-		
-		                            
-		var bind = GameInterfaceAPI.GetSettingString( "cl_scoreboard_mouse_enable_binding" );
-		
-		                                                                                 
-		if ( bind.charAt( 0 ) == '+' || bind.charAt( 0 ) == '-' )
-			bind = bind.substring( 1 );
-		
-		bind = "{v:csgo_bind:bind_" + bind + "}";
-		bind = $.Localize( bind, _m_cP );
-		_m_cP.SetDialogVariable( "scoreboard_toggle_bind", bind );
-		
-
-		_m_cP.FindChildrenWithClassTraverse( "timer" ).forEach( el => el.active = false );
-
-                          
-		var elNavBar = _m_cP.FindChildTraverse( "id-content-navbar__tabs" );
-		elNavBar.RemoveAndDeleteChildren();
-		_m_cP.FindChildrenWithClassTraverse( "eom-panel" ).forEach( function ( elPanel )
-		{
-                                       
-            var elRBtn = $.CreatePanel( "RadioButton", elNavBar, "rb--" + elPanel.id );
-            elRBtn.BLoadLayoutSnippet( "snippet_navbar-button" );
-            elRBtn.AddClass( "navbar-button");
-            elRBtn.AddClass( "appear");
-
-            elRBtn.SetPanelEvent( 'onactivate', _NavigateToTab.bind( undefined, elPanel.id ) );
-            elRBtn.FindChildTraverse( "id-navbar-button__label" ).text = $.Localize( elPanel.id );
-		} );
-
-		_m_cP.SetFocus();
+		$.CancelScheduled( _m_cP.Data()._m_jobStart );
+		_m_cP.Data()._m_jobStart = null;
 	}
+
+	_m_cP.SetHasClass( 'scoreboard-visible', true );
+
+$.Schedule(3.0, () => {
+        for (var j = 0; j < 10; ++j) {
+            var elPanel = $.GetContextPanel().FindChildTraverse('EomCancelReason' + j);
+            if (elPanel)
+                elPanel.RemoveClass('show');
+        }
+});
+
+	var elLayout = _m_cP.FindChildTraverse( "id-eom-layout" );
+	elLayout.RemoveAndDeleteChildren();
+	elLayout.BLoadLayoutSnippet( "snippet-eom-layout--default" );
+
+	var mode = MockAdapter.GetGameModeInternalName( false );
+	_m_cP.Data()._m_scoreboardVisible = mode == "cooperative" || mode == "coopmission";
+
+	var bind = GameInterfaceAPI.GetSettingString( "cl_scoreboard_mouse_enable_binding" );
+
+	if ( bind.charAt( 0 ) == '+' || bind.charAt( 0 ) == '-' )
+		bind = bind.substring( 1 );
+
+	bind = "{v:csgo_bind:bind_" + bind + "}";
+	bind = $.Localize( bind, _m_cP );
+	_m_cP.SetDialogVariable( "scoreboard_toggle_bind", bind );
+
+	_m_cP.FindChildrenWithClassTraverse( "timer" ).forEach( el => el.active = false );
+
+	var elNavBar = _m_cP.FindChildTraverse( "id-content-navbar__tabs" );
+	elNavBar.RemoveAndDeleteChildren();
+
+	_m_cP.FindChildrenWithClassTraverse( "eom-panel" ).forEach( function ( elPanel )
+	{
+		var elRBtn = $.CreatePanel( "RadioButton", elNavBar, "rb--" + elPanel.id );
+		elRBtn.BLoadLayoutSnippet( "snippet_navbar-button" );
+		elRBtn.AddClass( "navbar-button" );
+		elRBtn.AddClass( "appear" );
+
+		elRBtn.SetPanelEvent( 'onactivate', _NavigateToTab.bind( undefined, elPanel.id ) );
+		elRBtn.FindChildTraverse( "id-navbar-button__label" ).text = $.Localize( elPanel.id );
+	} );
+
+	_m_cP.SetFocus();
+}
+
 
 	function _ShowPanelStart()
 	{
@@ -174,7 +175,7 @@ var EndOfMatch = ( function()
 		}
         else
 		{
-			_m_cP.Data()._m_jobStart = $.Schedule( 3.0, _ => 
+			_m_cP.Data()._m_jobStart = $.Schedule( 1.5, _ => 
 			{
 		        _m_cP.Data()._m_jobStart = null;
 		        _ShowPanelStart();
@@ -268,6 +269,12 @@ var EndOfMatch = ( function()
 			if ( _m_cP.Data()._m_arrPanelObjects[ i ].Shutdown )
 				_m_cP.Data()._m_arrPanelObjects[ i ].Shutdown();
 		}	
+
+        for (var j = 0; j < 10; ++j) {
+            var elPanel = $.GetContextPanel().FindChildTraverse('EomCancelReason' + j);
+            if (elPanel)
+                elPanel.RemoveClass('show');
+        }
 
 		             
 		var elBlur = _m_cP.GetParent().FindChildTraverse( "HudBlur" );

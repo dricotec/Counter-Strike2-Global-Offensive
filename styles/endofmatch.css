@@ -34,7 +34,7 @@
 {
 	from
 	{
-		background-color: rgba(20, 20, 20, 0.0);
+		background-color: rgba(0, 0, 0, 0.0);
 		opacity: 0;
 	}
 
@@ -49,7 +49,7 @@
 .eom.eom--fade-in-enabled.eom--reveal
 {
 	animation-name: eom-background-fade-in;
-	animation-duration: 1s;
+	animation-duration: 0.5s;
 	animation-iteration-count: 1;
 }
 
@@ -139,18 +139,15 @@
 	flow-children:down;
 }
 
-#id-display-timer-progress-bar{
-
-	height: 6px;
-	width: 0px;
-
-	horizontal-align: left;
-
-	background-color: rgba(255, 255, 255, 0.06 );
-
-	transition-property:  width;
-	transition-duration: 0s;
-	transition-timing-function: linear;
+#id-display-timer-progress-bar
+{
+    height: 2px;
+    width: 0px;
+    horizontal-align: left;
+    background-color: rgba(0, 225, 255, 0.5);
+    transition-property: width;
+    transition-duration: 0s;
+    transition-timing-function: linear;
 }
 
 .eom-panel {
@@ -161,14 +158,9 @@
                                      
                                         
     opacity: 0;
-                                           
-                                                                                      
-                                         
-                                                                                                  
-                                           
 
 	transition-property: opacity;
-	transition-duration: 0.5s;
+	transition-duration: 0.2s;
 	transition-timing-function: ease-in-out;
 }
 
@@ -195,14 +187,14 @@
 	width: fit-children;
 }
 
-.timer{
-
-	horizontal-align: right;
-	vertical-align: center;
-	color: white;
-	font-family: Stratum2 Bold Monodigit, 'Arial Unicode MS';
-	text-align: right;
-	letter-spacing: 1px;
+.timer
+{
+    horizontal-align: right;
+    vertical-align: center;
+    color: white;
+    font-family: Stratum2 Bold Monodigit, 'Arial Unicode MS';
+    text-align: right;
+    letter-spacing: 1px;
 }
 
 #id-gametime__time{
@@ -210,32 +202,28 @@
 	font-size: 32px;
 }
 
-#id-gametime__desc{
-
-	font-size: 18px;
-	margin-right: 20px;
-	font-family: Stratum2, 'Arial Unicode MS';
-	color: rgb(189, 189, 189);
+#id-gametime__desc
+{
+    font-size: 18px;
+    margin-right: 20px;
+    font-family: Stratum2, 'Arial Unicode MS';
+    color: rgb(189, 189, 189);
 }
 
 
-#id-content-navbar__time{
-
-	font-size: 24px;
-	color: white;
-
-	width: 200px;
-
-	vertical-align: bottom;
-	font-weight: medium;
-	horizontal-align: right;
-
-	margin-left: 50px;
-	margin-right: 200px;
-
-	transition-property:  opacity;
-	transition-duration: .2s;
-	transition-timing-function: ease-in-out;
+#id-content-navbar__time
+{
+    font-size: 24px;
+    color: white;
+    width: 200px;
+    vertical-align: bottom;
+    font-weight: medium;
+    horizontal-align: right;
+    margin-left: 50px;
+    margin-right: 200px;
+    transition-property: opacity;
+    transition-duration: .2s;
+    transition-timing-function: ease-in-out;
 }
 
 
@@ -276,9 +264,11 @@
 
 #id-eom-scoreboard-container{
 	opacity:0;
+	
 
 	transition-property: opacity;
 	transition-duration: 0.2s;
+	z-index:10;
 
 	position: 0px 280px 0px;
 	background-color: rgba(0, 0, 0, 0.88);
@@ -295,4 +285,75 @@
 {
 	horizontal-align: center;
 	width: 33%;
+}
+.eom-cancelled
+{
+    horizontal-align: center;
+    vertical-align: center;
+    background-image: url("file://{resources}/videos/linemap.webm");
+    background-size: 60% auto;
+    background-img-opacity: 0.1;
+    padding: 10px;
+    flow-children: down;
+    opacity: 0;
+    visibility: collapse;
+    transform: scale3d(1.5, 1.5, 1.5);
+    transition-property: opacity, transform;
+    transition-delay: 0.3s;
+    transition-duration: 0.2s;
+    transition-timing-function: ease-in;
+}
+
+.eom-cancelled.show
+{
+    opacity: 1;
+    transform: scale3d(1, 1, 1);
+	sound-trans: "UIPanorama.submenu_slidein";
+    visibility: visible;
+}
+
+.eom-cancelled Label
+{
+    color: white;
+    text-align: center;
+}
+
+.eom-cancelled #matchCancelledTitle
+{
+    font-size: 30px;
+    horizontal-align: center;
+}
+
+.eom-cancelled #matchCancelledDesc
+{
+    font-size: 16px;
+    horizontal-align: center;
+}
+
+.eom-cancelled #matchCancelledDesc2
+{
+    font-size: 20px;
+    horizontal-align: center;
+}
+
+.eom-cancelled.vaclive
+{
+    background-color: red;
+}
+
+.eom-cancelled.network-event
+{
+    background-color: black;
+}
+#id-eom-fade
+{
+    background-color: black;
+    transition-property: opacity;
+    transition-duration: 0.5s;
+    opacity: 0;
+}
+
+#id-eom-fade.active
+{
+    opacity: 1;
 }

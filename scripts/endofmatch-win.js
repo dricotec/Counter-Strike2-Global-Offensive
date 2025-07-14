@@ -39,25 +39,21 @@ function _SetVictoryStatement()
         !_m_oScoreData["teamdata"]["CT"] ||
         !_m_oScoreData["teamdata"]["TERRORIST"] )
         return false;
-
-    $.DispatchEvent('PlaySoundEffect', 'UIPanorama.gameover_show', 'MOUSE');
+   $.DispatchEvent('PlaySoundEffect', 'UIPanorama.gameover_show', 'MOUSE');
 
     _m_cP.FindChildTraverse('WinTeam').RemoveClass('hidden');
     var winningTeam;
     var winningTeamNumber = _m_oMatchEndData["winning_team_number"];
-    var result = "eom-result-tie2"; // Default result to tie
+    var result = "eom-result-tie2";
 
-    // Set the winning team (CT or Terrorist)
     if (winningTeamNumber == 2) {
         winningTeam = "terrorist";
     } else if (winningTeamNumber == 3) {
         winningTeam = "ct";
     }
 
-    // Fetch local player team number
     var localPlayerTeamNumber = MockAdapter.GetPlayerTeamNumber(MockAdapter.GetLocalPlayerXuid());
 
-    // Determine the result (win, loss, tie) based on winningTeamNumber
     result = (winningTeamNumber == localPlayerTeamNumber) ? "eom-result-win2" : 
              (winningTeamNumber === 0) ? "eom-result-tie2" :
              "eom-result-loss2";
@@ -73,7 +69,6 @@ function _SetVictoryStatement()
         elWinnerLabel.TriggerClass('move');
     }
 
-    // Set the win-result variable for the localized text (win, loss, tie)
     _m_cP.SetDialogVariable("win-result", $.Localize(result));
 
     return true;

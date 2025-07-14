@@ -473,13 +473,11 @@
 
 .sb-row__cell--avatar--placeholder
 {
-	width:row-image-size;
 	margin:2px;
 }
 
 .sb-row-height
 {
-	height: row-image-size;
 }
 
 .mi-sb-row--labels

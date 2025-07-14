@@ -54,7 +54,7 @@
 
 .map-selection-btn__wins Label
 {
-    font-family: Stratum2 Condensed, 'Arial Unicode MS';
+    font-family: Stratum2, 'Arial Unicode MS';
     font-size: 22px;
     text-align:center;
     horizontal-align: right;
@@ -98,7 +98,7 @@
     y: 100px;
 }
 
-.map-selection-list--official-competitive .map-selection-btn,.map-selection-list--official-casual .map-selection-btn,.map-selection-list--official-deathmatch .map-selection-btn,.map-selection-list--official-scrimcomp2v2 .map-selection-btn,.map-selection-list--official-skirmish .map-selection-btn,.map-selection-list--official-gungameprogressive .map-selection-btn,.map-selection-list--listen-competitive .map-selection-btn,.map-selection-list--listen-scrimcomp2v2 .map-selection-btn,.map-selection-list--listen-skirmish .map-selection-btn,.map-selection-list--listen-casual .map-selection-btn,.map-selection-list--listen-deathmatch .map-selection-btn,.map-selection-list--listen-gungameprogressive .map-selection-btn
+.map-selection-list--official-competitive .map-selection-btn,.map-selection-list--official-casual .map-selection-btn,.map-selection-list--official-deathmatch .map-selection-btn,.map-selection-list--official-scrimcomp2v2 .map-selection-btn,.map-selection-list--official-skirmish .map-selection-btn,.map-selection-list--official-gungameprogressive .map-selection-btn,.map-selection-list--listen-competitive .map-selection-btn,.map-selection-list--listen-scrimcomp2v2 .map-selection-btn,.map-selection-list--listen-skirmish .map-selection-btn,.map-selection-list--listen-casual .map-selection-btn,.map-selection-list--listen-deathmatch .map-selection-btn,.map-selection-list--listen-gungameprogressive .map-selection-btn, .map-selection-list-coop .map-selection-btn
 {
     width: fill-parent-flow(1);
     height: 90%;
@@ -108,7 +108,7 @@
 
 .map-selection-list--official-deathmatch,.map-selection-list--official-casual,.map-selection-list--official-gungameprogressive,.map-selection-list--official-scrimcomp2v2,.map-selection-list--listen-scrimcomp2v2
 {
-    width: 90%;
+    width: 99%;
 }
 
 .map-selection-list--official-deathmatch .map-selection-btn__groupmap-icons,.map-selection-list--official-casual .map-selection-btn__groupmap-icons,.map-selection-list--official-gungameprogressive .map-selection-btn__groupmap-icons,.map-selection-list--official-scrimcomp2v2 .map-selection-btn__groupmap-icons,.map-selection-list--listen-scrimcomp2v2 .map-selection-btn__groupmap-icons
@@ -135,7 +135,7 @@
 
 .map-selection-list--official-skirmish,.map-selection-list--listen-gungameprogressive
 {
-    width: 90%;
+    width: 99%;
 }
 
 .map-selection-list--listen-deathmatch,.map-selection-list--listen-competitive,.map-selection-list--listen-casual,.map-selection-list--official-competitive
@@ -190,7 +190,7 @@
 
 .map-selection-list-coop
 {
-    width: 80%;
+    width: 95%;
     height: fit-children;
     flow-children: down;
     opacity: 1;
@@ -200,7 +200,6 @@
     transition-duration: .25s;
     transition-timing-function: ease-in-out;
 }
-
 .map-selection-list-directchallenge
 {
     width: 100%;
@@ -635,8 +634,8 @@
 {
     horizontal-align: center;
     vertical-align: center;
-    width: 64px;
-    height: 64px;
+    width: 128px;
+    height: 128px;
     z-index: 1;
     margin: 0px 12px 0px 12px;
 }
@@ -1037,8 +1036,8 @@
 
 .map-selection-btn.coop-map-tile
 {
-    height: 552px;
-    width: height-percentage(70%);
+    height: 100%;
+    width: height-percentage(100%);
 }
 
 .map-selection-btn__screenshot
@@ -1233,46 +1232,19 @@ RadioButton.map-selection-btn Label
 
 .map-selection-info__new
 {
-    padding: 2px 8px 0px 10px;
-    background-color: blueColor;
+    padding: 2px 8px 2px 10px;
+    background-color: new-item-gradient;
     color: white;
     font-weight: medium;
     vertical-align: top;
     horizontal-align: left;
-    border: 1px solid rgb(100, 180, 223);
-    brightness: 1.5;
-}
-
-.map-selection-info__new.map-selection-info__unranked
-{
-    background-color: #709f70;
-    border: 1px solid positiveColor;
-    text-transform: uppercase;
+    box-shadow: shadowOffset;
+    border-bottom-right-radius: 6px;
 }
 
 .map-selection-list .map-selection-btn .map-selection-info__new
 {
-    font-size: 18px;
-}
-
-.map-selection-list .map-selection-btn .map-selection-info__new--star
-{
-    height: 100%;
-    width: height-percentage(100%);
-    background-image: url("file://{images}/ui_textures/yellow_star.png");
-    background-size: 100% 100%;
-    background-position: 50% 50%;
-    background-repeat: no-repeat;
-}
-
-.map-selection-list .map-selection-btn .map-selection-info__new--star Label
-{
-    position: 0px 0px 0px;
-    width: 100%;
-    text-align: center;
-    margin-left: 0px;
-    font-weight: bold;
-    transform: rotateZ(-10deg);
+    font-size: 14px;
 }
 
 ToggleButton .map-selection-info__new,RadioButton .map-selection-info__new
@@ -1518,7 +1490,6 @@ ToggleButton .map-selection-info__new,RadioButton .map-selection-info__new
 .play-menu__playbtn:hover
 {
     sound: "UIPanorama.mainmenu_rollover";
-
 }
 
 .play-menu__playbtn:hover .play-menu__playbtn__bar
@@ -2103,7 +2074,7 @@ ToggleButton .map-selection-info__new,RadioButton .map-selection-info__new
     margin-right: prime-panel-right-left-margin;
 }
 
-.AspectRatio4x3 .playmenu--premier__party,.AspectRatio4x3 .premier-play-menu-mapwinrecord,.AspectRatio4x3 .playmenu--premier__leaderboard
+.AspectRatio4x3 .playmenu--premier__party,.AspectRatio4x3 .premier-play-menu-mapwinrecord,.AspectRatio4x3 .playmenu--premier__leaderboard,.AspectRatio4x3 .premier-season-progress
 {
     margin-right: 0px;
     margin-left: 0px;

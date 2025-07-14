@@ -27,6 +27,7 @@
     $.DefineEvent( 'OpenPlayMenu', 0, 'no args', 'opens the play menu from anywhere. EXAMPLE from party menu settings button from client' );
     $.DefineEvent( 'OpenInventory', 0, 'no args', 'opens the inventory menu from anywhere.' );
 	$.DefineEvent( 'OpenFullscreenStore', 0, 'no args', 'opens the store menu from anywhere.' );
+	$.DefineEvent( 'OpenSettingsMenu', 0, 'no args', 'opens the settings menu from anywhere.' );
     $.DefineEvent( 'OpenWatchMenu', 0, 'no args', 'opens the watch menu from anywhere.' );
     $.DefineEvent( 'OpenStatsMenu', 0, 'no args', 'opens the stats page from anywhere.' );
     $.DefineEvent( 'OpenSubscriptionUpsell', 0, 'no args', 'Open the upsell popup' );
@@ -40,6 +41,7 @@
     $.DefineEvent( 'MainMenuSwitchVanity', 1, 'team', '' );
 	$.DefineEvent( 'MainMenuGoToCharacterLoadout', 1, 'team', '' );
 	$.DefineEvent( 'MainMenuGoToSettings', 0, '', "Got to the settings screen." );
+	$.DefineEvent( 'MainMenuGoToStore', 0, '', "Got to the store screen." );
 
               
                                                                                                                     
@@ -88,7 +90,7 @@
     $.DefineEvent( 'RefreshActiveInventoryList', 0, '', 'Make the active list get the items in it' );
     $.DefineEvent( 'ShowDeleteItemConfirmationPopup', 1, 'itemid', 'When a user is trying to delete an item from inventory' );
     $.DefineEvent( 'ShowUseItemOnceConfirmationPopup', 1, 'itemid', 'When a user is trying to use an item from inventory that can be used once' );
-    $.DefineEvent( 'ShowResetMusicVolumePopup', 1, 'itemid', 'When a user is trying to equip a musickit but has thier music volume off from inventory' );
+    $.DefineEvent( 'ShowResetMusicVolumePopup', 0, 'itemid', 'When a user is trying to equip a musickit but has thier music volume off from inventory' );
     $.DefineEvent( 'ShowTradeUpPanel', 0, '', 'Show trade up panel' );
     $.DefineEvent( 'UpdateTradeUpPanel', 0, '', 'Update trade up panel' );
     $.DefineEvent( 'MainMenuTabShown', 1, 'tabid', 'Alert main menu tabs when they are shown, in case there is a data update needed' );

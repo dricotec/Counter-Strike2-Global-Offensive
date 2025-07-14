@@ -4,13 +4,13 @@ var MainMenu = ( function() {
 	var _m_activeTab;
 	var _m_sideBarElementContextMenuActive = false;
 	var _m_elContentPanel = $( '#JsMainMenuContent' );
-	var _m_playedInitalFadeUp = false;
-	var _debug_d3gk_IsQOutOfDate = false;
-	var _debug_d3gk_IsQVAC = false;
-	var _debug_d3gk_IsQOverwatch = false;
-	var _debug_d3gk_IsQOffline = false;           
-	var _m_elNotificationsContainer = $( '#NotificationsContainer' );
-	var _m_notificationSchedule = false;
+	var _m_playedInitalFadeUp = false; // d3gks notification debug stuff which is pretty much no longer used because of the new notification button..  
+	var _debug_d3gk_IsQOutOfDate = false; // d3gks notification debug stuff which is pretty much no longer used because of the new notification button..   
+	var _debug_d3gk_IsQVAC = false; // d3gks notification debug stuff which is pretty much no longer used because of the new notification button..    
+	var _debug_d3gk_IsQOverwatch = false; // d3gks notification debug stuff which is pretty much no longer used because of the new notification button..  
+	const _m_elNotificationsContainer = $('#id-notifications-container');
+	var _debug_d3gk_IsQOffline = false;    // d3gks notification debug stuff which is pretty much no longer used because of the new notification button..       
+	var _m_notificationSchedule = false;  // schedules the notifications i guess? i don't really know what it does and i'm lazy to take a look at it..
 	var _m_bVanityAnimationAlreadyStarted = false; // checks if the vanity agent anim is already playing. this is causing the vanity to appear for a split second when disconnecting from a server. unable to fix for now.
 	var _m_bHasPopupNotification = false; // if you have a popup notification this will turn to true, if not it's going to stay at false.
 	var _m_tLastSeenDisconnectedFromGC = 0; // last time seen on gc, this is controlled by an internal script in the games code. nothing you can do about it here.
@@ -66,8 +66,7 @@ var MainMenu = ( function() {
 				_ShowUpdateWelcomePopup();
 			}
 			else
-			{
-				                                                                                                                  
+			{                                                                                                              
 				_m_hOnEngineSoundSystemsRunningRegisterHandle = $.RegisterForUnhandledEvent( "PanoramaComponent_GameInterface_EngineSoundSystemsRunning", MainMenu.ShowOperationLaunchPopup );
 			}
 		}
@@ -99,17 +98,23 @@ var MainMenu = ( function() {
 		}
 	}
 var _SetBackgroundMovie = function() {
-    var videoPlayer = $('#MainMenuMovie');
-    var background = $('#MainMenuBackground');
+    var videoPlayer = $('#MainMenuMovie'); // video player panel
+    var background = $('#MainMenuBackground'); // background panel for the movie 
+	var containerpanel = $('#MainMenuContainerPanel');
+    var vanityPanel = $('#JsMainmenu_Vanity'); // vanity agent panel
+
     if (!(videoPlayer && videoPlayer.IsValid() && background && background.IsValid())) {
         return;
     }
 
+    // fades the mainmenu background when disconnecting, changing and loading into the mainmenu
     background.style.opacity = '0';
-    _PauseMainMenuCharacter();
+	containerpanel.style.opacity = '0';
 
-    $.Schedule(0.5, function() {
-        var backgroundMovie = GameInterfaceAPI.GetSettingString('ui_mainmenu_bkgnd_movie_CC4ECB9');
+    _PauseMainMenuCharacter(); // during the background change transition, the vanity pauses and then it's gonna restart the vanity when the unpause script initiates
+
+    $.Schedule(0.7, function() {
+        var backgroundMovie = GameInterfaceAPI.GetSettingString('ui_mainmenu_bkgnd_movie_CC4ECB9'); // ui background movie convar which tracks which background you set, example: inferno or dust2 or train and so on.
 
         _UnPauseMainMenuCharacter();
         videoPlayer.SetAttributeString('data-type', backgroundMovie);
@@ -117,53 +122,88 @@ var _SetBackgroundMovie = function() {
         videoPlayer.SetSound('UIPanorama.BG_' + backgroundMovie);
         videoPlayer.Play();
 
-        var vanityPanel = $('#JsMainmenu_Vanity');
         if (vanityPanel && vanityPanel.IsValid()) {
             _SetVanityLightingBasedOnBackgroundMovie(vanityPanel);
+            vanityPanel.visible = true;   // makes the vanity instantly visible when the background fades in
+            vanityPanel.style.opacity = '1';  // with the opacity set to 1 and no transition in css. it won't make the vanity panel transparent during the transition.
         }
 
-        background.style.opacity = '1';
+        background.style.opacity = '1';  // fades the video background right into the screen
+		containerpanel.style.opacity = '1';
+
         _InitVanity();
+		_InitVanityNoGC();
         _ForceRestartVanity();
         _LobbyPlayerUpdated();
     });
 };
 
+// when disconnecting, the vanity should be invisible and not randomly appear during pitch black transition.
+function HideVanity() {
+    var vanityPanel = $('#JsMainmenu_Vanity');
+    if (vanityPanel && vanityPanel.IsValid()) {
+        vanityPanel.visible = false;  
+    }
+}
+
+var devmode = 0;
+
 var _OnShowMainMenu = function() {
+    $.DispatchEvent('PlayMainMenuMusic', true, true); // plays the mainmenu music.. kinda is responsible for blowing your ears out if it's set to max volume, limited via settings_audio.xml to 0.3 volume.
+    $('#MainMenuNavBarHome').checked = true; // makes sure that the home button is always pressed in when the game boots up or you disconnect from a local server or whatever..
 
-    $.DispatchEvent('PlayMainMenuMusic', true, true);
-    $('#MainMenuNavBarHome').checked = true;
+    GameInterfaceAPI.SetSettingString('panorama_play_movie_ambient_sound', '1'); // plays the background ambient sound for the specific map you set. this is always forced even when in a content panel, does not work ingame which is intended!
+    GameInterfaceAPI.ConsoleCommand("mirv_cvar_unhide_all"); // unhides all ingame commands via hlae. useful for panorama debug commands and some other stuff.
+    GameInterfaceAPI.ConsoleCommand('@panorama_ECO_mode 0'); // disables the eco mode for low settings, if enabled, this causes the blur to be low framerate and update slowly. 
+	GameInterfaceAPI.ConsoleCommand('sv_allowupload 1'); // this is to fix the issue with "file uploads disabled" when trying to connect to game servers, it's forced when onshowmainmenu executes every time.
+    GameInterfaceAPI.SetSettingString('dsp_room', '0'); // digital singal processing, the thing that makes stuff go echo. very cool tech...
+    GameInterfaceAPI.SetSettingString('snd_soundmixer', 'MainMenu_Mix'); // no clue what this really does... all i can tell is it makes the mainmenu louder when the code is in..
 
-    GameInterfaceAPI.SetSettingString('panorama_play_movie_ambient_sound', '1');
-    GameInterfaceAPI.ConsoleCommand("mirv_cvar_unhide_all");
-    GameInterfaceAPI.ConsoleCommand('@panorama_ECO_mode 0');
-    GameInterfaceAPI.SetSettingString('dsp_room', '0');
-    GameInterfaceAPI.SetSettingString('snd_soundmixer', 'MainMenu_Mix');
 
     _m_bVanityAnimationAlreadyStarted = false;
-
     _SetBackgroundMovie();
+	//_CreatUpdateVanityInfo();
 
-    $('#MainMenuNavBarPlay').SetHasClass('pausemenu-navbar__btn-small--hidden', false);
-    
-    $.Schedule(0.2, function() {
-        _OnInitFadeUp();
+    $('#MainMenuNavBarPlay').SetHasClass('pausemenu-navbar__btn-small--hidden', false); // unhides the play button from the navbar after disconnecting from a server
+	var elScoreboard = $.GetContextPanel().FindChildInLayoutFile('Scoreboard'); // gets the scoreboard layout code.
+    if (elScoreboard) elScoreboard.visible = false; // hides it when you disconnect or start the game.
+
+    _OnInitFadeUp(); // this does the magic fade in animation
+
+    _UpdateNotifications(); // updates ui notifications for cooldowns, griefing reports, your griefing reports to other players.. overwatch xp bonus and more..
+    _ShowWeaponUpdatePopup(); // shows weaponupdate popup although it's not really used for that stuff anymore so it can be reused for one time popups easily.. like the welcome popup that you get for the first time.
+    _UpdateInventoryBtnAlert(); // updates the inventory button alert when you get a new item or accept the new item
+    _GcLogonNotificationReceived(); // gets information from the gc so that your stuff works like matchmaking, inventory, ranks etc, however as we all know mm is disabled, so is half of the gc now.
+    _BetaEnrollmentStatusChange(); // cs2 beta enrollment for those who got it early or late into cs2's beta. screw cs2 it sucks and they should've kept csgo online with all services.
+    _UpdateStoreAlert(); // updates the store alert for when you get a drop or something new gets added into it. 
+    _DeleteSurvivalEndOfMatch(); // entirely removes danger zones eom panel from the mainmenu.
+    _DeletePauseMenuMissionPanel(); // entirely removes operation mission panels from the mainmenu
+    _ShowHideAlertForNewEventForWatchBtn(); // new event in watch tab? not sure what this really does as i've never seen it in action.
+    _UpdateUnlockCompAlert(); // gives you the alert when you unlock competitive and wingman.
+    _FetchTournamentData(); // fetches your client tournament aka major data for the watch tab.
+	_ShowFloatingPanels(); // shows left and right columns in the mainmenu
+	_RightColumnLoad(); // just read the  code for yourself.. i was pulling my hair out trying to fix the right column.
+	_PlayMenuSong(); // plays the mainmenu song without the panoramic effect, because i didn't want to bother fixing the issues so this is the final fix.
+
+  // devmode launch detection code here.. very useless unless you want to see what debug stuff there is..
+    if (GameInterfaceAPI.HasCommandLineParm('-devmode')) {
+        devmode = 1;
+    } else {
+        devmode = 0;
+    }
+    // finds .DEVModeONLY css class from mainmenu.css
+    var devButtons = $.GetContextPanel().FindChildrenWithClassTraverse('DEVModeONLY');
+
+    devButtons.forEach(function(button) {
+        if (devmode === 1) {
+            button.RemoveClass('DEVModeONLY'); // if -devmode is present, it deletes the css class completely from memory and reveals debug buttons on the navbar
+        } else {
+            button.AddClass('DEVModeONLY'); // if -devmode is not present in the launch options, the script will not reveal the hidden buttons.
+        }
     });
-
-    _UpdateNotifications();
-    _ShowWeaponUpdatePopup();
-    _UpdateInventoryBtnAlert();
-    _GcLogonNotificationReceived();
-    _BetaEnrollmentStatusChange();
-    _UpdateStoreAlert();
-    _DeleteSurvivalEndOfMatch();
-    _DeletePauseMenuMissionPanel();
-    _ShowHideAlertForNewEventForWatchBtn();
-    _UpdateUnlockCompAlert();
-    _FetchTournamentData();
 };
 
-	var _TournamentDraftUpdate = function ()
+	var _TournamentDraftUpdate = function () // major pickems. nothing special here in this script i guess..
 	{
 		if ( !m_TournamentPickBanPopup || !m_TournamentPickBanPopup.IsValid() )
 		{
@@ -208,17 +248,11 @@ var _OnShowMainMenu = function() {
 			}
 			else if ( strFatalError === "ShowGameLicenseNoOnlineLicensePW" )
 			{
-				                                                                                 
-				                                                                                     
-				                                 
-				                                                                                                                                                           
+                                                                                                                                                        
 			}
 			else if ( strFatalError === "ShowGameLicenseNoOnlineLicense" )
 			{
-				                                                                                 
-				                                                                                     
-				                                 
-				                                                                                                                                                 
+                                                                                                                                        
 			}
 			else
 			{
@@ -307,28 +341,24 @@ var _OnShowMainMenu = function() {
 			btn.SetHasClass( 'hidden', !bShowEnrollIntoBetaButton );
 	}
 
-	var _OnHideMainMenu = function ()
-	{
-		                        
-		var vanityPanel = $( '#JsMainmenu_Vanity' );
-		if ( vanityPanel )
-		{
-			CharacterAnims.CancelScheduledAnim( vanityPanel );
-		}
-
-		_CancelNotificationSchedule();
-
-		UiToolkitAPI.CloseAllVisiblePopups();
-
-		_StopFetchingTournamentData();
-	};
+    function _OnHideMainMenu() { // stops all mainmenu stuff that are listed here
+        const vanityPanel = $('#JsMainmenu_Vanity');
+        if (vanityPanel) {
+            CharacterAnims.CancelScheduledAnim(vanityPanel);
+        }
+        _m_elContentPanel.RemoveClass('mainmenu-content--animate');
+        _m_elContentPanel.AddClass('mainmenu-content--offscreen');
+        _CancelNotificationSchedule();
+        UiToolkitAPI.CloseAllVisiblePopups();
+        _StopFetchingTournamentData();
+    }
 	
-	var _OnShowPauseMenu = function()
+	var _OnShowPauseMenu = function() // does the pause menu magic tricks
 	{
 		var elContextPanel = $.GetContextPanel();
 		
 		elContextPanel.AddClass( 'MainMenuRootPanel--PauseMenuMode' );
-		 $('#MainMenuNavBarHomePause').checked = true;
+		 $('#MainMenuNavBarHome').checked = true;
 		 $.DispatchEvent('PlayMainMenuMusic', false, false );  
 
 		var bMultiplayer = elContextPanel.IsMultiplayer();
@@ -337,12 +367,10 @@ var _OnShowMainMenu = function() {
 		var bGotvSpectating = elContextPanel.IsGotvSpectating();
 		var bIsCommunityServer = !_m_bPerfectWorld && MatchStatsAPI.IsConnectedToCommunityServer();
                                                                                                  
-        $('#MainMenuNavBarPlay').SetHasClass('pausemenu-navbar__btn-small--hidden', true);   																								 
-		$( '#MainMenuNavBarPlay' ).SetHasClass( 'mainmenu-navbar__btn-small--hidden', true );                                                                                                                                            
-		$( '#MainMenuNavBarVote' ).SetHasClass( 'mainmenu-navbar__btn-small--hidden', ( bTraining ||                      bGotvSpectating ) );
-		$( '#MainMenuNavBarSwitchTeams' ).SetHasClass( 'mainmenu-navbar__btn-small--hidden', ( bTraining || bQueuedMatchmaking || bGotvSpectating ) );                                                                                                                                   
-		$( '#MainMenuNavBarVote' ).SetHasClass( 'mainmenu-navbar__btn-small--hidden', ( bTraining ||                      bGotvSpectating ) );                                                                               
-		$( '#MainMenuNavBarReportServer' ).SetHasClass( 'mainmenu-navbar__btn-small--hidden', !bIsCommunityServer );                           
+        $('#MainMenuNavBarPlay').SetHasClass('pausemenu-navbar__btn-small--hidden', true);   																								                                                                                                                                           
+        $('#MainMenuNavBarSwitchTeams').SetHasClass('pausemenu-navbar__btn-small--hidden', (bQueuedMatchmaking || bGotvSpectating));
+        $('#MainMenuNavBarVote').SetHasClass('pausemenu-navbar__btn-small--hidden', (bGotvSpectating));
+        $('#MainMenuNavBarReportServer').SetHasClass('pausemenu-navbar__btn-small--hidden', !bIsCommunityServer);                  
                                             
 		_UpdateSurvivalEndOfMatchInstance();
 
@@ -352,8 +380,7 @@ var _OnShowMainMenu = function() {
 		                
 		OnHomeButtonPressed();
 	};
-
-	var _OnHidePauseMenu = function ()
+	var _OnHidePauseMenu = function () // hides the pause menu if you press escape again or go to the mainmenu
 	{
 		$.GetContextPanel().RemoveClass( 'MainMenuRootPanel--PauseMenuMode' );
 		                                 
@@ -362,8 +389,24 @@ var _OnShowMainMenu = function() {
 		                                                                  
 		OnHomeButtonPressed();
 	};
+const _CreatUpdateVanityInfo = function (oSettings) {
+    $.Schedule(0.1, () => {
+        if (typeof VanityPlayerInfo === 'undefined') {
+            $.Schedule(0.1, () => _CreatUpdateVanityInfo(oSettings));
+            return;
+        }
 
-    function _BCheckTabCanBeOpenedRightNow(tab) {
+        const elVanityPlayerInfo = VanityPlayerInfo.CreateUpdateVanityInfoPanel(
+            $.GetContextPanel().FindChildInLayoutFile('MainMenuVanityInfo'),
+            oSettings
+        );
+
+        // Removed blur panel code here — no blur added
+
+    });
+};
+
+    function _BCheckTabCanBeOpenedRightNow(tab) { // checks if you can open tabs if you don't have any license restrictions, or if the game coordinator is offline.
         if (tab === 'JsInventory' || tab === 'JsMainMenuStore' || tab === 'JsLoadout') {
             const restrictions = LicenseUtil.GetCurrentLicenseRestrictions();
             if (restrictions !== false) {
@@ -380,9 +423,9 @@ var _OnShowMainMenu = function() {
         return true;
     }
 
-	var _CanOpenStatsPanel = function()
+	var _CanOpenStatsPanel = function() // 360 stats, was supposed to be added into cs2 but later it was cut and only the ui panels work but no api responses because it has been shut down.
 	{
-		if( GameInterfaceAPI.GetSettingString( 'ui_show_subscription_alert' ) !== '1' )
+		if( GameInterfaceAPI.GetSettingString( 'ui_show_subscription_alert' ) !== '0' )
 		{
 			GameInterfaceAPI.SetSettingString( 'ui_show_subscription_alert', '1' );
 		}
@@ -403,7 +446,7 @@ var _OnShowMainMenu = function() {
 		
 		return true;
 	}
- 	var _NavigateToTab = function( tab, XmlName )
+ 	var _NavigateToTab = function( tab, XmlName ) // navigatetotab, the shit that does the magic trick of you being able to open the play menu, inventory, settigns etc
 	{
 		if ( !_BCheckTabCanBeOpenedRightNow( tab ) )
 		{
@@ -464,44 +507,50 @@ var _OnShowMainMenu = function() {
 		_ShowContentPanel();
 	};
 
-	var _ShowContentPanel = function()
-	{
-		if ( _m_elContentPanel.BHasClass( 'mainmenu-content--offscreen' ) ) {
-			_m_elContentPanel.RemoveClass( 'mainmenu-content--offscreen' );
-		}
-        $.GetContextPanel().AddClass("mainmenu-content--open");
-		$.DispatchEvent( 'ShowContentPanel' );
-		_DimMainMenuBackground( false );
-		_HideFloatingPanels();
-		_HideNewsAndStore();
-	};
+function _ShowContentPanel() { // all this does is show the content panel for settings, play etc and adds some classes, hides and removes stuff.
+    if (_m_elContentPanel.BHasClass('mainmenu-content--offscreen')) {
+        _m_elContentPanel.AddClass('mainmenu-content--animate');
+        _m_elContentPanel.RemoveClass('mainmenu-content--offscreen');
+    }
 
-	var _OnHideContentPanel = function()
-	{
-		_m_elContentPanel.AddClass( 'mainmenu-content--offscreen' );
-         $.GetContextPanel().RemoveClass("mainmenu-content--open");
-		                                                     
-		var elActiveNavBarBtn = _GetActiveNavBarButton();
-		if ( elActiveNavBarBtn && elActiveNavBarBtn.id !== 'MainMenuNavBarHome' ) {
-			elActiveNavBarBtn.checked = false;
-		}
+    $.GetContextPanel().AddClass("mainmenu-content--open");
+    $.DispatchEvent('ShowContentPanel');
+    _DimMainMenuBackground(false);
+    _HideFloatingPanels();
+    _HideNewsAndStore();
 
-		_DimMainMenuBackground( true );
-		
-		                                 
-		if ( _m_activeTab )
-		{
-			var panelToHide = $.GetContextPanel().FindChildInLayoutFile( _m_activeTab );
-			panelToHide.AddClass( 'mainmenu-content--hidden' );
-			                                       
-		}
-		
-		_m_activeTab = '';
+    // hides the scoreboard when in a content panel.
+    var elScoreboard = $.GetContextPanel().FindChildInLayoutFile('Scoreboard');
+    if (elScoreboard) elScoreboard.visible = false;
+}
 
-		_ShowFloatingPanels();
-		_ShowNewsAndStore();
-	};
+function _OnHideContentPanel() { // hides the content panel, shows left and right columns, shows the scoreboard in the pausemenu.
+    _m_elContentPanel.AddClass('mainmenu-content--animate');
+    _m_elContentPanel.AddClass('mainmenu-content--offscreen');
+    $.GetContextPanel().RemoveClass("mainmenu-content--open");
 
+    const elActiveNavBarBtn = _GetActiveNavBarButton();
+    if (elActiveNavBarBtn && elActiveNavBarBtn.id !== 'MainMenuNavBarHome') {
+        elActiveNavBarBtn.checked = false;
+    }
+
+    _DimMainMenuBackground(true);
+
+    if (_m_activeTab) {
+        const panelToHide = $.GetContextPanel().FindChildInLayoutFile(_m_activeTab);
+        panelToHide.AddClass('mainmenu-content--hidden');
+    }
+
+    _m_activeTab = '';
+    _ShowNewsAndStore();
+    _ShowFloatingPanels();
+
+    // shows the pause menu scoreboard again when you are playing in a match, hides it entirely when in the mainmenu.
+    if (GameStateAPI.IsLocalPlayerPlayingMatch()) {
+        var elScoreboard = $.GetContextPanel().FindChildInLayoutFile('Scoreboard');
+        if (elScoreboard) elScoreboard.visible = true;
+    }
+}
 	var _GetActiveNavBarButton = function( )
 	{
 		var elNavBar = $( '#JsMainMenuTopNavBar' );
@@ -521,11 +570,11 @@ var _OnShowMainMenu = function() {
 	                                                                                                    
 	var _ShowHideNavDrawer = function()
 	{
-		UiToolkitAPI.ShowCustomLayoutPopup('', 'file://{resources}/layout/popups/popup_navdrawer.xml');
+		UiToolkitAPI.ShowCustomLayoutPopup('', 'file://{resources}/layout/popups/popup_navdrawer.xml'); // honestly i have no clue what this is, perhaps something with debugging the popups?
 	};
 
 	                              
-	var _ExpandSidebar = function( AutoClose = false )
+	var _ExpandSidebar = function( AutoClose = false ) // friendlist, shows your friendlist fully opened when you hover with your mouse over it.
 	{
 		var elSidebar = $( '#JsMainMenuSidebar' );
 
@@ -544,7 +593,7 @@ var _OnShowMainMenu = function() {
 		}
 	};
 
-	var _MinimizeSidebar = function()
+	var _MinimizeSidebar = function() // hides the friendlist content when you move your mouse away from it.
 	{
 		                                                                                                 
 		                                                                                               
@@ -604,7 +653,91 @@ var _OnShowMainMenu = function() {
 		} else
 			$('#MainMenuBackground').AddClass('Dim');
 	};
+	var _InitNewsAndStore = function ()
+	{	
+		                             
+		_AddStream();
+                          
+		var elLimitedTest = $.CreatePanel( 'Panel', $.FindChildInContext( '#JsNewsContainer' ), 'JsLimitedTest' );
+		elLimitedTest.BLoadLayout( 'file://{resources}/layout/mainmenu_limitedtest.xml', false, false );
 
+		_BetaEnrollmentStatusChange();
+		                          
+		var elNews = $.CreatePanel( 'Panel', $.FindChildInContext( '#JsNewsContainer' ), 'JsNewsPanel' );
+		elNews.BLoadLayout( 'file://{resources}/layout/mainmenu_news.xml', false, false );
+                         
+		var elLastMatch = $.CreatePanel( 'Panel', $.FindChildInContext( '#JsNewsContainer' ), 'JsLastMatch' );
+		elLastMatch.BLoadLayout( 'file://{resources}/layout/mainmenu_lastmatch.xml', false, false );
+                       
+		var elStore = $.CreatePanel( 'Panel', $.FindChildInContext( '#JsNewsContainer' ), 'JsStorePanel' );
+		elStore.BLoadLayout( 'file://{resources}/layout/mainmenu_store.xml', false, false );
+		$.FindChildInContext( '#JsNewsContainer' ).OnPropertyTransitionEndEvent = function ( panelName, propertyName )
+		{
+			if( elNews.id === panelName && propertyName === 'opacity')
+			{
+				                                         
+				if( elNews.visible === true && elNews.BIsTransparent() )
+				{
+					                                               
+					elNews.visible = false;
+					elNews.SetReadyForDisplay( false );
+					return true;
+				}
+			}
+
+			return false;
+		};                         
+		var bFeaturedPanelIsActive = false;
+		if ( bFeaturedPanelIsActive )
+		{                                                                               
+			_AddFeaturedPanel( 'operation/operation_mainmenu.xml', 'JsOperationPanel' );
+		}
+
+			//_AddWatchNoticePanel();
+
+		_ShowNewsAndStore();
+	};
+	
+	var _AddStream = function()
+	{
+		var elStream = $.CreatePanel( 'Panel', $.FindChildInContext( '#JsStreamContainer' ), 'JsStreamPanel' );
+		elStream.BLoadLayout( 'file://{resources}/layout/mainmenu_stream.xml', false, false );
+	};
+	
+	var _HideMainMenuNewsPanel = function()
+	{
+		var elNews = $.FindChildInContext( '#JsNewsContainer' );
+		elNews.SetHasClass( 'news-panel--hide-news-panel', true );
+
+		if( elNews.BHasClass( 'news-panel-style-feature-panel-visible') )
+		{
+			elNews.RemoveClass( 'news-panel-style-feature-panel-visible', true );
+		}
+	}
+	//var _AddWatchNoticePanel = function()
+	//{
+	//	var WatchNoticeXML = '';
+	//	var elPanel = $.CreatePanel( 'Panel', $.FindChildInContext( '#JsLeftColumn' ), 'JsWatchNoticePanel' );
+	//	elPanel.BLoadLayout( WatchNoticeXML, false, false );
+	//}
+	
+	var _ShowNewsAndStore = function ()
+	{
+		var elPanel = $.FindChildInContext( '#JsNewsContainer' );
+		elPanel.SetHasClass( 'hidden', false );
+
+		elPanel = $.FindChildInContext( '#JsActiveMissionPanel' );
+		elPanel.SetHasClass( 'hidden', false );
+	};
+
+	var _HideNewsAndStore = function ()
+	{
+		var elPanel = $.FindChildInContext( '#JsNewsContainer' );
+		elPanel.SetHasClass( 'hidden', true );
+
+		elPanel = $.FindChildInContext( '#JsActiveMissionPanel' );
+		elPanel.SetHasClass( 'hidden', true );
+	};
 	                                                                                                    
 	                         
 	                                                                                                    
@@ -653,99 +786,11 @@ var _OnShowMainMenu = function() {
 		var friendsList = $.CreatePanel( 'Panel', $.FindChildInContext( '#mainmenu-sidebar__blur-target' ), 'JsFriendsList' );
 		friendsList.BLoadLayout( 'file://{resources}/layout/friendslist.xml', false, false );
 	};
-
-	var _InitLRColumns = function ()
-	{	
-		var elLeftColumn = $.CreatePanel( 'Panel', $.FindChildInContext( '#JsLeftColumnContainer' ), 'JsLeftColumn' );
-		elLeftColumn.BLoadLayout( 'file://{resources}/layout/mainmenu_left_column.xml', false, false );
-		
-		var elRightColumn = $.CreatePanel( 'Panel', $.FindChildInContext( '#JsRightColumnContainer' ), 'JsRightColumn' );
-		elRightColumn.BLoadLayout( 'file://{resources}/layout/mainmenu_right_column.xml', false, false );                                                                                                 
-
-		$.FindChildInContext( '#JsLeftColumnContainer' ).OnPropertyTransitionEndEvent = function ( panelName, propertyName )
-		{
-			if( elNews.id === panelName && propertyName === 'opacity')
-			{
-				                                         
-				if( elNews.visible === false && elNews.BIsTransparent() )
-				{
-					                                               
-					elNews.visible = false;
-					elNews.SetReadyForDisplay( false );
-					return true;
-				}
-			}
-
-			return false;
-		};
-
-		                            
-		var bFeaturedPanelIsActive = false;
-		
-		if ( bFeaturedPanelIsActive )
-		{
-			                                                                                
-			                                                                                 
-			_AddFeaturedPanel( 'operation/operation_mainmenu.xml', 'JsOperationPanel' );
-		}
-		                                                                           
-		                          
-		    
-			_AddWatchNoticePanel();
-		    
-		
-		_ShowFloatingPanels();
-	};
-	
-	var _InitNewsAndStore = function ()
-	{	
-		                             
-		_AddStream();
-                          
-		var elLimitedTest = $.CreatePanel( 'Panel', $.FindChildInContext( '#JsNewsContainer' ), 'JsLimitedTest' );
-		elLimitedTest.BLoadLayout( 'file://{resources}/layout/mainmenu_limitedtest.xml', false, false );
-
-		_BetaEnrollmentStatusChange();
-		                          
-		var elNews = $.CreatePanel( 'Panel', $.FindChildInContext( '#JsNewsContainer' ), 'JsNewsPanel' );
-		elNews.BLoadLayout( 'file://{resources}/layout/mainmenu_news.xml', false, false );
-                         
-		var elLastMatch = $.CreatePanel( 'Panel', $.FindChildInContext( '#JsNewsContainer' ), 'JsLastMatch' );
-		elLastMatch.BLoadLayout( 'file://{resources}/layout/mainmenu_lastmatch.xml', false, false );
-                       
-		var elStore = $.CreatePanel( 'Panel', $.FindChildInContext( '#JsNewsContainer' ), 'JsStorePanel' );
-		elStore.BLoadLayout( 'file://{resources}/layout/mainmenu_store.xml', false, false );
-		$.FindChildInContext( '#JsNewsContainer' ).OnPropertyTransitionEndEvent = function ( panelName, propertyName )
-		{
-			if( elNews.id === panelName && propertyName === 'opacity')
-			{
-				                                         
-				if( elNews.visible === true && elNews.BIsTransparent() )
-				{
-					                                               
-					elNews.visible = false;
-					elNews.SetReadyForDisplay( false );
-					return true;
-				}
-			}
-
-			return false;
-		};                         
-		var bFeaturedPanelIsActive = false;
-		if ( bFeaturedPanelIsActive )
-		{                                                                               
-			_AddFeaturedPanel( 'operation/operation_mainmenu.xml', 'JsOperationPanel' );
-		}
-
-			_AddWatchNoticePanel();
-
-		_ShowNewsAndStore();
-	};
 	
 	var _AddStream = function()
 	{
-		var elStream = $.CreatePanel( 'Panel', $.FindChildInContext( '#JsStreamContainer' ), 'JsStreamPanel' );
-		elStream.BLoadLayout( 'file://{resources}/layout/mainmenu_stream.xml', false, false );
+		//var elStream = $.CreatePanel( 'Panel', $.FindChildInContext( '#JsStreamContainer' ), 'JsStreamPanel' );
+		//elStream.BLoadLayout( 'file://{resources}/layout/mainmenu_stream.xml', false, false );
 	};
 
 	var _AddFeaturedPanel = function( xmlPath, panelId )
@@ -763,127 +808,38 @@ var _OnShowMainMenu = function() {
 		}
 	};
 	
-
-	var _HideMainMenuNewsPanel = function()
-	{
-		var elNews = $.FindChildInContext( '#JsNewsContainer' );
-		elNews.SetHasClass( 'news-panel--hide-news-panel', true );
-
-		if( elNews.BHasClass( 'news-panel-style-feature-panel-visible') )
-		{
-			elNews.RemoveClass( 'news-panel-style-feature-panel-visible', true );
-		}
-	}
-
-	var _AddWatchNoticePanel = function()
-	{
-		var WatchNoticeXML = '';
-		var elPanel = $.CreatePanel( 'Panel', $.FindChildInContext( '#JsLeftColumnContainer' ), 'JsWatchNoticePanel' );
-		elPanel.BLoadLayout( WatchNoticeXML, false, false );
-	}
-	
-	var _ShowFloatingPanels = function ()
-	{
-		var elPanel = $.FindChildInContext( '#JsLeftColumnContainer' );
-		elPanel.SetHasClass( 'hidden', false );
-		
-		var elPanel = $.FindChildInContext( '#JsRightColumnContainer' );
-		elPanel.SetHasClass( 'hidden', false );
-
-		elPanel = $.FindChildInContext( '#JsActiveMissionPanel' );
-		elPanel.SetHasClass( 'visible', true );
-
-		var elVanityButton = $.FindChildInContext( '#VanityControls' );
-		if ( elVanityButton )
-		{
-			elVanityButton.visible = true;
-		}
-
-		
-		elPanel = $.FindChildInContext( '#JsStreamContainer' );
-		elPanel.SetHasClass( 'hidden', false );
-
-	};
-
-	var _HideFloatingPanels = function ()
-	{
-		var elPanel = $.FindChildInContext( '#JsLeftColumnContainer' );
-		elPanel.SetHasClass( 'hidden', true );
-
-		
-		var elPanel = $.FindChildInContext( '#JsRightColumnContainer' );
-		elPanel.SetHasClass( 'hidden', true );
-
-		elPanel = $.FindChildInContext( '#JsActiveMissionPanel' );
-		elPanel.SetHasClass( 'hidden', true );
-
-		var elVanityButton = $.FindChildInContext( '#VanityControls' );
-
-		if ( elVanityButton )
-		{
-			elVanityButton.visible = false;
-		}
-
-		elPanel = $.FindChildInContext( '#JsStreamContainer' );
-		elPanel.SetHasClass( 'hidden', true );
-	};
-	
-	var _ShowNewsAndStore = function ()
-	{
-		var elPanel = $.FindChildInContext( '#JsNewsContainer' );
-		elPanel.SetHasClass( 'hidden', false );
-
-		elPanel = $.FindChildInContext( '#JsActiveMissionPanel' );
-		elPanel.SetHasClass( 'hidden', false );
-		
-		elPanel = $.FindChildInContext( '#JsStreamContainer' );
-		elPanel.SetHasClass( 'hidden', false );
-
-	};
-
-	var _HideNewsAndStore = function ()
-	{
-		var elPanel = $.FindChildInContext( '#JsNewsContainer' );
-		elPanel.SetHasClass( 'hidden', true );
-
-		elPanel = $.FindChildInContext( '#JsActiveMissionPanel' );
-		elPanel.SetHasClass( 'hidden', true );
-
-		elPanel = $.FindChildInContext( '#JsStreamContainer' );
-		elPanel.SetHasClass( 'hidden', true );
-	};
-                                              
-	var _OnSteamIsPlaying = function()
+    function _ShowFloatingPanels() {
+        $.FindChildInContext('#JsLeftColumn').SetHasClass('hidden', false);
+        $.FindChildInContext('#JsRightColumn').SetHasClass('hidden', false);
+		$.FindChildInContext('#MainMenuVanityInfo').SetHasClass('hidden', false);
+    }
+    function _HideFloatingPanels() {
+        $.FindChildInContext('#JsLeftColumn').SetHasClass('hidden', true);
+        $.FindChildInContext('#JsRightColumn').SetHasClass('hidden', true);
+		$.FindChildInContext('#MainMenuVanityInfo').SetHasClass('hidden', true);
+    }     
+    function _RightColumnLoad() // because for some reason, _ShowFloatingPanels cannot for the love of god load the frame id from mainmenu.xml, it's being loaded by this script which is hooked up to _OnShowMainMenu. i really have no clue why it's doing that.
     {
-		var elNewsContainer = $.FindChildInContext( '#JsLeftColumnContainer' );
-
-		if ( elNewsContainer )
-		{
-			elNewsContainer.SetHasClass( 'mainmenu-news-container-stream-active', EmbeddedStreamAPI.IsVideoPlaying() );
-		}
-    };
-
-    var _ResetNewsEntryStyle = function()
-    {
-		var elNewsContainer = $.FindChildInContext( '#JsLeftColumnContainer' );
-
-		if ( elNewsContainer )
-		{
-			elNewsContainer.RemoveClass( 'mainmenu-news-container-stream-active' );
-		}
-    };
-
-	                                                                                                    
-	                     
-	                                                                                                    
-
+    var elRightColumn = $.CreatePanel('Panel', $.FindChildInContext('#JsRightColumn'), 'JsRightColumn');
+    elRightColumn.BLoadLayout('file://{resources}/layout/mainmenu_right_column.xml', false, false);
+    }	
+    function _OnSteamIsPlaying() {
+        const elNewsContainer = $.FindChildInContext('#JsNewsContainer');
+        if (elNewsContainer) {
+            elNewsContainer.SetHasClass('mainmenu-news-container-stream-active', EmbeddedStreamAPI.IsVideoPlaying());
+        }
+    }
+    function _ResetNewsEntryStyle() {
+        const elNewsContainer = $.FindChildInContext('#JsNewsContainer');
+        if (elNewsContainer) {
+            elNewsContainer.RemoveClass('mainmenu-news-container-stream-active');
+        }
+    }
 	var _ForceRestartVanity = function()
 	{
 		_m_bVanityAnimationAlreadyStarted = false;
 		_InitVanity();
-	};
-
-	                                                                 
+	};                                               
 	function _RigVanityHover ( vanityPanel )
 	{
 		if ( !vanityPanel || !vanityPanel.IsValid() )
@@ -893,11 +849,7 @@ var _OnShowMainMenu = function() {
 
 		if ( !elHover || !elHover.IsValid )
 			return;
-		
-		                                                                       
 
-		                                                                         
-		
 		var OnMouseOver = function()
         {
 			if ( $( '#VanityControls' ) )
@@ -916,13 +868,53 @@ var _OnShowMainMenu = function() {
         
 		elHover.SetPanelEvent( 'onmouseover', OnMouseOver );
 		elHover.SetPanelEvent( 'onmouseout', OnMouseOut );
+		_UpdateLocalPlayerVanity();
 	}
-
+	    const _UpdateLocalPlayerVanity = function () {
+        const oSettings = ItemInfo.GetOrUpdateVanityCharacterSettings();
+       // const oLocalPlayer = m_aDisplayLobbyVanityData.filter(storedEntry => { return storedEntry.isLocalPlayer === true; });
+       // oSettings.playeridx = oLocalPlayer.length > 0 ? oLocalPlayer[0].playeridx : 0;
+        oSettings.xuid = MyPersonaAPI.GetXuid();
+        oSettings.isLocalPlayer = true;
+        _ApplyVanitySettingsToLobbyMetadata(oSettings);
+        //_UpdatePlayerVanityModel(oSettings);
+        _CreatUpdateVanityInfo(oSettings);
+    };
+	
 	var _InitVanity = function() // this is the vanity player agent initialization script, basically controls your stuff. api's are documented on valves forum.
 	{                          
 		if ( !MyPersonaAPI.IsInventoryValid() ) {                                             
 			return;
 		}
+		if ( _m_bVanityAnimationAlreadyStarted ) {                                                                         
+			return;
+		}
+
+		var oSettings = ItemInfo.GetOrUpdateVanityCharacterSettings();
+		oSettings.activity = 'ACT_CSGO_UIPLAYER_WALKUP';
+		oSettings.arrModifiers.push( 'vanity' );                                                               
+		_ApplyVanitySettingsToLobbyMetadata( oSettings );
+
+		var vanityPanel = $( '#JsMainmenu_Vanity' );
+		if ( !vanityPanel )
+		{                                                                 
+			return;
+		}
+		oSettings.panel = vanityPanel;                                    
+		vanityPanel.SetSceneAngles( 0, 0, 0, true );                                                                        
+		vanityPanel.hittest = false;                               
+		_m_bVanityAnimationAlreadyStarted = true;
+		CharacterAnims.PlayAnimsOnPanel( oSettings );
+		_SetVanityLightingBasedOnBackgroundMovie( vanityPanel );
+		if ( oSettings.panel.BHasClass( 'hidden' ) ) {
+			oSettings.panel.RemoveClass( 'hidden' );
+		}
+
+		_RigVanityHover( vanityPanel );                                                                  
+		$.Schedule( 3.0, function() {if (vanityPanel && vanityPanel.IsValid() ) vanityPanel.hittest = true;} );
+	};
+	var _InitVanityNoGC = function() // all this does is show the vanity while not connected to GC to fix the giant idle ct agent in the ui..
+	{                          
 		if ( _m_bVanityAnimationAlreadyStarted ) {                                                                         
 			return;
 		}
@@ -967,15 +959,8 @@ var _OnShowMainMenu = function() {
 
 	var _SetVanityLightingBasedOnBackgroundMovie = function( vanityPanel )
 	{
-		var backgroundMap = $.GetContextPanel().FindChildInLayoutFile( 'MainMenuMovie' ).GetAttributeString( 'data-type', 'anubis' );
-
-		                                                                                                  
-		                                                                             
-		                                                                                    
-		                                                                                   
-		                                                                
-
-		                                                                                                                 
+		var backgroundMap = $.GetContextPanel().FindChildInLayoutFile( 'MainMenuMovie' ).GetAttributeString( 'data-type', 'dust2' );
+                                                                                            
 		vanityPanel.RestoreLightingState();
 
 		if ( backgroundMap === 'overpass' )
@@ -999,30 +984,107 @@ var _OnShowMainMenu = function() {
 			vanityPanel.SetDirectionalLightColor( 0.0, 0.0, 0.0 );
 			vanityPanel.SetDirectionalLightDirection( 0.76, 0.48, -0.44 );
 		}
-		else if ( backgroundMap === 'dust2' )
-		{
-			vanityPanel.SetFlashlightAmount( 4.5 );
-			                                               
-			                                                            
-			                                                       
-			vanityPanel.SetFlashlightFOV( 60 );
-			                                                            
-			vanityPanel.SetFlashlightColor( 1.8, 1.8, 2 );
-			vanityPanel.SetAmbientLightColor( 0.27, 0.3, 0.4 );
-			
-			vanityPanel.SetDirectionalLightModify( 0 );
-			vanityPanel.SetDirectionalLightColor(0.00, 0.19, 0.38 );
-			vanityPanel.SetDirectionalLightDirection( 0.1, 0.67, -0.71 );
-			
-			vanityPanel.SetDirectionalLightModify( 1 );
-			vanityPanel.SetDirectionalLightColor( 0.05, 0.09, 0.21) ;
-			vanityPanel.SetDirectionalLightDirection(-0.86, -0.18, -0.47 );
+else if ( backgroundMap === 'dust2' )
+{
 
-			vanityPanel.SetDirectionalLightModify( 2 );
-			vanityPanel.SetDirectionalLightColor( 0.0, 0.0, 0.0 );
-			vanityPanel.SetDirectionalLightDirection( 0.76, 0.48, -0.44 );
-		}
-else if (backgroundMap === 'sirocco') {
+    vanityPanel.SetFlashlightAmount( 2.0 );
+    vanityPanel.SetFlashlightFOV( 55 );
+    vanityPanel.SetFlashlightColor( 2.4, 2.3, 2.2 ); 
+
+
+    vanityPanel.SetAmbientLightColor( 0.48, 0.45, 0.4 );
+
+
+    vanityPanel.SetDirectionalLightModify( 0 );
+    vanityPanel.SetDirectionalLightColor( 1.1, 1.05, 0.95 );
+    vanityPanel.SetDirectionalLightDirection( -0.15, 0.95, -0.3 );
+
+
+    vanityPanel.SetDirectionalLightModify( 1 );
+    vanityPanel.SetDirectionalLightColor( 0.35, 0.33, 0.3 );
+    vanityPanel.SetDirectionalLightDirection( 0.0, -0.4, 0.5 );
+
+
+    vanityPanel.SetDirectionalLightModify( 2 );
+    vanityPanel.SetDirectionalLightColor( 0.2, 0.2, 0.18 );
+    vanityPanel.SetDirectionalLightDirection( 0.4, 0.4, -0.6 );
+}
+else if ( backgroundMap === 'warehouse' )
+{
+
+    vanityPanel.SetFlashlightAmount( 1.5 );
+    vanityPanel.SetFlashlightFOV( 55 );
+    vanityPanel.SetFlashlightColor( 1.8, 1.9, 2.2 );
+
+
+    vanityPanel.SetAmbientLightColor( 0.35, 0.4, 0.5 );
+
+
+    vanityPanel.SetDirectionalLightModify( 0 );
+    vanityPanel.SetDirectionalLightColor( 0.2, 0.3, 0.45 );
+    vanityPanel.SetDirectionalLightDirection( -0.5, 0.8, -0.3 );
+
+
+    vanityPanel.SetDirectionalLightModify( 1 );
+    vanityPanel.SetDirectionalLightColor( 0.15, 0.15, 0.2 );
+    vanityPanel.SetDirectionalLightDirection( 0.6, -0.2, -0.6 );
+
+
+    vanityPanel.SetDirectionalLightModify( 2 );
+    vanityPanel.SetDirectionalLightColor( 0.08, 0.1, 0.2 );
+    vanityPanel.SetDirectionalLightDirection( 0.3, 0.5, -0.8 );
+}
+else if ( backgroundMap === 'mirage' )
+{
+
+    vanityPanel.SetFlashlightAmount( 2.0 );
+    vanityPanel.SetFlashlightFOV( 55 );
+    vanityPanel.SetFlashlightColor( 2.3, 2.2, 2.1 ); 
+
+
+    vanityPanel.SetAmbientLightColor( 0.46, 0.44, 0.4 );
+
+
+    vanityPanel.SetDirectionalLightModify( 0 );
+    vanityPanel.SetDirectionalLightColor( 1.05, 1.0, 0.9 );
+    vanityPanel.SetDirectionalLightDirection( -0.2, 0.92, -0.35 );
+
+
+    vanityPanel.SetDirectionalLightModify( 1 );
+    vanityPanel.SetDirectionalLightColor( 0.3, 0.28, 0.26 );
+    vanityPanel.SetDirectionalLightDirection( 0.0, -0.5, 0.5 );
+
+
+    vanityPanel.SetDirectionalLightModify( 2 );
+    vanityPanel.SetDirectionalLightColor( 0.22, 0.2, 0.18 );
+    vanityPanel.SetDirectionalLightDirection( 0.5, 0.5, -0.6 );
+}
+else if ( backgroundMap === 'inferno' )
+{
+
+    vanityPanel.SetFlashlightAmount( 2.1 );
+    vanityPanel.SetFlashlightFOV( 55 );
+    vanityPanel.SetFlashlightColor( 2.35, 2.2, 2.0 ); 
+
+
+    vanityPanel.SetAmbientLightColor( 0.5, 0.45, 0.4 );
+
+
+    vanityPanel.SetDirectionalLightModify( 0 );
+    vanityPanel.SetDirectionalLightColor( 1.05, 1.0, 0.9 );
+    vanityPanel.SetDirectionalLightDirection( -0.2, 0.92, -0.35 );
+
+
+    vanityPanel.SetDirectionalLightModify( 1 );
+    vanityPanel.SetDirectionalLightColor( 0.35, 0.3, 0.25 );
+    vanityPanel.SetDirectionalLightDirection( 0.1, -0.5, 0.6 );
+
+
+    vanityPanel.SetDirectionalLightModify( 2 );
+    vanityPanel.SetDirectionalLightColor( 0.2, 0.18, 0.15 );
+    vanityPanel.SetDirectionalLightDirection( 0.5, 0.4, -0.6 );
+}
+        else if (backgroundMap === 'sirocco') {
 			vanityPanel.SetFlashlightAmount( 3 );
 			                                               
 			                                                            
@@ -1043,171 +1105,129 @@ else if (backgroundMap === 'sirocco') {
 			vanityPanel.SetDirectionalLightModify( 2 );
 			vanityPanel.SetDirectionalLightColor( 0.0, 0.0, 0.0 );
 			vanityPanel.SetDirectionalLightDirection( 0.76, 0.48, -0.44 );
-}
+        }
 
 else if ( backgroundMap === 'nuke' )
 {
-    vanityPanel.SetFlashlightAmount( 7 );
-    vanityPanel.SetFlashlightFOV( 60 );
-    vanityPanel.SetFlashlightColor( 1.9, 1.7, 1.5 );
+    vanityPanel.SetFlashlightAmount( 3.0 ); 
+    vanityPanel.SetFlashlightFOV( 50 );
+    vanityPanel.SetFlashlightColor( 1.4, 1.3, 1.1 ); 
 
-    vanityPanel.SetAmbientLightColor( 0.22, 0.24, 0.28 );
+    vanityPanel.SetAmbientLightColor( 0.28, 0.25, 0.22 );
 
     vanityPanel.SetDirectionalLightModify( 0 );
-    vanityPanel.SetDirectionalLightColor( 0.22, 0.22, 0.22 );
-    vanityPanel.SetDirectionalLightDirection( 0.0, 0.0, -1.0 );
+    vanityPanel.SetDirectionalLightColor( 0.9, 0.75, 0.55 ); 
+    vanityPanel.SetDirectionalLightDirection( 0.0, -1.0, 0.0 );
 
     vanityPanel.SetDirectionalLightModify( 1 );
-    vanityPanel.SetDirectionalLightColor( 0.12, 0.12, 0.12 );
-    vanityPanel.SetDirectionalLightDirection( 0.5, 0.2, -0.7 );
+    vanityPanel.SetDirectionalLightColor( 0.35, 0.22, 0.18 );
+    vanityPanel.SetDirectionalLightDirection( 0.5, 0.2, -0.6 );
 
     vanityPanel.SetDirectionalLightModify( 2 );
-    vanityPanel.SetDirectionalLightColor( 0.08, 0.08, 0.08 );
-    vanityPanel.SetDirectionalLightDirection( -0.5, 0.3, -0.7 );
+    vanityPanel.SetDirectionalLightColor( 0.18, 0.14, 0.12 );
+    vanityPanel.SetDirectionalLightDirection( -0.5, 0.4, -0.5 );
 }
+else if ( backgroundMap === 'train' )
+{
+
+    vanityPanel.SetFlashlightAmount( 1.2 );
+    vanityPanel.SetFlashlightFOV( 50 );
+    vanityPanel.SetFlashlightColor( 2.4, 2.35, 2.2 ); 
 
 
-		else if ( backgroundMap === 'train' )
-		{
-			vanityPanel.SetFlashlightAmount( 1 );
-			                                               
-			                                                            
-			                                                       
-			vanityPanel.SetFlashlightFOV( 60 );
-			                                                            
-			vanityPanel.SetFlashlightColor( 1.8, 1.8, 2 );
-			vanityPanel.SetAmbientLightColor(0.15, 0.2, 0.45);
+    vanityPanel.SetAmbientLightColor( 0.2, 0.25, 0.3 );
 
-			
-			vanityPanel.SetDirectionalLightModify( 0 );
-			vanityPanel.SetDirectionalLightColor(0.00, 0.19, 0.38 );
-			vanityPanel.SetDirectionalLightDirection( 0.1, 0.67, -0.71 );
-			
-			vanityPanel.SetDirectionalLightModify( 1 );
-			vanityPanel.SetDirectionalLightColor( 0.05, 0.09, 0.21) ;
-			vanityPanel.SetDirectionalLightDirection(-0.86, -0.18, -0.47 );
 
-			vanityPanel.SetDirectionalLightModify( 2 );
-			vanityPanel.SetDirectionalLightColor( 0.0, 0.0, 0.0 );
-			vanityPanel.SetDirectionalLightDirection( 0.76, 0.48, -0.44 );                                               
-		}
-		else if ( backgroundMap === 'office' )
-		{
-			vanityPanel.SetFlashlightAmount( 1 );
-			                                               
-			                                                            
-			                                                       
-			vanityPanel.SetFlashlightFOV( 60 );
-			                                                            
-			vanityPanel.SetFlashlightColor( 1.8, 1.8, 2 );
-			vanityPanel.SetAmbientLightColor(0.15, 0.2, 0.45);
+    vanityPanel.SetDirectionalLightModify( 0 );
+    vanityPanel.SetDirectionalLightColor( 1.0, 0.95, 0.85 );
+    vanityPanel.SetDirectionalLightDirection( 0.0, -1.0, 0.0 );
 
-			
-			vanityPanel.SetDirectionalLightModify( 0 );
-			vanityPanel.SetDirectionalLightColor(0.00, 0.19, 0.38 );
-			vanityPanel.SetDirectionalLightDirection( 0.1, 0.67, -0.71 );
-			
-			vanityPanel.SetDirectionalLightModify( 1 );
-			vanityPanel.SetDirectionalLightColor( 0.05, 0.09, 0.21) ;
-			vanityPanel.SetDirectionalLightDirection(-0.86, -0.18, -0.47 );
 
-			vanityPanel.SetDirectionalLightModify( 2 );
-			vanityPanel.SetDirectionalLightColor( 0.0, 0.0, 0.0 );
-			vanityPanel.SetDirectionalLightDirection( 0.76, 0.48, -0.44 );                                               
-		}
-		else if ( backgroundMap === 'anubis' )
-		{
-			vanityPanel.SetFlashlightAmount( 3 );
-			                                               
-			                                                            
-			                                                       
-			vanityPanel.SetFlashlightFOV( 60 );
-			                                                            
-			vanityPanel.SetFlashlightColor( 1.8, 1.8, 2 );
-			vanityPanel.SetAmbientLightColor( 0.2, 0.25, 0.4 );
-			
-			vanityPanel.SetDirectionalLightModify( 0 );
-			vanityPanel.SetDirectionalLightColor(0.00, 0.19, 0.38 );
-			vanityPanel.SetDirectionalLightDirection( 0.1, 0.67, -0.71 );
-			
-			vanityPanel.SetDirectionalLightModify( 1 );
-			vanityPanel.SetDirectionalLightColor( 0.05, 0.09, 0.21) ;
-			vanityPanel.SetDirectionalLightDirection(-0.86, -0.18, -0.47 );
+    vanityPanel.SetDirectionalLightModify( 1 );
+    vanityPanel.SetDirectionalLightColor( 0.25, 0.3, 0.4 );
+    vanityPanel.SetDirectionalLightDirection( 0.3, 0.6, -0.4 );
 
-			vanityPanel.SetDirectionalLightModify( 2 );
-			vanityPanel.SetDirectionalLightColor( 0.0, 0.0, 0.0 );
-			vanityPanel.SetDirectionalLightDirection( 0.76, 0.48, -0.44 );                                              
-		}
-		else if ( backgroundMap === 'mutiny' )
-		{
-			vanityPanel.SetFlashlightAmount( 3 );
-			                                               
-			                                                            
-			                                                       
-			vanityPanel.SetFlashlightFOV( 60 );
-			                                                            
-			vanityPanel.SetFlashlightColor( 1.8, 1.8, 2 );
-			vanityPanel.SetAmbientLightColor( 0.2, 0.25, 0.4 );
-			
-			vanityPanel.SetDirectionalLightModify( 0 );
-			vanityPanel.SetDirectionalLightColor(0.00, 0.19, 0.38 );
-			vanityPanel.SetDirectionalLightDirection( 0.1, 0.67, -0.71 );
-			
-			vanityPanel.SetDirectionalLightModify( 1 );
-			vanityPanel.SetDirectionalLightColor( 0.05, 0.09, 0.21) ;
-			vanityPanel.SetDirectionalLightDirection(-0.86, -0.18, -0.47 );
 
-			vanityPanel.SetDirectionalLightModify( 2 );
-			vanityPanel.SetDirectionalLightColor( 0.0, 0.0, 0.0 );
-			vanityPanel.SetDirectionalLightDirection( 0.76, 0.48, -0.44 );                                              
-		}
-		else if ( backgroundMap === 'vertigo' )
-		{
-			vanityPanel.SetFlashlightAmount( 3 );
-			                                               
-			                                                            
-			                                                       
-			vanityPanel.SetFlashlightFOV( 60 );
-			                                                            
-			vanityPanel.SetFlashlightColor( 1.8, 1.8, 2 );
-			vanityPanel.SetAmbientLightColor( 0.2, 0.25, 0.4 );
-			
-			vanityPanel.SetDirectionalLightModify( 0 );
-			vanityPanel.SetDirectionalLightColor(0.00, 0.19, 0.38 );
-			vanityPanel.SetDirectionalLightDirection( 0.1, 0.67, -0.71 );
-			
-			vanityPanel.SetDirectionalLightModify( 1 );
-			vanityPanel.SetDirectionalLightColor( 0.05, 0.09, 0.21) ;
-			vanityPanel.SetDirectionalLightDirection(-0.86, -0.18, -0.47 );
+    vanityPanel.SetDirectionalLightModify( 2 );
+    vanityPanel.SetDirectionalLightColor( 0.12, 0.14, 0.2 );
+    vanityPanel.SetDirectionalLightDirection( -0.4, 0.5, -0.6 );
+}
+else if ( backgroundMap === 'office' )
+{
 
-			vanityPanel.SetDirectionalLightModify( 2 );
-			vanityPanel.SetDirectionalLightColor( 0.0, 0.0, 0.0 );
-			vanityPanel.SetDirectionalLightDirection( 0.76, 0.48, -0.44 );                                              
-		}
+    vanityPanel.SetFlashlightAmount( 2.8 );
+    vanityPanel.SetFlashlightFOV( 55 );
+    vanityPanel.SetFlashlightColor( 2.0, 2.05, 2.2 ); 
+
+
+    vanityPanel.SetAmbientLightColor( 0.25, 0.3, 0.45 );
+
+
+    vanityPanel.SetDirectionalLightModify( 0 );
+    vanityPanel.SetDirectionalLightColor( 0.8, 0.85, 0.95 );
+    vanityPanel.SetDirectionalLightDirection( 0.0, -1.0, 0.0 ); 
+
+
+    vanityPanel.SetDirectionalLightModify( 1 );
+    vanityPanel.SetDirectionalLightColor( 0.4, 0.45, 0.6 );
+    vanityPanel.SetDirectionalLightDirection( -0.4, 0.3, -0.5 );
+
+
+    vanityPanel.SetDirectionalLightModify( 2 );
+    vanityPanel.SetDirectionalLightColor( 0.2, 0.25, 0.3 );
+    vanityPanel.SetDirectionalLightDirection( 0.5, 0.4, -0.3 );
+}
+else if ( backgroundMap === 'anubis' )
+{
+
+    vanityPanel.SetFlashlightAmount( 2.0 );
+    vanityPanel.SetFlashlightFOV( 55 );
+    vanityPanel.SetFlashlightColor( 2.5, 2.3, 2.0 );
+
+
+    vanityPanel.SetAmbientLightColor( 0.5, 0.45, 0.38 );
+
+
+    vanityPanel.SetDirectionalLightModify( 0 );
+    vanityPanel.SetDirectionalLightColor( 1.1, 0.95, 0.75 );
+    vanityPanel.SetDirectionalLightDirection( -0.1, 0.85, -0.5 );
+
+
+    vanityPanel.SetDirectionalLightModify( 1 );
+    vanityPanel.SetDirectionalLightColor( 0.25, 0.3, 0.35 );
+    vanityPanel.SetDirectionalLightDirection( 0.0, -0.5, 0.5 );
+
+
+    vanityPanel.SetDirectionalLightModify( 2 );
+    vanityPanel.SetDirectionalLightColor( 0.15, 0.12, 0.08 );
+    vanityPanel.SetDirectionalLightDirection( 0.5, 0.4, -0.6 );
+}
+else if ( backgroundMap === 'vertigo' )
+{
+
+    vanityPanel.SetFlashlightAmount( 2.2 );
+    vanityPanel.SetFlashlightFOV( 55 );
+    vanityPanel.SetFlashlightColor( 2.2, 2.3, 2.6 ); 
+
+
+    vanityPanel.SetAmbientLightColor( 0.42, 0.48, 0.58 );
+
+
+    vanityPanel.SetDirectionalLightModify( 0 );
+    vanityPanel.SetDirectionalLightColor( 1.1, 1.2, 1.35 );
+    vanityPanel.SetDirectionalLightDirection( -0.25, 0.92, -0.32 );
+
+
+    vanityPanel.SetDirectionalLightModify( 1 );
+    vanityPanel.SetDirectionalLightColor( 0.35, 0.35, 0.3 );
+    vanityPanel.SetDirectionalLightDirection( 0.15, -0.4, 0.2 );
+
+
+    vanityPanel.SetDirectionalLightModify( 2 );
+    vanityPanel.SetDirectionalLightColor( 0.2, 0.25, 0.35 );
+    vanityPanel.SetDirectionalLightDirection( 0.6, 0.5, -0.5 );
+}
 		else if ( backgroundMap === 'ancient' )
-		{
-			vanityPanel.SetFlashlightAmount( 3 );
-			                                               
-			                                                            
-			                                                       
-			vanityPanel.SetFlashlightFOV( 60 );
-			                                                            
-			vanityPanel.SetFlashlightColor( 1.8, 1.8, 2 );
-			vanityPanel.SetAmbientLightColor( 0.2, 0.32, 0.4 );
-			
-			vanityPanel.SetDirectionalLightModify( 0 );
-			vanityPanel.SetDirectionalLightColor(0.00, 0.19, 0.38 );
-			vanityPanel.SetDirectionalLightDirection( 0.1, 0.67, -0.71 );
-			
-			vanityPanel.SetDirectionalLightModify( 1 );
-			vanityPanel.SetDirectionalLightColor( 0.05, 0.09, 0.21) ;
-			vanityPanel.SetDirectionalLightDirection(-0.86, -0.18, -0.47 );
-
-			vanityPanel.SetDirectionalLightModify( 2 );
-			vanityPanel.SetDirectionalLightColor( 0.0, 0.0, 0.0 );
-			vanityPanel.SetDirectionalLightDirection( 0.76, 0.48, -0.44 );                                              
-		}
-		else if ( backgroundMap === 'swamp' )
 		{
 			vanityPanel.SetFlashlightAmount( 3 );
 			                                               
@@ -1289,7 +1309,7 @@ else if ( backgroundMap === 'nuke' )
 			
 			vanityPanel.SetDirectionalLightModify( 1 );
 			vanityPanel.SetDirectionalLightColor( 0.82, 0.19, 0.08 );
-			vanityPanel.SetDirectionalLightDirection( 0.62, 0.74, -0.25 );
+			vanityPanel.SetDirectionalLightDirection( 0.62, -0.74, 0.25 );
 			vanityPanel.SetDirectionalLightPulseFlicker( 0.25, 0.25, 0.25, 0.25 );
 
 			vanityPanel.SetDirectionalLightModify( 2 );
@@ -1341,14 +1361,14 @@ else if ( backgroundMap === 'nuke' )
     function _OpenInventory() {
 	 _NavigateToTab('JsInventory', 'mainmenu_inventory');
 	 }
-    function _OpenFullscreenStore() {
-        _NavigateToTab('JsMainMenuStore', 'mainmenu_store_fullscreen', 'id-store-nav-coupon');
+    function _OpenFullscreenStore(openToSection = '') {
+        _NavigateToTab('JsMainMenuStore', 'mainmenu_store_fullscreen', openToSection !== '' ? openToSection : 'id-store-nav-coupon');
     }
     function _OpenStatsMenu() {
         _NavigateToTab('JsPlayerStats', 'mainmenu_playerstats');
     }
     function _OpenSettingsMenu() {
-        NavigateToTab('JsSettings', 'settings/settings');
+        _NavigateToTab('JsSettings', 'settings/settings');
     }
     var _UpdateOverwatch = function () {
         var strCaseDescription = OverwatchAPI.GetAssignedCaseDescription();
@@ -1373,7 +1393,10 @@ else if ( backgroundMap === 'nuke' )
             LobbyAPI.CreateSession();
         }
     }
-	var OnEscapeKeyPressed = function( eSource, nRepeats, focusPanel ) // fixed issue with pause menu not closing and mainmenu song playing.
+	function _PlayMenuSong() {
+	 $.DispatchEvent('PlayMainMenuMusic', true, false ); // forcing the non panoramic effect fixes all issues i had with this piece of shit.. if i went further i would've rather overdosed on MDMA...
+	}
+	var OnEscapeKeyPressed = function( eSource, nRepeats, focusPanel )
 	{
 		                                
 		if ( $.GetContextPanel().BHasClass( 'MainMenuRootPanel--PauseMenuMode' ) ) {
@@ -1386,7 +1409,6 @@ else if ( backgroundMap === 'nuke' )
 			if( elPlayButton && !elPlayButton.BHasClass( 'mainmenu-navbar__btn-small--hidden' ) ) {
 
 				GameInterfaceAPI.SetSettingString('panorama_play_movie_ambient_sound', '1');
-				$.DispatchEvent('PlayMainMenuMusic', true, true );
 			}
 		}
 	};
@@ -1405,19 +1427,9 @@ else if ( backgroundMap === 'nuke' )
             return;
         if (!$('#MainMenuNavBarHome').checked)
             return;
-        const objStore = InventoryAPI.GetCacheTypeElementJSOByIndex("PersonalStore", 1);
-        if (!objStore)
-            return;
         if (!MyPersonaAPI.IsConnectedToGC() || !MyPersonaAPI.IsInventoryValid())
             return;
-        const genTime = objStore.generation_time;
-        const balance = objStore.redeemable_balance;
         const prevClientGenTime = Number(GameInterfaceAPI.GetSettingString("cl_redemption_reset_timestamp"));
-        if (prevClientGenTime != genTime && balance > 0) {
-            _m_bHasPopupNotification = true;
-            const RankUpRedemptionStoreClosedCallbackHandle = UiToolkitAPI.RegisterJSCallback(_OnRankUpRedemptionStoreClosed);
-            UiToolkitAPI.ShowCustomLayoutPopupParameters('', 'file://{resources}/layout/popups/popup_rankup_redemption_store.xml', 'callback=' + RankUpRedemptionStoreClosedCallbackHandle);
-        }
     }
     function _OnRankUpRedemptionStoreClosed() {
         _m_bHasPopupNotification = false;
@@ -1458,7 +1470,9 @@ else if ( backgroundMap === 'nuke' )
 			'none'
 		);
 	};
-
+    function _RegisterOnShowEvents() {
+    NewNewsEntryCheck.RegisterForRssReceivedEvent();
+    }
 	var _OnShowXrayCasePopup = function( toolid, caseId, bShowPopupWarning = false )
 	{
 		var showpopup = bShowPopupWarning ? 'yes' : 'no';
@@ -1675,192 +1689,153 @@ function _UpdateStoreAlert() { // this function is for testing and currently doe
 		}
 	}
 
-	function _GetNotificationBarData()
-	{
-		var notification = { color_class: "", title: "", tooltip: "", link: "" };
-		
-		
-		
-		
-		if ( LicenseUtil.GetCurrentLicenseRestrictions() === false )
-		{
-			  
-			                                                                                              
-			  
-			var bIsConnectedToGC = MyPersonaAPI.IsConnectedToGC();
-			$( '#MainMenuInput' ).SetHasClass( 'GameClientConnectingToGC', !bIsConnectedToGC );
-			if ( bIsConnectedToGC )
-			{	                                                                 
-				_m_tLastSeenDisconnectedFromGC = 0;
-			}
-			else if ( !_m_tLastSeenDisconnectedFromGC )
-			{	                                                                          
-				_m_tLastSeenDisconnectedFromGC = + new Date();                                                          
-			}
-			else if ( Math.abs( ( + new Date() ) - _m_tLastSeenDisconnectedFromGC ) > 0 )
-			{	                                           
-				notification.color_class = "NotificationLoggingOn";
-				notification.title = $.Localize( "#Store_Connecting_ToGc" );
-				notification.tooltip = $.Localize( "#Store_Connecting_ToGc_Tooltip" );
-				return notification;
-			}
-		}
+function _GetNotificationBarData() { // rest in peace 32px line at the top of the screen. we'll miss you :( valve updated the notifications and replaced the good old bar we had since csgos panorama release until the viewmodel recoil hotfix.
+    let aAlerts = [];
 
-		  
-		if ( _debug_d3gk_IsQOffline )
-		{	                                           
-			notification.color_class = "NotificationLoggingOn";
-			notification.title = $.Localize( "#Store_Connecting_ToGc" );
-			notification.tooltip = $.Localize( "#Store_Connecting_ToGc_Tooltip" );
-			return notification;
-		}                        
-		  
-		var nIsVacBanned = MyPersonaAPI.IsVacBanned(); // basically... you are a dick for cheating. sorry but this is the truth. also this vac ban notification is for debug. the one below is the real vac ban notification
-		if ( _debug_d3gk_IsQVAC )
-		{
-			notification.color_class = "NotificationRed";
+    if (LicenseUtil.GetCurrentLicenseRestrictions() === false) {
+        const notification = { color_class: "", title: "", tooltip: "", link: "", icon: "" };
+        const bIsConnectedToGC = MyPersonaAPI.IsConnectedToGC();
+        $('#MainMenuInput').SetHasClass('GameClientConnectingToGC', !bIsConnectedToGC);
+        if (bIsConnectedToGC) {
+            _m_tLastSeenDisconnectedFromGC = 0;
+        } else if (!_m_tLastSeenDisconnectedFromGC) {
+            _m_tLastSeenDisconnectedFromGC = +new Date();
+        } else if (Math.abs((+new Date()) - _m_tLastSeenDisconnectedFromGC) > 500) {
+            notification.title = $.Localize("#Store_Connecting_ToGc");
+            notification.tooltip = $.Localize("#Store_Connecting_ToGc_Tooltip");
+            notification.color_class = "";
+            notification.icon = "gc-connecting";
+            notification.is_gc_connecting = true;
+            aAlerts.push(notification);
+        }
+    }
 
-			if ( !_debug_d3gk_IsQOverwatch )
-			{
-				notification.title = $.Localize( "VAC (Valve Anti-Cheat)" );
-				notification.tooltip = $.Localize( "This is not a real vacban notification and only displays when you enable it via the debug button on the navbar for notifications. Good luck trolling friends though." );
-			}
-			else
-			{
-				notification.title = $.Localize( "#SFUI_MainMenu_Global_Ban_Title" );
-				notification.tooltip = $.Localize( "#SFUI_CooldownExplanationReason_ConvictedForCheating" );
-			}
-			
-			return notification;
-		}
-		
-		var nIsVacBanned = MyPersonaAPI.IsVacBanned(); // actual vac banned notification, the one above is used for debugging purposes. 
-		if ( nIsVacBanned != 0 )
-		{
-			notification.color_class = "NotificationRed";
+    //if (NewsAPI.IsNewClientAvailable()) {
+    //    const notification = { color_class: "", title: "", tooltip: "", link: "", icon: "" };
+    //    notification.color_class = "yellow-alert";
+    //    notification.icon = "client_update";
+    //    notification.title = $.Localize("#SFUI_MainMenu_Outofdate_Title");
+    //    notification.tooltip = $.Localize("#SFUI_MainMenu_Outofdate_Body");
+    //    aAlerts.push(notification);
+    //}
 
-			if ( nIsVacBanned == 1 )
-			{
-				notification.title = $.Localize( "#SFUI_MainMenu_Vac_Title" );
-				notification.tooltip = $.Localize( "#SFUI_MainMenu_Vac_Info" );
-				notification.link = "https://help.steampowered.com/faqs/view/647C-5CC1-7EA9-3C29";
-			}
-			            else if ((nIsVacBanned & 4) == 4) {
-                notification.title = $.Localize("#SFUI_MainMenu_AccountLocked_Title");
-                notification.tooltip = $.Localize("#SFUI_MainMenu_AccountLocked_Info");
-                notification.link = "https://help.steampowered.com/en/faqs/view/4F62-35F9-F395-5C23";
+    const nIsVacBanned = MyPersonaAPI.IsVacBanned();
+    if (nIsVacBanned != 0) {
+        const notification = { color_class: "", title: "", tooltip: "", link: "", icon: "" };
+        notification.color_class = "red-alert";
+        notification.icon = "ban_global";
+
+        if ((nIsVacBanned & 1) == 1) {
+            notification.title = $.Localize("#SFUI_MainMenu_Vac_Title");
+            notification.tooltip = $.Localize("#SFUI_MainMenu_Vac_Info");
+            notification.link = "https://help.steampowered.com/faqs/view/647C-5CC1-7EA9-3C29";
+        } else if ((nIsVacBanned & 4) == 4) {
+            notification.title = $.Localize("#SFUI_MainMenu_AccountLocked_Title");
+            notification.tooltip = $.Localize("#SFUI_MainMenu_AccountLocked_Info");
+            notification.link = "https://help.steampowered.com/en/faqs/view/4F62-35F9-F395-5C23";
+        } else {
+            notification.title = $.Localize("#SFUI_MainMenu_GameBan_Title");
+            notification.tooltip = $.Localize("#SFUI_MainMenu_GameBan_Info");
+            notification.link = "https://help.steampowered.com/faqs/view/4E54-0B96-D0A4-1557";
+        }
+
+        aAlerts.push(notification);
+    } else {
+        const nBanRemaining = CompetitiveMatchAPI.GetCooldownSecondsRemaining();
+        if (nBanRemaining > 0) {
+            const notification = { color_class: "", title: "", tooltip: "", link: "", icon: "" };
+            notification.tooltip = CompetitiveMatchAPI.GetCooldownReason();
+            const strType = CompetitiveMatchAPI.GetCooldownType();
+
+            if (strType == "global") {
+                notification.title = $.Localize("#SFUI_MainMenu_Global_Ban_Title");
+                notification.color_class = "red-alert"; // it was yellow before even though global bans should be red!
+                notification.icon = "ban_competitive";
+            } else if (strType == "green") {
+                notification.title = $.Localize("#SFUI_MainMenu_Temporary_Ban_Title");
+                notification.color_class = "green-alert"; // it was also yellow before even though temp bans are supposed to be green like before!!! valve please include my fix that i reported on cs2's bug report github page.
+                notification.icon = "ban_competitive";
+            } else if (strType == "competitive") {
+                notification.title = $.Localize("#SFUI_MainMenu_Competitive_Ban_Title");
+                notification.color_class = "yellow-alert";
+                notification.icon = "ban_competitive";
             }
-			else
-			{
-				notification.title = $.Localize( "#SFUI_MainMenu_GameBan_Title" );
-				notification.tooltip = $.Localize( "#SFUI_MainMenu_GameBan_Info" );
-				notification.link = "https://help.steampowered.com/faqs/view/4E54-0B96-D0A4-1557";
-			}
-			
-			return notification;
-		}
 
-		  
-		                                  
-		
-		if ( _debug_d3gk_IsQOutOfDate )
-		{
-			notification.color_class = "NotificationYellow";
-			notification.title = $.Localize( "#SFUI_MainMenu_Outofdate_Title" );
-			notification.tooltip = $.Localize( "#SFUI_MainMenu_Outofdate_Body" );
-			return notification;
-		}	
+            if (!CompetitiveMatchAPI.CooldownIsPermanent()) {
+                const title = notification.title;
+                if (CompetitiveMatchAPI.ShowFairPlayGuidelinesForCooldown()) {
+                    notification.link = "https://blog.counter-strike.net/index.php/fair-play-guidelines/";
+                }
+                notification.title = title + ' ' + FormatText.SecondsToSignificantTimeString(nBanRemaining);
+            }
 
-		
-		  
-		                             
-		  
-		var nBanRemaining = CompetitiveMatchAPI.GetCooldownSecondsRemaining(); // did you kill your teammate at roundstart? or did you kick them too many times because you thought someone was cheating? well this is the function that calls the cooldown notification at the top of your screen.
-		if ( nBanRemaining > 0 )
-		{
-			notification.tooltip = CompetitiveMatchAPI.GetCooldownReason();
+            aAlerts.push(notification);
+        }
+    }
 
-			var strType = CompetitiveMatchAPI.GetCooldownType();
-			if ( strType == "global" )
-			{
-				notification.title = $.Localize( "#SFUI_MainMenu_Global_Ban_Title" );
-				notification.color_class = "NotificationRed";
-			}
-			else if ( strType == "green" )
-			{
-				notification.title = $.Localize( "#SFUI_MainMenu_Temporary_Ban_Title" );
-				notification.color_class = "NotificationGreen";
-			}
-			else if ( strType == "competitive" )
-			{
-				notification.title = $.Localize( "#SFUI_MainMenu_Competitive_Ban_Title" );
-				notification.color_class = "NotificationYellow";
-			}
-			
-			                                                                                                                
-			                                    
-			if ( !CompetitiveMatchAPI.CooldownIsPermanent() )
-			{
-				var title = notification.title;
+    return aAlerts;
+}
 
-				if ( CompetitiveMatchAPI.ShowFairPlayGuidelinesForCooldown() )
-				{
-					notification.link = "https://blog.counter-strike.net/index.php/fair-play-guidelines/";
-				}
-				notification.title = title + ' ' + FormatText.SecondsToSignificantTimeString( nBanRemaining );
-			}
-
-			return notification;
-		}	
-
-		return null;
-	}
-
-	function _UpdateNotificationBar() // updates notification bar for things such as: new client available, ban, gc unable to connect etc.
-	{
-		var notification = _GetNotificationBarData();
-
-		                   
-		_m_NotificationBarColorClasses.forEach( function ( strColorClass )
-		{
-			var bVisibleColor = false;
-			if ( notification !== null )
-			{
-				bVisibleColor = strColorClass === notification.color_class;
-			}
-			_m_elNotificationsContainer.SetHasClass( strColorClass, bVisibleColor );
-		} );
-
-		                         
-		if ( notification !== null )
-		{			
-			if ( notification.link )
-			{
-				var btnClickableLink = $.FindChildInContext( '#ClickableLinkButton' );
-				btnClickableLink.enabled = true;
-				btnClickableLink.SetPanelEvent( 'onactivate', _ => SteamOverlayAPI.OpenUrlInOverlayOrExternalBrowser(notification.link) );
-				notification.title = "<span class='fairplay-link'>" + notification.title + "</span>";
-			}
-			
-			$.FindChildInContext( '#MainMenuNotificationTitle' ).text = notification.title;
-		}
-
-		_m_elNotificationsContainer.SetHasClass( 'hidden', notification === null );
-	}
-
-	var _UpdateNotifications = function()
-	{
-		_m_notificationSchedule = $.Schedule( 1, _UpdateNotifications );
-
-		_UpdatePopupnotification();
-		_UpdateNotificationBar();
-	};
+    function _UpdateNotificationBar() {
+        const aNotifications = _GetNotificationBarData();
+        _m_elNotificationsContainer.Children().forEach(icon => {
+            if (icon && icon.IsValid()) {
+                icon.SetHasClass('show', false);
+            }
+        });
+        if (!aNotifications || aNotifications.length < 1) {
+            _m_elNotificationsContainer.SetHasClass('show', false);
+            return;
+        }
+        _m_elNotificationsContainer.SetHasClass('show', true);
+        aNotifications.forEach(notification => {
+            let oNotification = notification;
+            let elIcon = _m_elNotificationsContainer.FindChildInLayoutFile('id-alert-navbar-' + oNotification.icon);
+            if (oNotification.is_gc_connecting && elIcon) {
+                elIcon.SetHasClass('show', true);
+            }
+            else {
+                if (!elIcon) {
+                    elIcon = $.CreatePanel(('Image'), _m_elNotificationsContainer, 'id-alert-navbar-' + oNotification.icon, { class: 'mainmenu-top-navbar__radio-btn__icon mainmenu-top-navbar__alerts-icon',
+                        src: 'file://{images}/icons/ui/' + oNotification.icon + '.svg'
+                    });
+                }
+                elIcon.SwitchClass('alert-color', oNotification.color_class);
+                elIcon.SetHasClass('show', true);
+            }
+            elIcon.SetPanelEvent('onactivate', () => {
+                let gc = oNotification.is_gc_connecting === true ? 'true' : 'false';
+                let elContextMenu = UiToolkitAPI.ShowCustomLayoutContextMenuParameters('', '', 'file://{resources}/layout/context_menus/context_menu_navbar_notification.xml', 'icon=' + oNotification.icon + '&' +
+                    'color=' + oNotification.color_class + '&' +
+                    'title=' + oNotification.title + '&' +
+                    'tooltip=' + oNotification.tooltip + '&' +
+                    'link=' + oNotification.link + '&' +
+                    'gcconnecting=' + gc);
+                elContextMenu.AddClass("ContextMenu_NoArrow");
+                elContextMenu.SetFocus();
+            });
+            elIcon.SetPanelEvent('onmouseover', () => {
+                UiToolkitAPI.ShowTitleTextTooltip('id-alert-navbar-' + oNotification.icon, oNotification.title, oNotification.tooltip);
+            });
+            elIcon.SetPanelEvent('onmouseout', () => { UiToolkitAPI.HideTitleTextTooltip(); });
+        });
+    }
+    function _UpdateNotifications() {
+        if (_m_notificationSchedule == false) {
+            _LoopUpdateNotifications();
+        }
+    }
+    function _LoopUpdateNotifications() {
+        _UpdatePopupnotification();
+        _UpdateNotificationBar();
+        _m_notificationSchedule = $.Schedule(1, _LoopUpdateNotifications);
+    }
 
 	                                                                                                    
 	                    
 	                                                                                                    
 	var _m_acknowledgePopupHandler = null;
-	var _ShowAcknowledgePopup = function( type = '', itemid = '' ) // inventory acknowledge popup that shows up when you either use a xp boost pack or get a new item in your inventory.
+	var _ShowAcknowledgePopup = function( type = '', itemid = '' ) // inventory acknowledge popup that shows up when you either use a xp boost pack.
 	{
 		if ( type === 'xpgrant' )
 		{	                                                 
@@ -1975,7 +1950,7 @@ function _UpdateStoreAlert() { // this function is for testing and currently doe
 			}
 		}
 	};
-		var _DevAlertMgr = function()
+	var _DevAlertMgr = function()
 	{
 		$('#MainMenuNavBarHome').checked = true;
 		UiToolkitAPI.ShowGenericPopupThreeOptionsBgStyle( 
@@ -2379,7 +2354,6 @@ var _UnPauseMainMenuCharacter = function() { // unpauses your agent after backgr
 		MinimizeSidebar	 					: _MinimizeSidebar,
 		OnSideBarElementContextMenuActive	: _OnSideBarElementContextMenuActive,
 		InitFriendsList	 					: _InitFriendsList,
-		InitLRColumns					: _InitLRColumns,
 		InitVanity							: _InitVanity,
 		ForceRestartVanity	 				: _ForceRestartVanity,
 		OnEquipSlotChanged	 				: _OnEquipSlotChanged,
@@ -2390,6 +2364,7 @@ var _UnPauseMainMenuCharacter = function() { // unpauses your agent after backgr
 		OpenInventory						: _OpenInventory,
 		OpenFullscreenStore                 : _OpenFullscreenStore,
 		OpenSettings						: _OpenSettings,
+		OpenSettingsMenu					: _OpenSettingsMenu,
 		UpdateStoreAlert                    : _UpdateStoreAlert,
 		OnHomeButtonPressed					: OnHomeButtonPressed,
 		OnQuitButtonPressed					: _OnQuitButtonPressed,
@@ -2409,6 +2384,7 @@ var _UnPauseMainMenuCharacter = function() { // unpauses your agent after backgr
 		ResetAcknowlegeHandler				: _ResetAcknowlegeHandler,
 		ShowNotificationBarTooltip			: _ShowNotificationBarTooltip,
 		InitNewsAndStore                    : _InitNewsAndStore,
+		HideMainMenuNewsPanel				: _HideMainMenuNewsPanel,
 		ShowVote 							: _ShowVote,
 		DevPopups							: _DevPopups,
 		ShowStoreStatusPanel				: _ShowStoreStatusPanel,
@@ -2424,7 +2400,6 @@ var _UnPauseMainMenuCharacter = function() { // unpauses your agent after backgr
 		OnSteamIsPlaying					: _OnSteamIsPlaying,
 		WatchBtnPressedUpdateAlert			: _WatchBtnPressedUpdateAlert,
 		StatsBtnPressedUpdateAlert			: _StatsBtnPressedUpdateAlert,
-		HideMainMenuNewsPanel				: _HideMainMenuNewsPanel,
 		SwitchVanity						: _SwitchVanity,
 		GoToCharacterLoadout				: _GoToCharacterLoadout,
 		OpenSubscriptionUpsell				: _OpenSubscriptionUpsell,
@@ -2479,7 +2454,6 @@ var _UnPauseMainMenuCharacter = function() { // unpauses your agent after backgr
 	$.RegisterForUnhandledEvent( 'MainMenu_OnGoToCharacterLoadoutPressed', MainMenu.OnGoToCharacterLoadoutPressed );
 	$.RegisterForUnhandledEvent( "PanoramaComponent_EmbeddedStream_VideoPlaying", MainMenu.OnSteamIsPlaying );
 	$.RegisterForUnhandledEvent( "StreamPanelClosed", MainMenu.ResetNewsEntryStyle );
-	$.RegisterForUnhandledEvent( "HideMainMenuNewsPanel", MainMenu.HideMainMenuNewsPanel );
 
 	$.RegisterForUnhandledEvent( "ForceRestartVanity", MainMenu.ForceRestartVanity );
 
@@ -2491,9 +2465,8 @@ var _UnPauseMainMenuCharacter = function() { // unpauses your agent after backgr
 	MainMenu.MinimizeSidebar();
 	MainMenu.InitVanity();
 	MainMenu.MinimizeSidebar();
-	MainMenu.InitFriendsList();
-	MainMenu.InitLRColumns();
 	MainMenu.InitNewsAndStore();
+	MainMenu.InitFriendsList();
 
 
 	                                                                                  

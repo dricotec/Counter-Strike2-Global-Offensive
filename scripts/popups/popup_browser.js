@@ -11,7 +11,7 @@ var PopupNews = ( function()
 		var title = $.GetContextPanel().GetAttributeString( "title", '' );
 		$.GetContextPanel().SetDialogVariable( 'news_title', title );
 
-		var link = 'https://www.youtube.com/watch?v=ExZtISgOxEQ';
+		var link = 'https://www.youtube.com/watch?v=1UpoZpMBM9Y';
 
 		function _OpenUrl ( strUrl )
 		{

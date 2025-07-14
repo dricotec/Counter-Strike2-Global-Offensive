@@ -243,7 +243,6 @@ var friendsList = (function() {
 		
 		m_Sections.FindChildInLayoutFile( sectionId ).FindChildInLayoutFile( 'id-friendslist-section-list' ).style.height = basicHeight + "px;";
 	}
-
 	var _ShowHideCounter = function( elSection, count )
 	{
 		if ( !count )

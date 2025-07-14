@@ -3,11 +3,15 @@
 		<include src="file://{resources}/styles/csgostyles.css" />
 		<include src="file://{resources}/styles/hud/hud.css" />
 	</styles>
+    <scripts>
+		<include src="file://{resources}/scripts/mock_adapter.js" />
+    	<include src="file://{resources}/scripts/hud/hudcolor.js" />
+  	</scripts>
 
 	<CSGOHud hittest="false">
 		                                                                           
 		
-		<CSGOHudBlurTarget blurrects="HudVote HudHintText HudProgressBar HudAlerts RoundImpactScoreMain" class="HudBlur" hittest="false" hittestchildren="false">
+		<CSGOHudBlurTarget blurrects="HudVote MapDraft HudHintText HudProgressBar HudAlerts RoundImpactScoreMain" class="HudBlur" hittest="false" hittestchildren="false">
 			<CSGOBackbufferImagePanel class="full-width full-height" />
 		</CSGOHudBlurTarget>
 

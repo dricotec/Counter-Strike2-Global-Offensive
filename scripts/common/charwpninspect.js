@@ -121,10 +121,7 @@ var CharacterAnims = ( function()
 		_ResetLastRandomAnimHandle( playerPanel );
 		
 		playerPanel.ResetAnimation( true );
-		playerPanel.SetSceneAngles( 0, 0, 0, false );
 
-		if ( settings.manifest )
-			playerPanel.SetScene( settings.manifest, settings.model, false );
 
 		if ( !bDontStompModel )
 		{

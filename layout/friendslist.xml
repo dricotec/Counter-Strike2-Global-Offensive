@@ -22,8 +22,8 @@
 			<Panel class="friendslist-nodata">
 				<Image class="friendslist-nodata__image" src="file://{images}/icons/ui/info.svg" texturewidth="32" textureheight="32" />
 				<Panel class="friendslist-nodata-text">
-					<Label id="JsFriendsNoDataTitle" class="stratum-font friendslist-nodata-text__title" text="#FriendsList_nodata_friends_title" />
-					<Label id="JsFriendsNoDataDesc" class="friendslist-nodata-text__body" text="#FriendsList_nodata_friends" />
+					<Label id="JsFriendsNoDataTitle" class="stratum-medium friendslist-nodata-text__title" text="#FriendsList_nodata_friends_title" />
+					<Label id="JsFriendsNoDataDesc" class="stratum-medium friendslist-nodata-text__body" text="#FriendsList_nodata_friends" />
 				</Panel>
 			</Panel>
 		</snippet>

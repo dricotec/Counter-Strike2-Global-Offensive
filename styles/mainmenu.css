@@ -18,11 +18,9 @@ CSGOMainMenu,
 	height: 100%;
 }
 
-#MainMenuCore,
-#MainMenuBackground
+#MainMenuCore,#MainMenuBackground
 {
-	blur: fastgaussian( 8, 8, 5 );
-	-s2-mix-blend-mode: opaque;
+    blur: fastgaussian( 4, 4, 4 );
 }
 
 CSGOMainMenu.PopupBackgroundBlur #MainMenuCore
@@ -72,7 +70,13 @@ CSGOMainMenu.PopupBackgroundBlur #MainMenuInput
 {
 	opacity: 1;
 }
-                                                                               
+#MainMenuContainerPanel
+{
+	opacity: 0;
+	transition-property: opacity;
+	transition-duration: 0.7s;
+	transition-timing-function: ease-in-out;
+}                                                                              
                                                                                  
                                                                                
 .MainMenuNotification
@@ -147,23 +151,15 @@ CSGOMainMenu.PopupBackgroundBlur #MainMenuInput
 .MainMenuNotification.NotificationGreen
 {
 	background-color:#91AF49;
-}
-
-
-                                                                               
-                                                                               
-                                                                               
-   #MainMenuBackground.fade-hidden {
-	opacity: 0;
-}                                                                     
+}                                                                   
                         
 #MainMenuBackground {
 	horizontal-align: center;
 	vertical-align: middle;
     opacity: 1;
 	brightness: 1;
-    transition-property: opacity, brightness; 
-    transition-duration: 0.5s; 
+    transition-property: opacity; 
+    transition-duration: 0.7s; 
     transition-timing-function: ease-in-out; 
 }
 
@@ -182,7 +178,7 @@ CSGOMainMenu.PopupBackgroundBlur #MainMenuInput
 }
 
 .AspectRatio4x3 .mainmenu-movie,
-.AspectRatio5x4 .mainmenu-movie,
+.AspectRatio5x4 .mainmenu-movie
 {
 	                                                                                                                                                               
 	transform: translateX( -17% );
@@ -209,7 +205,7 @@ CSGOMainMenu.PopupBackgroundBlur #MainMenuInput
 {
 	horizontal-align: center;
 	                                                                                                                                                               
-	width: 1920px;
+	width: 1400px;
 	height: 1080px;
 	opacity: 1;
 	z-index: 1;
@@ -289,13 +285,21 @@ CSGOMainMenu.PopupBackgroundBlur #MainMenuInput
 }
  .mainmenu-vanity
 {
-	transform: translateX(0%) translateY(0);
-	width: 1200px;
+	width: 1350px;
 	z-index: 1;
+	overflow: noclip;
+	y: 40px;
+	margin-right: 100px;
 }
 #JsMainmenu_Vanity.hidden
 {
 	opacity: 0;
+}
+#JsMainmenu_Vanity {
+    opacity: 0;
+    transition-property: opacity;
+    transition-duration: 0.0s;
+    transition-timing-function: ease-in-out;
 }
 
 .mainmenu-vanity__vignette
@@ -653,62 +657,6 @@ CSGOEndOfMatch.mainmenu-content__container {
 	transition-duration: .25s;
 }
 
-.mainmenu_left_column_container {
-    width: 720px;
-    height: 100%;
-    margin: 24px 0px -2px 5px;
-    transform: translateX(0);
-    opacity: 1; 
-    visibility: visible;
-
-    transition-property: opacity, transform;
-    transition-duration: 0.25s;
-    transition-timing-function: ease-in-out;
-}
-
-.mainmenu_left_column_container-movedleft {
-    transform: translateX(-100%);
-}
-
-.mainmenu-right-column
-{
-	padding: 64px 80px -5px 16px;
-	height: fit-children;
-	vertical-align: bottom;
-	horizontal-align: right;
-	width: 620px;
-	flow-children: left;
-	visibility: visible;
-    transition-property: opacity;
-    transition-duration: 0.25s;
-    transition-timing-function: ease-in-out;
-}
-
-.mainmenu-right-column.hidden
-{
-	opacity: 0;
-}
-
-
-.mainmenu_left_column_container.hidden,
-.mainmenu_active-mission-container.hidden,
-.mainmenu_stream_container.hidden {
-    opacity: 0; 
-    transform: translateX(-100%); 
-}
-
-.mainmenu-left_column {
-  width: 200px;
-  height: 100px;
-  background-color: lightblue;
-  transform: translateX(0);
-}
-
-
-.mainmenu-left_column:hover {
-  transform: translateX(100%); 
-}
-
 .mainmenu_active-mission-container
 {
 	background-color: rgba(0, 0, 0, 0.90);
@@ -1038,13 +986,13 @@ RadioButton.content-navbar__tabs__btn--small Label
 
 .popup-blur
 {
-	blur: fastgaussian( 6, 6, 4);
+    blur: fastgaussian( 6, 6, 4);
 }
 
 .blur-background
 {
-	blur: fastgaussian( 4, 4, 5 );
-	opacity: 0;
+    blur: fastgaussian( 4, 4, 5 );
+    opacity: 0;
 }
 
 .content-navbar__seperator-tournament
@@ -1086,9 +1034,6 @@ RadioButton.content-navbar__tabs__btn--small Label
 	padding-right: 0px;
 }
 
-                                                                               
-                                                                               
-                                                                               
 .party-search-ping
 {
 	width: 200%;
@@ -1231,7 +1176,7 @@ RadioButton.content-navbar__tabs__btn--small Label
 
 .settings-notification.has-new-settings
 {
-	visibility: collapse;
+	visibility: visible;
 }
 
 .fairplay-link{ 
@@ -1481,4 +1426,265 @@ RadioButton.content-navbar__tabs__btn--small Label
 .mainmenu-top-navbar__radio-iconbtn:disabled:hover
 {
 	background-color: rgba(255, 255, 255, 0);
+}
+
+.mainmenu-top-navbar__alerts
+{
+    width: fit-children;
+    height: 100%;
+    margin: 0px 0px;
+    vertical-align: center;
+    flow-children: right;
+    visibility: collapse;
+}
+
+.mainmenu-top-navbar__alerts.show
+{
+    visibility: visible;
+}
+
+.mainmenu-top-navbar__alerts-icon
+{
+    height: 32px;
+    width: 32px;
+    margin: 6px 6px;
+    padding: 4px 4px;
+    border-radius: 3px;
+    horizontal-align:center;
+    vertical-align: center;
+    opacity: 0;
+    visibility: collapse;
+    pre-transform-scale2d: .8, .8;
+    transition-property: opacity, pre-transform-scale2d, background-color, brightness, wash-color;
+    transition-duration: .25s;
+    transition-timing-function: ease-in-out;
+}
+
+.mainmenu-top-navbar__alerts-icon.red-alert
+{
+    wash-color: negativeColor;
+    animation-name: navbar-red-alert;
+    animation-duration: 1.5s;
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
+}
+
+.mainmenu-top-navbar__alerts-icon.yellow-alert
+{
+    wash-color: #E1C111;
+    animation-name: navbar-yellow-alert;
+    animation-duration: 1.5s;
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
+}
+.mainmenu-top-navbar__alerts-icon.green-alert
+{
+    wash-color: #91AF49;
+    animation-name: navbar-green-alert;
+    animation-duration: 1.5s;
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
+}
+.mainmenu-top-navbar__alerts-icon.show
+{
+    opacity: 1;
+    visibility: visible;
+    pre-transform-scale2d: 1, 1;
+}
+
+.mainmenu-top-navbar__alerts-icon:hover
+{
+    brightness: 2;
+    background-color: rgba(177, 175, 45, 0.25);
+    img-shadow: 0px 0px 3px 1.0 #E1C111;
+    animation-name: none;
+    animation-duration: 1.5s;
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
+}
+
+.mainmenu-top-navbar__alerts__gc
+{
+    vertical-align: center;
+    opacity: 0;
+    margin: 6px 6px;
+    border-radius: 3px;
+    visibility: collapse;
+    pre-transform-scale2d: .8, .8;
+    transition-property: opacity, pre-transform-scale2d;
+    transition-duration: .25s;
+    transition-timing-function: ease-in-out;
+}
+
+.mainmenu-top-navbar__alerts__gc Image
+{
+    padding: 0px 0px;
+    wash-color: lightblue;
+    visibility: visible;
+    opacity: 1;
+    height: 32px;
+    width: 32px;
+}
+
+.mainmenu-top-navbar__alerts__gc .gc-connect-anim
+{
+    animation-name: navbar-gc-alert;
+    animation-duration: 1.5s;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+}
+
+.mainmenu-top-navbar__alerts__gc.show
+{
+    visibility: visible;
+    opacity: 1;
+    pre-transform-scale2d: 1, 1;
+}
+
+.mainmenu-top-navbar__alerts__gc:hover
+{
+    background-color: rgba(255, 255, 255, 0.15);
+    wash-color: lightblue;
+    brightness: 2;
+    animation-name: none;
+    animation-duration: 1.5s;
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
+}
+
+@keyframes 'navbar-red-alert'
+{
+    0%
+    {
+        brightness: 1;
+        wash-color: negativeColor;
+        background-color: rgba(155, 6, 6, 0.25);
+        border: 0px solid rgba(155, 6, 6, 0.0);
+        img-shadow: 0px 0px 3px 1.0 negativeColor;
+    }
+    
+    50%
+    {
+        brightness: 2;
+        wash-color: negativeColor;
+        background-color: rgba(155, 6, 6, 0.25);
+        border: 3px solid rgba(155, 6, 6, 0.50);
+        img-shadow: 0px 0px 3px 1.0 negativeColor;
+    }
+    
+    100%
+    {
+        brightness: 1;
+        wash-color: negativeColor;
+        background-color: rgba(155, 6, 6, 0.25);
+        border: 0px solid rgba(155, 6, 6, 0.0);
+        img-shadow: 0px 0px 3px 1.0 negativeColor;
+    }
+    
+}
+
+@keyframes 'navbar-yellow-alert'
+{
+    0%
+    {
+        brightness: 1;
+        wash-color: #E1C111;
+        background-color: rgba(177, 175, 45, 0.25);
+        border: 0px solid rgba(177, 175, 45, 0.0);
+        img-shadow: 0px 0px 3px 1.0 #E1C111;
+    }
+    
+    50%
+    {
+        brightness: 2;
+        wash-color: #E1C111;
+        background-color: rgba(177, 175, 45, 0.25);
+        border: 3px solid rgba(177, 175, 45, .50);
+        img-shadow: 0px 0px 3px 1.0 #E1C111;
+    }
+    
+    100%
+    {
+        brightness: 1;
+        wash-color: #E1C111;
+        background-color: rgba(177, 175, 45, 0.25);
+        border: 0px solid rgba(177, 175, 45, 0.0);
+        img-shadow: 0px 0px 3px 1.0 #E1C111;
+    }
+    
+}
+@keyframes 'navbar-green-alert'
+{
+    0%
+    {
+        brightness: 1;
+        wash-color: #91AF49;
+        background-color: rgba(177, 175, 45, 0.25);
+        border: 0px solid rgba(177, 175, 45, 0.0);
+        img-shadow: 0px 0px 3px 1.0 #91AF49;
+    }
+    
+    50%
+    {
+        brightness: 2;
+        wash-color: #91AF49;
+        background-color: rgba(177, 175, 45, 0.25);
+        border: 3px solid rgba(177, 175, 45, .50);
+        img-shadow: 0px 0px 3px 1.0 #91AF49;
+    }
+    
+    100%
+    {
+        brightness: 1;
+        wash-color: #91AF49;
+        background-color: rgba(177, 175, 45, 0.25);
+        border: 0px solid rgba(177, 175, 45, 0.0);
+        img-shadow: 0px 0px 3px 1.0 #91AF49;
+    }
+    
+}
+
+@keyframes 'navbar-gc-alert'
+{
+    0%
+    {
+        brightness: 1;
+        wash-color: lightblue;
+        transform: rotatez( 1deg );
+        img-shadow: 0px 0px 3px 1.0 lightblue;
+    }
+    
+    50%
+    {
+        brightness: 2;
+        wash-color: lightblue;
+        transform: rotatez( 180deg );
+        img-shadow: 0px 0px 3px 1.0 lightblue;
+    }
+    
+    100%
+    {
+        brightness: 1;
+        wash-color: lightblue;
+        transform: rotatez( 359deg );
+        img-shadow: 0px 0px 3px 1.0 lightblue;
+    }
+    
+}
+.hide_vanity_hidden_menu
+{
+	visibility: collapse;
+}
+.hidedevbutton
+{
+	visibility: collapse;
+}
+.visible-if-not-limitedbeta
+{
+	visibility: collapse;
+}
+.vanityplayerinfo
+{
+	horizontal-align: center;
+	vertical-align: bottom;
 }

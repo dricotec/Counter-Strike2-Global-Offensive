@@ -3,7 +3,7 @@
 		<include src="file://{resources}/styles/gamestyles.css" />
 		<include src="file://{resources}/styles/popups/popup_browser.css" />
 		<include src="file://{resources}/styles/mainmenu_news.css" />
-		<include src="file://{resources}/styles/popups/popups_shared.css" />
+		<include src="file://{resources}/styles/popups/popups_shared_web.css" />
 	</styles>
 	
 	<scripts>

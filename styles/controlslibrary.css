@@ -90,23 +90,26 @@ Label.Orange
 
 #VideoTrailerPlayer
 {
-	width: 600px;
-	height: 400px;
+	width: 360px;
+	height: 640px;
 	margin: 10px;
+	overflow: noclip;
 }
 
 #VideoHeroPlayer
 {
-	width: 256px;
-	height: 256px;
+	width: 360px;
+	height: 640px;
 	margin: 10px;
+	overflow: noclip;
 }
 
 #VideoBackground
 {
-	width: 200px;
-	height: 200px;
+	width: 360px;
+	height: 640px;
 	margin: 10px;
+	overflow: noclip;
 	
 	background-color: black;
 	background-repeat: no-repeat;

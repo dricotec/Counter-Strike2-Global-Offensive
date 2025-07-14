@@ -1,6 +1,6 @@
 'use strict';
 
-var PopupAcceptMatch = ( function(){
+var PopupAcceptMatch = ( function(){ // script was modified by d3gk, primarily used for debugging accept match popup styles.. although there are some neat tricks you can do with it
 
 	var m_hasPressedAccept = false;
 	var m_numPlayersReady = 1;

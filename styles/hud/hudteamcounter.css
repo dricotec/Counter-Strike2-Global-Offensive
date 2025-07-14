@@ -417,12 +417,12 @@ CSGOHudTeamCounter Label
 
 .Avatar__HealthBar--Red
 {
-	background-color: #EA5151;
+	 background-color: white;
 }
 
 .Avatar__HealthBar--Normal
 {
-    background-color: #cacaca;
+     background-color: white;
 }
 
 
@@ -475,7 +475,7 @@ CSGOHudTeamCounter Label
 .AvatarL__HealthBar
 {
     vertical-align: bottom;
-    height: 7px;
+    height: 3px;
 }
 
 .AvatarL__Default--CT
@@ -723,7 +723,7 @@ CSGOHudTeamCounter Label
 .AvatarS__HealthBar
 {
     vertical-align: bottom;
-    height: 7px;
+    height: 2px;
 }
 
 .AvatarS__Default--CT

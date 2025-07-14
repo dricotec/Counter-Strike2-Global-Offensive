@@ -110,6 +110,62 @@ var g_PromotedSettings = [
 		start_date: new Date( 'September 18, 2019' ), 
 		end_date: new Date( 'January 30, 2020' )
 	},
+	{
+		id: "ViewmodelSway",
+		loc_name: "#SFUI_Settings_ViewmodelSway",
+		loc_desc: "This allows you to change your viewmodels sway amount",
+		section: "GameSettings",
+		start_date: new Date( 'July 7, 2025' ), 
+		end_date: new Date( 'August 7, 2025' )
+	},
+	{
+		id: "PanoramaBlurToggle",
+		loc_name: "Panorama Blur",
+		loc_desc: "Allows you to enable or disable the Panorama UI blur, executed via JS. Uses mirv_cvar_hack",
+		section: "VideoSettings",
+		start_date: new Date( 'July 7, 2025' ), 
+		end_date: new Date( 'August 7, 2025' )
+	},
+	{
+		id: "PanoramaFPS",
+		loc_name: "Show Panorama FPS",
+		loc_desc: "Displays panorama's built in FPS counter.",
+		section: "VideoSettings",
+		start_date: new Date( 'July 7, 2025' ), 
+		end_date: new Date( 'August 7, 2025' )
+	},
+	{
+		id: "RenderAspectRatio",
+		loc_name: "#SFUI_settings_video_render_aspect_ratio_title",
+		loc_desc: "#SFUI_settings_video_render_aspect_ratio_tooltip",
+		section: "VideoSettings",
+		start_date: new Date( 'July 7, 2025' ), 
+		end_date: new Date( 'August 7, 2025' )
+	},
+	{
+		id: "VmdlShadow",
+		loc_name: "Viewmodel Shadows",
+		loc_desc: "Allows you to disable shadows on your Viewmodel.",
+		section: "VideoSettings",
+		start_date: new Date( 'July 7, 2025' ), 
+		end_date: new Date( 'August 7, 2025' )
+	},
+	{
+		id: "WorldShadow",
+		loc_name: "Dynamic Shadows",
+		loc_desc: "Allows you to disable all Dynamic Shadows on all maps",
+		section: "VideoSettings",
+		start_date: new Date( 'July 7, 2025' ), 
+		end_date: new Date( 'August 7, 2025' )
+	},
+	{
+		id: "hudcolor22",
+		loc_name: "Team Colored HUD",
+		loc_desc: "Sets your HUD color depending on your team, CT or T.",
+		section: "GameSettings",
+		start_date: new Date( 'July 7, 2025' ), 
+		end_date: new Date( 'August 7, 2025' )
+	},
 ];
 
 var PromotedSettingsUtil = ( function ()

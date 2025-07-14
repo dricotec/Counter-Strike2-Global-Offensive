@@ -455,7 +455,7 @@ var ItemContextEntires = ( function (){
 				}
 				else
 				{
-					$.DispatchEvent( 'PlaySoundEffect', 'equip_musickit', 'MOUSE' );
+					$.DispatchEvent( 'PlaySoundEffect', 'UIPanorama.equip_musicKit', 'MOUSE' );
 					EquipItem( id, [ 'noteam' ] );
 				}
 			}

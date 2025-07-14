@@ -142,7 +142,7 @@
 					<TooltipPanel class="SettingsMenuDropdownContainer" tooltip="#SFUI_Settings_HUD_Color_Info">
 						<Label text="#SFUI_Settings_HUD_Color" class="half-width"/>
 						<CSGOSettingsEnumDropDown class="PopupButton" convar="cl_hud_color">
-							<Label text="#SFUI_Settings_HUD_Color_0" value="0" id ="hudcolor0"/>
+							<Label text="Team Colored" value="22" id ="hudcolor22"/>
 							<Label text="#SFUI_Settings_HUD_Color_1" value="1" id ="hudcolor1"/>
 							<Label text="#SFUI_Settings_HUD_Color_2" value="2" id ="hudcolor2"/>
 							<Label text="#SFUI_Settings_HUD_Color_3" value="3" id ="hudcolor3"/>
@@ -154,6 +154,7 @@
 							<Label text="#SFUI_Settings_HUD_Color_8" value="8" id ="hudcolor9"/>
 							<Label text="#SFUI_Settings_HUD_Color_9" value="9" id ="hudcolor10"/>
 							<Label text="Classic" value="11" id ="hudcolor11"/>
+							
 						</CSGOSettingsEnumDropDown>
 					</TooltipPanel>
 					<Panel class="horizontal-separator"/>
@@ -619,7 +620,7 @@
 					                      
 					<Panel class="SettingsMenuDropdownContainer">
 						<Label text="#GameUI_CrosshairStyle" class="half-width"/>
-						<CSGOSettingsEnumDropDown class="PopupButton" convar="cl_crosshairstyle" ondropdownselectionchanged="SettingsMenuGameSettings.OnCrosshairStyleChange()" >
+						<CSGOSettingsEnumDropDown class="PopupButton White" convar="cl_crosshairstyle" ondropdownselectionchanged="SettingsMenuGameSettings.OnCrosshairStyleChange()" >
 							<Label text="#GameUI_CrosshairStyleDefault" id="crosshairstyle0" value="0"/>
 							<Label text="#GameUI_CrosshairStyleDefaultStatic"	id="crosshairstyle1" value="1"/>
 							<Label text="#GameUI_CrosshairStyleClassic" id="crosshairstyle2" value="2"/>
@@ -632,7 +633,7 @@
 					                 
 					<Panel id="XhairCenterDot" class="SettingsMenuDropdownContainer">
 						<Label text="#GameUI_CrosshairDot" class="half-width"/>
-						<CSGOSettingsEnumDropDown class="PopupButton" convar="cl_crosshairdot">
+						<CSGOSettingsEnumDropDown class="PopupButton White" convar="cl_crosshairdot">
 								<Label text="#GameUI_Yes" value="1" id="crosshairdot0"/>
 								<Label text="#GameUI_No" value="0" id="crosshairdot1"/>
 						</CSGOSettingsEnumDropDown>
@@ -682,7 +683,7 @@
 					
 					<Panel id="XhairTStyle" class="SettingsMenuDropdownContainer">
 						<Label text="#GameUI_TStyle" class="half-width"/>
-						<CSGOSettingsEnumDropDown class="PopupButton" convar="cl_crosshair_t">
+						<CSGOSettingsEnumDropDown class="PopupButton White" convar="cl_crosshair_t">
 								<Label text="#GameUI_Yes" value="1" id="tstyle0"/>
 								<Label text="#GameUI_No" value="0" id="tstyle1"/>
 						</CSGOSettingsEnumDropDown>
@@ -692,7 +693,7 @@
 					<TooltipPanel class="SettingsMenuDropdownContainer" tooltip="#GameUI_ShowWeaponGap_Tooltip">
 					<Panel id="XhairUseWeaponGap" class="SettingsMenuDropdownContainer">
 						<Label text="#GameUI_ShowWeaponGap" class="half-width"/>
-						<CSGOSettingsEnumDropDown class="PopupButton" convar="cl_crosshairgap_useweaponvalue">
+						<CSGOSettingsEnumDropDown class="PopupButton White" convar="cl_crosshairgap_useweaponvalue">
 								<Label text="#GameUI_No" value="0" id="weapongap0"/>
 								<Label text="#GameUI_Yes" value="1" id="weapongap1"/>
 						</CSGOSettingsEnumDropDown>
@@ -703,7 +704,7 @@
 					<TooltipPanel class="SettingsMenuDropdownContainer" tooltip="#GameUI_ShowObserverCrosshair_Tooltip">
 					<Panel id="XhairShowObserverCrosshair" class="SettingsMenuDropdownContainer">
 						<Label text="#GameUI_ShowObserverCrosshair" class="half-width"/>
-						<CSGOSettingsEnumDropDown class="PopupButton" convar="cl_crosshair_recoil" ondropdownselectionchanged="SettingsMenuGameSettings.OnCrosshairStyleChange()">
+						<CSGOSettingsEnumDropDown class="PopupButton White" convar="cl_show_observer_crosshair" ondropdownselectionchanged="SettingsMenuGameSettings.OnCrosshairStyleChange()">
 								<Label text="#GameUI_No" value="0" id="showobs0"/>
 								<Label text="#GameUI_ShowObserverCrosshair_Friends" value="1" id="showobs1"/>
 								<Label text="#GameUI_Everyone" value="2" id="showobs2"/>
@@ -715,7 +716,7 @@
 					<TooltipPanel class="SettingsMenuDropdownContainer" tooltip="#GameUI_ObservedBotCrosshair_Tooltip">
 					<Panel id="XhairObservedBotCrosshair" class="SettingsMenuDropdownContainer">
 						<Label text="#GameUI_ObservedBotCrosshair" class="half-width"/>
-						<CSGOSettingsEnumDropDown class="PopupButton" convar="cl_observed_bot_crosshair">
+						<CSGOSettingsEnumDropDown class="PopupButton White" convar="cl_observed_bot_crosshair">
 								<Label text="#GameUI_Always" value="0" id="showbotobs0"/>
 								<Label text="#GameUI_ObservedBotCrosshair_Takeover" value="1" id="showbotobs1"/>
 								<Label text="#GameUI_ObservedBotCrosshair_Default" value="2" id="showbotobs2"/>
@@ -764,30 +765,31 @@
 					</TooltipPanel>
 					<Panel class="horizontal-separator"/>
 
-					<CSGOSettingsSlider id="v_fov" text="Viewmodel FOV" displayprecision="1" max="68.0" min="54.0" convar="viewmodel_fov"/>
+					<CSGOSettingsSlider id="v_fov" text="#SFUI_Settings_ViewmodelFOV" displayprecision="1" max="68.0" min="54.0" convar="viewmodel_fov"/>
 					<Panel class="horizontal-separator"/>
 
-					<CSGOSettingsSlider id="v_offset_X" text="Viewmodel Offset X" displayprecision="1" max="2.5" min="-2.0" convar="viewmodel_offset_x"/>
+					<CSGOSettingsSlider id="v_offset_X" text="#SFUI_Settings_ViewmodelX" displayprecision="1" max="2.5" min="-2.0" convar="viewmodel_offset_x"/>
 					<Panel class="horizontal-separator"/>
 
-					<CSGOSettingsSlider id="v_offset_y" text="Viewmodel Offset Y" displayprecision="1" max="2.0" min="-2.0" convar="viewmodel_offset_y"/>
+					<CSGOSettingsSlider id="v_offset_y" text="#SFUI_Settings_ViewmodelY" displayprecision="1" max="2.0" min="-2.0" convar="viewmodel_offset_y"/>
 					<Panel class="horizontal-separator"/>
 
-					<CSGOSettingsSlider id="v_offset_x" text="Viewmodel Offset Z" max="2.0" min="-2.0" displayprecision="1" convar="viewmodel_offset_z"/>
+					<CSGOSettingsSlider id="v_offset_x" text="#SFUI_Settings_ViewmodelZ" max="2.0" min="-2.0" displayprecision="1" convar="viewmodel_offset_z"/>
 					<Panel class="horizontal-separator"/>
 
 					                      
-					<CSGOSettingsSlider id="v_recoil" text="Viewmodel Recoil" max="1" min="0" displayprecision="1" convar="viewmodel_recoil"/>
+					<CSGOSettingsSlider id="v_recoil" text="#SFUI_Settings_ViewmodelRecoil" max="1" min="0" displayprecision="1" convar="viewmodel_recoil"/>
 					<Panel class="horizontal-separator"/>
 
-					<CSGOSettingsSlider id="vb_low" text="Lowering Amount" max="30" min="5" displayprecision="1" convar="cl_bob_lower_amt"/>
+					<CSGOSettingsSlider id="vb_low" text="#SFUI_Settings_ViewmodelBobLower" max="30" min="5" displayprecision="1" convar="cl_bob_lower_amt"/>
 					<Panel class="horizontal-separator"/>
 					
-					<CSGOSettingsSlider id="vb_sh" text="Gun Sway Horizontal" max="2.0" displayprecision="1" min="0.1" convar="cl_bobamt_lat"/>
+					<CSGOSettingsSlider id="vb_sh" text="#SFUI_Settings_ViewmodelBobX" max="2.0" displayprecision="1" min="0.1" convar="cl_bobamt_lat"/>
 					<Panel class="horizontal-separator"/>
 					
-					<CSGOSettingsSlider id="vb_sv" text="Gun Sway Vertical" max="2.0" displayprecision="1" min="0.1" convar="cl_bobamt_vert"/>
+					<CSGOSettingsSlider id="vb_sv" text="#SFUI_Settings_ViewmodelBobY" max="2.0" displayprecision="1" min="0.1" convar="cl_bobamt_vert"/>
 					<Panel class="horizontal-separator"/>
+					<CSGOSettingsSlider id="ViewmodelSway" text="#SFUI_Settings_ViewmodelSway" displayprecision="1" min="-1.5" max="2.5" convar="cl_wpn_sway_scale"/><Panel class="horizontal-separator"/>
 					
 
 					        

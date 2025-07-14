@@ -25,10 +25,8 @@
 				<RadioButton class="content-navbar__tabs__btn" onactivate="SettingsMenuShared.ShowHudEdgePositions();" group="SettingsVideo">
 					<Label class="" text="#settings_video_hud_edge_positions"/>
 				</RadioButton>
-				
 			</Panel>
 		</Panel>
-
 <CSGOVideoSettings class="SettingsMenuTabContent vscroll">
 	<Panel id="SettingsVideo" class="SettingsBackground">
 		<Panel class="SettingsSectionTitleContianer">
@@ -46,17 +44,14 @@
 					<Label text="#SFUI_Map_de_cbble" value="cbble" id="ui_mainmenu_bkgnd_movie_cbble"/>
 					<Label text="#SFUI_Map_coop_kasbah" value="sirocco_night" id="ui_mainmenu_bkgnd_movie_sirocco_night"/>
 					<Label text="#SFUI_Map_de_vertigo" value="vertigo" id="ui_mainmenu_bkgnd_movie_vertigo"/>
-					<Label text="#SFUI_Map_de_guard" value="guard" id="ui_mainmenu_bkgnd_movie_guard"/>
-					<Label text="#SFUI_Map_cs_apollo" value="apollo" id="ui_mainmenu_bkgnd_movie_apollo"/>
-					<Label text="#SFUI_Map_de_swamp" value="swamp" id="ui_mainmenu_bkgnd_movie_swamp"/>
-					<Label text="#SFUI_Map_de_mutiny" value="mutiny" id="ui_mainmenu_bkgnd_movie_mutiny"/>
-					<Label text="#SFUI_Map_de_engage" value="engage" id="ui_mainmenu_bkgnd_movie_engage"/>
-					<Label text="#SFUI_Map_de_cache" value="cache" id="ui_mainmenu_bkgnd_movie_cache"/>
 					<Label text="#SFUI_Map_cs_office" value="office" id="ui_mainmenu_bkgnd_movie_office"/>
 					<Label text="#SFUI_Map_de_nuke" value="nuke" id="ui_mainmenu_bkgnd_movie_nuke"/>
 					<Label text="#SFUI_Map_de_dust2" value="dust2" id="ui_mainmenu_bkgnd_movie_dust2"/>
 					<Label text="#SFUI_Map_de_train" value="train" id="ui_mainmenu_bkgnd_movie_train"/>
+					<Label text="#SFUI_Map_de_mirage" value="mirage" id="ui_mainmenu_bkgnd_movie_mirage"/>
+					<Label text="#SFUI_Map_de_inferno" value="inferno" id="ui_mainmenu_bkgnd_movie_inferno"/>
 					<Label text="#SFUI_Map_dz_blacksite" value="blacksite" id="ui_mainmenu_bkgnd_movie_blacksite"/>
+					<Label text="Warehouse" value="warehouse" id="ui_mainmenu_bkgnd_movie_warehouse"/>
 				</CSGOSettingsEnumDropDown>
 			</TooltipPanel>
 			<Panel class="horizontal-separator"/>
@@ -87,7 +82,7 @@
 
 			<TooltipPanel id="RenderAspectRatioSetting" class="SettingsMenuDropdownContainer" tooltip="#SFUI_settings_video_render_aspect_ratio_tooltip">
 				<Label text="#SFUI_settings_video_render_aspect_ratio_title" class="half-width"/>
-				<CSGOSettingsEnumDropDown class="PopupButton White" convar="r_aspectratio">
+				<CSGOSettingsEnumDropDown id="RenderAspectRatio" class="PopupButton White" convar="r_aspectratio">
 					<Label text="Disabled" value="0" id="renderaspectratio0" />
 					<Label text="21:9" value="2.333" id="renderaspectratio1" />
 					<Label text="16:9" value="1.777" id="renderaspectratio2" />
@@ -119,12 +114,22 @@
 
 			<TooltipPanel class="SettingsMenuDropdownContainer" tooltip="Displays panorama's built in FPS counter.">
 				<Label text="Show Panorama FPS" class="half-width"/>
-				<CSGOSettingsEnumDropDown class="PopupButton White" convar="@panorama_show_fps">
+				<CSGOSettingsEnumDropDown id="PanoramaFPS" class="PopupButton White" convar="@panorama_show_fps">
 					<Label text="Disabled" value="0" id="panofps0" />
 					<Label text="Enabled" value="1" id="panofps1" />
 				</CSGOSettingsEnumDropDown>
+				
 			</TooltipPanel>
 			<Panel class="horizontal-separator"/>
+			<TooltipPanel class="SettingsMenuDropdownContainer" tooltip="Allows you to enable or disable the Panorama UI blur, executed via JS. Uses mirv_cvar_hack">
+	            <Label text="Panorama Blur" class="half-width"/>
+	            <CSGOSettingsEnumDropDown class="PopupButton White" id="PanoramaBlurToggle" oninputsubmit="SettingsMenuShared.OnPanoramaBlurToggleChanged()" >
+		            <Label text="Enabled" value="0" id="blur_enable" />
+		            <Label text="Disabled" value="1" id="blur_disable"/>
+	            </CSGOSettingsEnumDropDown>
+				
+				
+           </TooltipPanel>
 
 			<TooltipPanel class="SettingsMenuDropdownContainer" tooltip="#SFUI_Settings_PowerSavings_Info">
 				<Label text="#SFUI_Settings_Laptop_Power" class="half-width"/>
@@ -143,13 +148,13 @@
 				</Panel>
 				<Panel class ="top-bottom-flow full-width">
 
-					<TooltipPanel class="SettingsMenuDropdownContainer">
+					<TooltipPanel class="SettingsMenuDropdownContainer" tooltip="#SFUI_GameUI_FPS_Max">
 						<CSGOSettingsSlider id="fpsmax" text="Ingame Maximum FPS" max="1000" min="50" value100percent="0" convar="fps_max"/>
 					</TooltipPanel>
 					<Panel class="horizontal-separator"/>
 
-					<TooltipPanel class="SettingsMenuDropdownContainer">
-						<CSGOSettingsSlider id="fpsmaxmenu" text="Main Menu Maximum FPS" max="300" min="50" value100percent="0" convar="fps_max_menu"/>
+					<TooltipPanel class="SettingsMenuDropdownContainer" tooltip="#SFUI_GameUI_FPS_Max_Panorama">
+						<CSGOSettingsSlider id="fpsmaxmenu" text="Main Menu Maximum FPS" max="1000" min="50" value100percent="0" convar="fps_max_menu"/>
 					</TooltipPanel>
 					<Panel class="horizontal-separator"/>
 
@@ -168,7 +173,7 @@
 
 					<TooltipPanel class="SettingsMenuDropdownContainer" tooltip="Well this makes no difference in performance, but if you want the TRUE low end gaming experience.. Then disable the shadows i guess...">
 						<Label text="Viewmodel Shadows" class="half-width"/>
-						<CSGOSettingsEnumDropDown class="PopupButton White" convar="cl_csm_viewmodel_shadows">
+						<CSGOSettingsEnumDropDown id="VmdlShadow" class="PopupButton White" convar="cl_csm_viewmodel_shadows">
 							<Label text="Disable" value="0" id="csmviewmodelshadow0" />
 							<Label text="Enable" value="1" id="csmviewmodelshadow1"/>
 						</CSGOSettingsEnumDropDown>
@@ -177,7 +182,7 @@
 
 					<TooltipPanel class="SettingsMenuDropdownContainer" tooltip="Wanna make your game look like CS:SO? Then this option is for you! You can disable or enable real time shadows using this option.">
 						<Label text="Dynamic Shadows" class="half-width"/>
-						<CSGOSettingsEnumDropDown class="PopupButton White" convar="cl_csm_shadows">
+						<CSGOSettingsEnumDropDown id="WorldShadow" class="PopupButton White" convar="cl_csm_shadows">
 							<Label text="Disable" value="0" id="csmshadow0" />
 							<Label text="Enable" value="1" id="csmshadow1"/>
 						</CSGOSettingsEnumDropDown>

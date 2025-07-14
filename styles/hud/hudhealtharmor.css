@@ -60,10 +60,6 @@ CSGOHudHealthArmor Label
     margin-left: 8px;
 }
 
-.survival .hud-HA
-{
-    width: 550px;
-}
 
 .hud-HA.hud-HA--active
 {
@@ -143,7 +139,7 @@ CSGOHudHealthArmor Label
 
 .hud-HA-bar .ProgressBarLeft
 {
-    background-color: defaultColor;
+    background-color: white;
     margin: -1px;
 }
 
@@ -186,7 +182,7 @@ CSGOHudHealthArmor Label
 }
 
 
-.hud-HA--on-damage .hud-HA-bar--health .ProgressBarLeft,.hud-HA--critical .hud-HA-bar--health .ProgressBarLeft
+.hud-HA--on-damage.ProgressBarLeft,.hud-HA--critical.ProgressBarLeft
 {
 }
 
@@ -215,7 +211,7 @@ CSGOHudHealthArmor Label
 {
     horizontal-align: center;
     vertical-align: middle;
-    opacity: 0.65;
+    opacity: 1;
 }
 
 .hud-HA-icon--health
@@ -249,11 +245,13 @@ CSGOHudHealthArmor Label
 .hud-HA-armor-text
 {
     width: fit-children;
-    vertical-align: center;
+	vertical-align: center;
     overflow: noclip;
     horizontal-align: center;
     flow-children: right;
-	 x: 1px;
+	x: 1px;
+	y: 1px;
+	
 }
 .hud-HA--helmet .hud-HA-icon--armor {
     visibility: collapse;
@@ -315,6 +313,10 @@ CSGOHudHealthArmor Label
 .hud-HA-armor-label
 {
 	font-size: 20px;
+	letter-spacing: 0px;
+	color: defaultColor;
+	text-shadow: 0px 0px 3px 0.0 #000000DD;
+	text-overflow: shrink;
 }
 
 
@@ -322,7 +324,7 @@ CSGOHudHealthArmor Label
 .hud-HA--critical  .hud-HA-text .hud-HA-health-label
 {
     text-shadow: 0px 0px 9px 2.5 #DD0000;
-	    transform-origin: 50% -50%;
+	transform-origin: 50% -50%;
     animation-name: jitter-number;
     animation-duration: .15s;
     animation-timing-function: ease-out;
@@ -356,42 +358,6 @@ CSGOHudHealthArmor Label
     
 }
 
-                                                      
-   
-  	                                       
-  	                          
-  	                                  
-  	                                    
-   
-
-                                     
-   
-  	  
-  	 
-                                               
-       
-         
-       
-                                               
-       
-  	    
-  	 
-                                               
-  	 
-   
-
-  
-                                                     
-                                                    
- 
-                   
- 
-  
-
-                                                                               
-                                                                               
-                                                                               
-
 ProgressBar
 {
     width: 82px;
@@ -401,36 +367,13 @@ ProgressBar
     margin-left: 5px;
     margin-top: -5px;
     box-shadow: -2px -2px 4px 3.0px #00000033;
-    opacity: 0.99;
+    opacity: 1;
 }
 
 .hud-HA--critical #HealthBar
 {
 }
 
-                              
-   
-  	                                      
-  	                          
-  	                                  
-  	                                    
-   
-
-                                    
-   
-  	  
-  	 
-                                                   
-       
-         
-       
-                                                   
-       
-  	    
-  	 
-                                                   
-  	 
-   
 
 .hud-HA--small ProgressBar
 {
@@ -445,11 +388,11 @@ ProgressBar
 
 .ProgressBarLeft
 {
-	background-color: defaultColor;
+	background-color: white;
 }
 
-.hud-HA--on-damage .hud-HA-bar--health .ProgressBarLeft,
-.hud-HA--critical  .hud-HA-bar--health .ProgressBarLeft
+.hud-HA--on-damage .ProgressBarLeft,
+.hud-HA--critical .ProgressBarLeft
 {
 }
 

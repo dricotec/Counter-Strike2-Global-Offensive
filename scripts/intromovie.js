@@ -15,9 +15,10 @@ function ShowIntroMovie() {
 
 function PlayIntroMovie() {
     $("#IntroMoviePlayer").style.opacity = '1'; 
+	$.DispatchEvent('PlaySoundEffect', 'UIPanorama.submenu_slidein', 'MOUSE');
     $.Schedule(0.1, function() { 
         $("#IntroMoviePlayer").Play();
-        $.DispatchEvent('PlaySoundEffect', 'UIPanorama.submenu_slidein', 'MOUSE');
+		_InsureSessionCreated();
         
         $.Schedule(7.0, FadeOutAndSkip);
     });
@@ -25,7 +26,7 @@ function PlayIntroMovie() {
 
 function FadeOutAndSkip() {
     $("#IntroMoviePlayer").style.opacity = '0';
-    $.Schedule(2.0, SkipIntroMovie); 
+    $.Schedule(2.0, HideIntroMovie); 
 }
 
 function SkipIntroMovie() {
@@ -41,6 +42,12 @@ function HideIntroMovie() {
     $.Schedule(0.0, DestroyMoviePlayer);
     $.DispatchEvent("CSGOHideIntroMovie");
 }
+ function _InsureSessionCreated() {
+    if (!LobbyAPI.IsSessionActive()) {
+       LobbyAPI.CreateSession();
+    }
+}
+
 
 (function() {  
     $.RegisterForUnhandledEvent("CSGOShowIntroMovie", ShowIntroMovie);
