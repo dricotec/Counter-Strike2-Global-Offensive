@@ -31,10 +31,6 @@
 - ZooL for giving me permission to use his reworked molotov. All he said was do whatever when i asked him so.. I guess it's a yes?
 - Aluminum Lodide, PROm and ZaihnY for the Scar17 model and textures.
 
-# Installation and Requirements
-- You are required to use HLAE!
-- HLAE panorama loader [panorama.my.zip](https://github.com/user-attachments/files/17939965/panorama.my.zip)
-
 # How to install?
 - Download the cs2go zip file from releases tab and extract it where csgo.exe is
 - In CSGO Steam launch options, set -game cs2go/csgo -language cs2go as the launch parameters.
