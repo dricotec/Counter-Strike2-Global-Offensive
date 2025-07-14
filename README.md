@@ -38,8 +38,11 @@
 # How to install?
 - Download HLAE First. Run HLAE, paste the panorama zip file linked above into %appdata%\hlae
 - Download the cs2go zip file from releases tab and extract it where csgo.exe is
+- Download the repo code as a zip and extract it to cs2go/csgo/panorama <img width="934" height="401" alt="image" src="https://github.com/user-attachments/assets/af0a7ce4-44ae-4690-949d-5c31ac5fe3e6" />
 - In HLAE go to Tools > Developer > Custom Loader and find your CS:GO install. Then paste these launch options: -language cs2panorama -game cs2go/csgo -afxdetourpanorama
 - If done correctly you should hear the CS2 startup logo and the custom UI should work.
+- For the panorama ui the panorama folder should look like this <img width="740" height="355" alt="image" src="https://github.com/user-attachments/assets/eda4ac1d-840f-4dda-ac2b-9c786e74f4f2" />
+
 - That's it! Have fun playing this mod, and GO GO GO!
 
 # QNA
