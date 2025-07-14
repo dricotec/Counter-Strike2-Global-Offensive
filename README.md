@@ -23,7 +23,7 @@
 ![image](https://github.com/user-attachments/assets/091ee25e-17fd-4e1b-b33a-db5a0b0cf874)
 
 # Credits
-- crazymodder and others who worked on porting CS2 weapons to CS:GO. And for giving me permission to use the kukri knife and taser models in this addon!
+- crazymodder and others who worked on porting CS2 weapons to CS:GO. And for giving me permission to use the kukri knife, taser and c4 models in this addon!
 - d3gk for helping me resolve some issues.
 - roblogez for suggestions for hud and improving general code optimisation.
 - Valve, CS2 Developer Team for making the awesome clean ui.
@@ -36,12 +36,10 @@
 - HLAE panorama loader [panorama.my.zip](https://github.com/user-attachments/files/17939965/panorama.my.zip)
 
 # How to install?
-- Download HLAE First. Run HLAE, paste the panorama zip file linked above into %appdata%\hlae
 - Download the cs2go zip file from releases tab and extract it where csgo.exe is
-- Download the repo code as a zip and extract it to cs2go/csgo/panorama <img width="934" height="401" alt="image" src="https://github.com/user-attachments/assets/af0a7ce4-44ae-4690-949d-5c31ac5fe3e6" />
-- In HLAE go to Tools > Developer > Custom Loader and find your CS:GO install. Then paste these launch options: -language cs2panorama -game cs2go/csgo -afxdetourpanorama
+- In CSGO Steam launch options, set -game cs2go/csgo -language cs2go as the launch parameters.
+- Replace panorama.dll inside of the bin folder where csgo.exe is for this to work! modified panorama.dll is in the latest release.
 - If done correctly you should hear the CS2 startup logo and the custom UI should work.
-- For the panorama ui the panorama folder should look like this <img width="740" height="355" alt="image" src="https://github.com/user-attachments/assets/eda4ac1d-840f-4dda-ac2b-9c786e74f4f2" />
 
 - That's it! Have fun playing this mod, and GO GO GO!
 
