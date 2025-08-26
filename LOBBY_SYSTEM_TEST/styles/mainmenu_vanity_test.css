@@ -1,0 +1,26 @@
+.hidden
+{
+visibility: collapse;
+}
+
+.mainmenu-vanity-2
+{
+	width: 800px;
+	z-index: -1;
+}
+
+.mainmenu-vanity-3
+{
+	width: 800px;
+	z-index: -2;
+}
+.mainmenu-vanity-4
+{
+	width: 800px;
+	z-index: -3;
+}
+.mainmenu-vanity-5
+{
+	width: 700px;
+	z-index: -4;
+}
