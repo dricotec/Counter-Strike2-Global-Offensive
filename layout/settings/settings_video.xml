@@ -305,13 +305,13 @@
 
 					                    
 					<TooltipPanel class="SettingsMenuDropdownContainer" tooltip="#SFUI_Settings_MotionBlur_Info">
-						<Label text="#SFUI_Settings_MotionBlur" class="half-width"/>
+						<Label text="#SFUI_Settings_MotionBlur" class="half-width DEVModeOnly"/>
 						<CSGOSettingsEnumDropDown onuserinputsubmit="SettingsMenuShared.VideoSettingsOnUserInputSubmit()" class="PopupButton" id ="MotionBlur">
 							<Label text="#SFUI_MotionBlur_Disabled" value="0" id="motionblur0" />
 							<Label text="#SFUI_MotionBlur_Enabled" value="1" id="motionblur1"/>
 						</CSGOSettingsEnumDropDown>
 					</TooltipPanel>
-					<Panel class="horizontal-separator"/>
+					<Panel class="horizontal-separator DEVModeOnly"/>
 
 
 					<TooltipPanel class="SettingsMenuDropdownContainer" tooltip="#SFUI_Settings_UberShader_Info">

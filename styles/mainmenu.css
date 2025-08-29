@@ -285,10 +285,10 @@ CSGOMainMenu.PopupBackgroundBlur #MainMenuInput
 }
  .mainmenu-vanity
 {
-	width: 1350px;
+	width: 1300px;
 	z-index: 1;
 	overflow: noclip;
-	y: 40px;
+	y: 30px;
 	margin-right: 100px;
 }
 #JsMainmenu_Vanity.hidden
@@ -1679,6 +1679,10 @@ RadioButton.content-navbar__tabs__btn--small Label
 {
 	visibility: collapse;
 }
+.hidevanitysas
+{
+	visibility: collapse;
+}
 .visible-if-not-limitedbeta
 {
 	visibility: collapse;
@@ -1687,4 +1691,14 @@ RadioButton.content-navbar__tabs__btn--small Label
 {
 	horizontal-align: center;
 	vertical-align: bottom;
+}
+#buildinfo {
+    font-size: 24px;
+	font-family: Stratum2;
+	font-weight: medium;
+    color: white;
+    horizontal-align: center;
+    vertical-align: top;
+    margin-top: 50px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
 }

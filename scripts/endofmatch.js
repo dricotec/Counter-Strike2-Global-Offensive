@@ -197,7 +197,7 @@ $.Schedule(3.0, () => {
 		_Initialize();
 
 		_ShowPanelStart();
-		$.Schedule( 1.25, _ShowNextPanel );		
+		$.Schedule( 1.0, _ShowNextPanel );		
 	}
 
 	function _StartDisplayTimer( time )

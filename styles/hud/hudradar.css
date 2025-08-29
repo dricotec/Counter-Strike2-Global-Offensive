@@ -133,7 +133,7 @@ CSGOHudRadar Label
 	opacity: 1.0;
 }
 
-#Radar__Square--Border
+.Radar__Square--BorderClass
 {
     width: Radar_VisSize_Square;
     height: Radar_VisSize_Square;

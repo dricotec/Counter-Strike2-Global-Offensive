@@ -6,6 +6,7 @@ var MatchmakingStatus;
     let _m_searchTimeUpdateHandle = false;
     let _m_elStatusPanel = $.GetContextPanel();
     let _m_showMatchingMissions = true;
+
     function _BCanShow() {
         if (_m_elStatusPanel.GetAttributeString('data-type', '') === 'hud') {
             let mode = GameStateAPI.GetGameModeInternalName(false);
@@ -15,18 +16,19 @@ var MatchmakingStatus;
                     return false;
                 else
                     return true;
-            }
-            else {
+            } else {
                 return false;
             }
         }
         return true;
     }
+
     function _SessionUpdate() {
         if (!_m_elStatusPanel || !_m_elStatusPanel.IsValid())
             return;
         _UpdateMatchmakingStatus();
     }
+
     function _UpdateMatchmakingStatus() {
         let lobbySettings = LobbyAPI.GetSessionSettings().game;
         if (!LobbyAPI.IsSessionActive() || !_BCanShow()) {
@@ -35,8 +37,8 @@ var MatchmakingStatus;
         }
         _m_elStatusPanel.SetHasClass('hidden', false);
         _UpdateStatusPanel(lobbySettings);
-    }
-    ;
+    };
+
     function _UpdateStatusPanel(lobbySettings) {
         _CancelSearchTimeUpdate();
         _UpdateSearchWaitPanel(lobbySettings);
@@ -44,6 +46,7 @@ var MatchmakingStatus;
         _ShowMatchmakingWarnings(lobbySettings);
         _CheckForMatchingMissions(lobbySettings);
     }
+
     function _UpdateSearchWaitPanel(lobbySettings) {
         let elStatusWait = _m_elStatusPanel.FindChildInLayoutFile('MatchStatusWait');
         if (!lobbySettings || _IsHost() || _IsSeaching()) {
@@ -52,8 +55,8 @@ var MatchmakingStatus;
         }
         elStatusWait.RemoveClass('hidden');
         elStatusWait.FindChildInLayoutFile('MatchStatusWaitLabel').text = $.Localize("#party_waiting_lobby_leader");
-    }
-    ;
+    };
+
     function _SearchPanelSearching(lobbySettings) {
         let elStatusSearching = _m_elStatusPanel.FindChildInLayoutFile('MatchStatusSearching');
         if (!lobbySettings || !_IsSeaching()) {
@@ -73,8 +76,9 @@ var MatchmakingStatus;
         if (unavailableMatch)
             return;
         _UpdateSearchTime();
-    }
-    ;
+		_TriggerFakeConfirm();
+    };
+
     function _ShowMatchmakingWarnings(lobbySettings) {
         let elStatusWarnings = _m_elStatusPanel.FindChildInLayoutFile('MatchStatusWarning');
         if (!lobbySettings || !_IsSeaching()) {
@@ -87,8 +91,8 @@ var MatchmakingStatus;
         elStatusWarnings.SetHasClass('hidden', !isWarning);
         if (isWarning)
             elStatusWarnings.FindChild('MatchStatusWarningLabel').text = $.Localize(serverWarning);
-    }
-    ;
+    };
+
     function _CheckForMatchingMissions(lobbySettings) {
         let nSeasonAccess = GameTypesAPI.GetActiveSeasionIndexValue();
         if (nSeasonAccess < 0 || nSeasonAccess === null) {
@@ -100,39 +104,46 @@ var MatchmakingStatus;
             _m_showMatchingMissions = false;
         }
     }
+
     function _IsHost() {
         return LobbyAPI.BIsHost();
     }
+
     function _GetSearchStatus() {
         return LobbyAPI.GetMatchmakingStatusString();
-    }
-    ;
+    };
+
     function _IsSeaching() {
         let StatusString = _GetSearchStatus();
         return (StatusString !== '' && StatusString !== null) ? true : false;
     }
+
     function _UpdateSearchTime() {
         let seconds = LobbyAPI.GetTimeSpentMatchmaking();
         let elSearchTime = _m_elStatusPanel.FindChildInLayoutFile('MatchStatusTime');
         elSearchTime.text = FormatText.SecondsToDDHHMMSSWithSymbolSeperator(seconds);
         _m_searchTimeUpdateHandle = $.Schedule(1.0, _UpdateSearchTime);
     }
+
     function _CancelSearchTimeUpdate() {
         if (_m_searchTimeUpdateHandle !== false) {
             $.CancelScheduled(_m_searchTimeUpdateHandle);
             _m_searchTimeUpdateHandle = false;
         }
     }
+
     function _OnHideMainMenu() {
         _CancelSearchTimeUpdate();
     }
+
     function _OnHidePauseMenu() {
         _CancelSearchTimeUpdate();
-    }
-    ;
+    };
+
     function _OnShowMenu() {
         _UpdateMatchmakingStatus();
     }
+
     {
         _UpdateMatchmakingStatus();
         $.RegisterForUnhandledEvent("PanoramaComponent_Lobby_MatchmakingSessionUpdate", _SessionUpdate);
@@ -142,4 +153,38 @@ var MatchmakingStatus;
         $.RegisterForUnhandledEvent("CSGOShowPauseMenu", _OnShowMenu);
         $.RegisterForUnhandledEvent("CSGOShowMainMenu", _OnShowMenu);
     }
+ let _fakeConfirmActive = false;
+
+function _TriggerFakeConfirm() {
+    if (_fakeConfirmActive) return;
+    _fakeConfirmActive = true;
+
+    const elStatusSearching = _m_elStatusPanel.FindChildInLayoutFile('MatchStatusSearching');
+    const elLabel = elStatusSearching.FindChildInLayoutFile('MatchStatusSearchingLabel');
+
+    elStatusSearching.RemoveClass('hidden');
+    elLabel.text = $.Localize("Searching for players and servers...");
+
+    $.Schedule(15.0, function() {
+        elLabel.text = $.Localize("Confirming match...");
+
+        $.Schedule(3.0, function() {
+            $.DispatchEvent('PlaySoundEffect', 'popup_accept_match_found', 'MOUSE');
+
+            UiToolkitAPI.ShowCustomLayoutPopupParameters(
+                '',
+                'file://{resources}/layout/popups/popup_accept_match_fake.xml',
+                '',
+                'none'
+            );
+        });
+    });
+    $.Schedule(25.0, function() {
+        elStatusSearching.AddClass('visible');
+        _fakeConfirmActive = false;
+    });
+}
+ // call with debugger
+$.RegisterForUnhandledEvent("Fake_StartConfirmSimulation", _TriggerFakeConfirm);
+
 })(MatchmakingStatus || (MatchmakingStatus = {}));

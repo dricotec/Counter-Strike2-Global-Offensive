@@ -73,7 +73,7 @@
             <Panel id="Radar__Square--Inner">
                 <Panel id="Radar__Square--InnerTransform" force-no-composition-layer="true" class="additive" />
             </Panel>
-            <Panel id="Radar__Square--Border" class="Radar__Square--BorderClass cl-hud-wash-color" />
+            <Panel id="Radar__Square--Border" class="Radar__Square--BorderClass cl-hud-color" />
             <Panel id="Radar__Square--Overlay"/>
         </Panel>
 

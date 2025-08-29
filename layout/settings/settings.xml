@@ -32,6 +32,9 @@
                 </RadioButton>
                 <RadioButton id="KBMouseRadio" group="SettingsNavBar" class="content-navbar__tabs__btn" onactivate="SettingsMenu.NavigateToTab( &quot;KeybdMouseSettings&quot; )">
                     <Label class="" text="#settings_keyboard_mouse" />
+				</RadioButton>
+                <RadioButton id="ControllerRadio" group="SettingsNavBar" class="content-navbar__tabs__btn" onactivate='SettingsMenu.NavigateToTab("ControllerSettings")'>
+                    <Label class="" text="#settings_controller" />
                 </RadioButton>       
             </Panel>
         </Panel>

@@ -1,4 +1,4 @@
-/* Prettified by Source 2 Viewer 11.1.0.0 - https://valveresourceformat.github.io */
+
 
 .loadout-grid-container
 {
@@ -156,9 +156,9 @@
 	width: 100%;
 	horizontal-align: left;
 	margin: 0px 0px;
-	font-family: Stratum2 Condensed, "Arial Unicode MS";
+	font-family: Stratum2, "Arial Unicode MS";
 	text-transform: uppercase;
-	font-size: 18px;
+	font-size: 16px;
 	padding: 0px 0px;
 }
 
@@ -176,7 +176,7 @@
 	background-size: 14px 14px;
 	background-position: 50% 50%;
 	background-repeat: no-repeat;
-	background-image: url("s2r://panorama/images/icons/ui/filter_line.vsvg");
+	background-image: url("file://{images}/icons/ui/filter_line.svg");
 	transition-property: wash-color;
 	transition-duration: .25s;
 	transition-timing-function: ease-in-out;
@@ -190,7 +190,7 @@
 .loadout-column .loadout-column__title:selected .RadioBox
 {
 	wash-color: black;
-	background-image: url("s2r://panorama/images/icons/ui/filter.vsvg");
+	background-image: url("file://{images}/icons/ui/filter.svg");
 }
 
 .loadout-column .loadout-slot
@@ -261,7 +261,7 @@
 	background-size: 14px 14px;
 	background-repeat: no-repeat;
 	background-position: 50% 50%;
-	background-image: url("s2r://panorama/images/icons/ui/filter.vsvg");
+	background-image: url("file://{images}/icons/ui/filter.svg");
 }
 
 .loadout-column .loadout-slot .loadout-slot-shuffle-icon
@@ -273,7 +273,7 @@
 	background-size: 14px 14px;
 	background-repeat: no-repeat;
 	background-position: 50% 50%;
-	background-image: url("s2r://panorama/images/icons/ui/random.vsvg");
+	background-image: url("file://{images}/icons/ui/random.svg");
 	horizontal-align: right;
 }
 
@@ -405,7 +405,7 @@
 
 .loadout-grid-container .loadout-team-select-btn .loadout-grid__agent
 {
-	width: 332px;
+	width: 1200px;
 	height: 100%;
 	vertical-align: center;
 	horizontal-align: right;
@@ -461,7 +461,7 @@
 	width: 16px;
 	height: 16px;
 	background-size: 16px 16px;
-	background-image: url("s2r://panorama/images/icons/ui/filter.vsvg");
+	background-image: url("file://{images}/icons/ui/filter.svg");
 	horizontal-align: left;
 	img-shadow: 0px 0px 6px 1.0 #00000044;
 }
@@ -472,7 +472,7 @@
 	width: 16px;
 	height: 16px;
 	background-size: 16px 16px;
-	background-image: url("s2r://panorama/images/icons/ui/random.vsvg");
+	background-image: url("file://{images}/icons/ui/random.svg");
 	horizontal-align: right;
 	img-shadow: 0px 0px 6px 1.0 #00000044;
 }

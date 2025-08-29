@@ -11,17 +11,17 @@ var PremierMapWinRecord;
     var m_bEventsRegistered = false;
     function Init() {
         RegisterEventHandlers();
-        if (spiderGraph.BCanvasReady()) {
-            Draw();
-        }
-        else {
-            $.Schedule(0.1, Init);
-        }
+        //if (spiderGraph.BCanvasReady()) {
+        //    Draw();
+        //}
+        //else {
+        //    $.Schedule(0.1, Init);
+        //}
     }
     function RegisterEventHandlers() {
         if (!m_bEventsRegistered) {
             m_LobbyPlayerUpdatedEventHandler = $.RegisterForUnhandledEvent("PanoramaComponent_Lobby_PlayerUpdated", Draw);
-            m_LeaderboardHoverPlayerEventHandler = $.RegisterForUnhandledEvent("LeaderboardHoverPlayer", _HighlightPlayer);
+            //m_LeaderboardHoverPlayerEventHandler = $.RegisterForUnhandledEvent("LeaderboardHoverPlayer", _HighlightPlayer);
             $.RegisterForUnhandledEvent("CSGOHideMainMenu", UnregisterEventHandlers);
             $.RegisterForUnhandledEvent("CSGOShowMainMenu", RegisterEventHandlers);
             $.RegisterEventHandler('ReadyForDisplay', $.GetContextPanel(), Draw);
@@ -93,7 +93,7 @@ var PremierMapWinRecord;
             let maxWinsInASingleMap = 3;
             let mapList = _GetMapsList();
             let wso = [];
-            let lbFallbackName = LeaderboardsAPI.GetCurrentSeasonPremierLeaderboard() + '.party';
+            //let lbFallbackName = LeaderboardsAPI.GetCurrentSeasonPremierLeaderboard() + '.party';
             for (let p = 0; p < nPlayers; p++) {
                 let xuid = party['machine' + p].player0.xuid;
                 let playerObj = null;
@@ -104,12 +104,12 @@ var PremierMapWinRecord;
                         playerObj = PartyListAPI.GetFriendCompetitivePremierWindowStatsObject(xuid);
                 }
                 if (!playerObj) {
-                    let objLbRow = LeaderboardsAPI.GetEntryDetailsObjectByXuid(lbFallbackName, xuid);
+                    //let objLbRow = LeaderboardsAPI.GetEntryDetailsObjectByXuid(lbFallbackName, xuid);
                     if (objLbRow && objLbRow.XUID && objLbRow.rankWindowStats)
                         playerObj = objLbRow.rankWindowStats;
                 }
                 if (!playerObj)
-                    playerObj = PartyListAPI.GetFriendCompetitivePremierWindowStatsObject(xuid);
+                    //playerObj = PartyListAPI.GetFriendCompetitivePremierWindowStatsObject(xuid);
                 wso.push(playerObj);
             }
             for (let p = 0; p < nPlayers; p++) {

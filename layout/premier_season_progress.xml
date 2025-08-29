@@ -13,6 +13,7 @@
 		<include src="file://{resources}/scripts/common/formattext.js" />
 		<include src="file://{resources}/scripts/premier_season_progress.js" />
 		<include src="file://{resources}/scripts/common/teamcolor.js" />
+		<include src="file://{resources}/scripts/digitpanel.js" />
 	</scripts>
 	<snippets>
 		<snippet name="one-bar">

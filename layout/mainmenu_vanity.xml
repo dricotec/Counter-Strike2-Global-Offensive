@@ -28,25 +28,25 @@
             </Movie>
         </Panel>
     </snippet>
-    <snippet name="MainMenuVanitySnippet">
+     <snippet name="MainMenuVanitySnippet">
 			<Panel>
 				<Panel id="JsMainmenu_Vanity-Container" class="mainmenu-vanity MainMenuModeOnly">
 					<ItemPreviewPanel id="JsMainmenu_Vanity_0"
-									class="full-width full-height mainmenu-vanity hidden"
-									manifest="resource/ui/econ/ItemModelPanelCharMainMenu.res"
-									item="models/player/custom_player/legacy/ctm_sas.mdl"
-									mouse_rotate="true"
-									enable_floorshadow="true"
-									hittest="false">
-						<Panel id="id-mainmenu-vanity-hover" hittest="true"/>
+                                      class="full-width full-height hidden"
+                                      manifest="resource/ui/econ/ItemModelPanelCharWeaponInspect.res"
+                                      item="models/player/custom_player/legacy/ctm_sas.mdl"
+                                      mouse_rotate="false"
+                                      enable_floorshadow="true"
+                                      hittest="false">
+                        <Panel id="id-mainmenu-vanity-hover" hittest="true"/>
 					</ItemPreviewPanel>
 
 					<ItemPreviewPanel id="JsMainmenu_Vanity_1"
 									class="full-width full-height mainmenu-vanity-2 hidden"
 									style="margin-left: 550px;"
-									manifest="resource/ui/econ/ItemModelPanelCharMainMenu.res"
+									manifest="resource/ui/econ/ItemModelPanelCharWeaponInspect.res"
 									item="models/player/custom_player/legacy/ctm_sas.mdl"
-									mouse_rotate="true"
+									mouse_rotate="false"
 									enable_floorshadow="true"
 									hittest="false">
 						<Panel id="id-mainmenu-vanity-hover" hittest="true"/>
@@ -54,10 +54,10 @@
 
 					<ItemPreviewPanel id="JsMainmenu_Vanity_2"
 									class="full-width full-height mainmenu-vanity-3 hidden"
-									style="margin-left: -400px;"
-									manifest="resource/ui/econ/ItemModelPanelCharMainMenu.res"
+									style="margin-left: -200px;"
+									manifest="resource/ui/econ/ItemModelPanelCharWeaponInspect.res"
 									item="models/player/custom_player/legacy/ctm_sas.mdl"
-									mouse_rotate="true"
+									mouse_rotate="false"
 									enable_floorshadow="true"
 									hittest="false">
 						<Panel id="id-mainmenu-vanity-hover" hittest="true"/>
@@ -65,10 +65,10 @@
 
 					<ItemPreviewPanel id="JsMainmenu_Vanity_3"
 									class="full-width full-height mainmenu-vanity-4 hidden"
-									manifest="resource/ui/econ/ItemModelPanelCharMainMenu.res"
+									manifest="resource/ui/econ/ItemModelPanelCharWeaponInspect.res"
 									style="margin-left: 850px;"
 									item="models/player/custom_player/legacy/ctm_sas.mdl"
-									mouse_rotate="true"
+									mouse_rotate="false"
 									enable_floorshadow="true"
 									hittest="false">
 						<Panel id="id-mainmenu-vanity-hover" hittest="true"/>
@@ -76,10 +76,10 @@
 
 					<ItemPreviewPanel id="JsMainmenu_Vanity_4"
 									class="full-width full-height mainmenu-vanity-5 hidden"
-									style="margin-left: -600px; "
-									manifest="resource/ui/econ/ItemModelPanelCharMainMenu.res"
+									style="margin-left: -400px; "
+									manifest="resource/ui/econ/ItemModelPanelCharWeaponInspect.res"
 									item="models/player/custom_player/legacy/ctm_sas.mdl"
-									mouse_rotate="true"
+									mouse_rotate="false"
 									enable_floorshadow="true"
 									hittest="false">
 						<Panel id="id-mainmenu-vanity-hover" hittest="true"/>

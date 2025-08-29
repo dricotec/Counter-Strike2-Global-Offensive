@@ -1,4 +1,4 @@
-<!-- xml reconstructed by Source 2 Viewer 11.1.0.0 - https://valveresourceformat.github.io -->
+
 <root>
 	<styles>
 		<include src="file://{resources}/styles/gamestyles.css" />
@@ -10,8 +10,7 @@
 	<scripts>
 		<include src="file://{resources}/scripts/common/formattext.js" />
 		<include src="file://{resources}/scripts/common/iteminfo.js" />
-		<include src="file://{resources}/scripts/inspect.js" />
-		<include src="file://{resources}/scripts/common/characteranims.js" />
+		<include src="file://{resources}/scripts/common/characteranims_loadout_grid.js" />
 		<include src="file://{resources}/scripts/common/tint_spray_icon.js" />
 		<include src="file://{resources}/scripts/loadout_grid.js" />
 	</scripts>
@@ -26,31 +25,40 @@
 					<Panel data-slot="equipment3" class="loadout-slot loadout-slot--skinny" />
 				</Panel>
 				<Panel id="id-loadout-column1" data-slot="secondary" class="loadout-column">
-					<RadioButton id="id-loadout-btn-secondary0" class="loadout-column__title" text="Default Secondary" onactivate="LoadoutGrid.ToggleGroupDropdown( &apos;secondary0&apos; );" group="loudout-text-btn" />
+					<RadioButton id="id-loadout-btn-secondary0" class="loadout-column__title" text="Default Secondary" onactivate="LoadoutGrid.ToggleGroupDropdown( 'secondary0' );" group="loudout-text-btn" />
 					<Button data-slot="secondary0" class="loadout-slot loadout-slot--margin-bottom" />
-					<RadioButton id="id-loadout-btn-secondary" class="loadout-column__title" text="Other Secondary" onactivate="LoadoutGrid.ToggleGroupDropdown( &apos;secondary&apos; );" group="loudout-text-btn" />
+					<RadioButton id="id-loadout-btn-secondary" class="loadout-column__title" text="Other Secondary" onactivate="LoadoutGrid.ToggleGroupDropdown( 'secondary' );" group="loudout-text-btn" />
 					<Button data-slot="secondary1" class="loadout-slot loadout-slot--margin-bottom" />
 					<Button data-slot="secondary2" class="loadout-slot loadout-slot--margin-bottom" />
 					<Button data-slot="secondary3" class="loadout-slot loadout-slot--margin-bottom" />
 					<Button data-slot="secondary4" class="loadout-slot" />
 				</Panel>
 				<Panel id="id-loadout-column2" data-slot="smg" class="loadout-column">
-					<RadioButton id="id-loadout-btn-smg" class="loadout-column__title" text="Mid-Tier" onactivate="LoadoutGrid.ToggleGroupDropdown( &apos;smg&apos; );" group="loudout-text-btn" />
+					<RadioButton id="id-loadout-btn-smg" class="loadout-column__title" text="SMG" onactivate="LoadoutGrid.ToggleGroupDropdown( 'smg' );" group="loudout-text-btn" />
 					<Button data-slot="smg0" class="loadout-slot loadout-slot--margin-bottom" />
 					<Button data-slot="smg1" class="loadout-slot loadout-slot--margin-bottom" />
 					<Button data-slot="smg2" class="loadout-slot loadout-slot--margin-bottom" />
 					<Button data-slot="smg3" class="loadout-slot loadout-slot--margin-bottom" />
 					<Button data-slot="smg4" class="loadout-slot" />
 				</Panel>
-				<Panel id="id-loadout-column3" data-slot="rifle" class="loadout-column">
-					<RadioButton id="id-loadout-btn-rifle" class="loadout-column__title" text="Rifles" onactivate="LoadoutGrid.ToggleGroupDropdown( &apos;rifle&apos; );" group="loudout-text-btn" />
+				<Panel id="id-loadout-column3" data-slot="heavy" class="loadout-column">
+					<RadioButton id="id-loadout-btn-heavy" class="loadout-column__title" text="Heavy" onactivate="LoadoutGrid.ToggleGroupDropdown( 'heavy' );" group="loudout-text-btn" />
+					<Button data-slot="heavy0" class="loadout-slot loadout-slot--margin-bottom" />
+					<Button data-slot="heavy1" class="loadout-slot loadout-slot--margin-bottom" />
+					<Button data-slot="heavy2" class="loadout-slot loadout-slot--margin-bottom" />
+					<Button data-slot="heavy3" class="loadout-slot loadout-slot--margin-bottom" />
+					<Button data-slot="heavy4" class="loadout-slot" />
+				</Panel>
+				<Panel id="id-loadout-column4" data-slot="rifle" class="loadout-column">
+					<RadioButton id="id-loadout-btn-rifle" class="loadout-column__title" text="Rifles" onactivate="LoadoutGrid.ToggleGroupDropdown( 'rifle' );" group="loudout-text-btn" />
 					<Button data-slot="rifle0" class="loadout-slot loadout-slot--margin-bottom" />
 					<Button data-slot="rifle1" class="loadout-slot loadout-slot--margin-bottom" />
 					<Button data-slot="rifle2" class="loadout-slot loadout-slot--margin-bottom" />
 					<Button data-slot="rifle3" class="loadout-slot loadout-slot--margin-bottom" />
-					<Button data-slot="rifle4" class="loadout-slot" />
+					<Button data-slot="rifle4" class="loadout-slot loadout-slot--margin-bottom" />
+					<Button data-slot="rifle5" class="loadout-slot" />
 				</Panel>
-				<Panel id="id-loadout-column4" data-slot="grenade" class="loadout-column" hittest="false" hittestchildren="false">
+				<Panel id="id-loadout-column5" data-slot="grenade" class="loadout-column" hittest="false" hittestchildren="false">
 					<TextButton class="stratum-medium loadout-column__title" disabled="true" text="#LoadoutSlot_Grenade" />
 					<Panel data-slot="grenade0" class="loadout-slot loadout-slot--margin-bottom loadout-slot--skinny" />
 					<Panel data-slot="grenade1" class="loadout-slot loadout-slot--margin-bottom loadout-slot--skinny" />
@@ -69,7 +77,17 @@
 			<Panel class="full-width full-height">
 				<Panel id="id-loadout-grid-section-ct" class="loadout-grid__slots__ct">
 					<ToggleButton id="id-loadout-select-team-btn-ct" data-slot="side_slots" data-team="ct" class="loadout-team-select-btn" group="loudout-team-btns">
-							<Label class="loadout-grid-team_title stratum-bold" text="#loadout_equip_ct" />
+						<ItemPreviewPanel id="id-loadout-agent-ct"
+                        	class="loadout-grid__agent"
+                        	mouse_rotate="false"
+                        	hittest="false"
+							style="x: 190px;"
+                        	manifest="resource/ui/econ/ItemModelPanelCharWeaponInspect.res"
+                        	item="models/player/custom_player/legacy/ctm_sas.mdl"
+                        	enable_floorshadow="true"
+                        	force-no-composition-layer="true">
+            			</ItemPreviewPanel>
+						<Label style="x: 190px;" class="loadout-grid-team_title stratum-bold" text="#loadout_equip_ct" />
 						<Frame id="id-loadout-row-slots-ct" snippet="row-slots" class="" />
 					</ToggleButton>
 					<Frame id="id-loadout-grid-slots-ct" snippet="grid-slots" />
@@ -78,7 +96,17 @@
 				<Panel id="id-loadout-grid-section-t" class="loadout-grid__slots__t">
 					<Frame id="id-loadout-grid-slots-t" snippet="grid-slots" class="" />
 					<ToggleButton id="id-loadout-select-team-btn-t" data-slot="side_slots" data-team="t" class="loadout-team-select-btn" group="loudout-team-btns">
-							<Label class="loadout-grid-team_title stratum-bold" text="#loadout_equip_t" />
+					    <ItemPreviewPanel id="id-loadout-agent-t"
+                        	class="loadout-grid__agent"
+                        	mouse_rotate="false"
+                        	hittest="false"
+							style="x: -190px;"
+                        	manifest="resource/ui/econ/ItemModelPanelCharWeaponInspect.res"
+                        	item="models/player/custom_player/legacy/tm_phoenix.mdl"
+                        	enable_floorshadow="true"
+                        	force-no-composition-layer="true">                                                                                   
+            			</ItemPreviewPanel>
+						<Label style="x: -190px;" class="loadout-grid-team_title stratum-bold" text="#loadout_equip_t" />
 						<Frame id="id-loadout-row-slots-t" snippet="row-slots" class="horizontal-align-right" />
 					</ToggleButton>
 				</Panel>

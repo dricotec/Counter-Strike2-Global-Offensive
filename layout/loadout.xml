@@ -198,7 +198,7 @@
                             <Image src="file://{images}/icons/ui/tune.svg" />
                         </Button>
                     </TooltipPanel>
-                    <DropDown class="content-navbar__tabs__dropdown" id="LoadoutSortDropdown" menuclass="DropDownMenu" oninputsubmit="Loadout.UpdateItemLister()" />
+                    <DropDown class="content-navbar__tabs__dropdown" style="margin-right: 64px;" id="LoadoutSortDropdown" menuclass="DropDownMenu" oninputsubmit="Loadout.UpdateItemLister()" />
                 </Panel>
                 <InventoryItemList id="LoadoutItemList" hittest="true" itemheight="190px" itemwidth="192px" spacersize="0px" spacerperiod="1" item_context_menu_filter="loadout" class="loadout-item-list" />
             </Panel>

@@ -52,6 +52,7 @@ function StartSearch() {
     btnStartSearch.AddClass('pressed');
     //_GoBtnParticle(); disabled for further debugging
     $.DispatchEvent('PlaySoundEffect', 'mainmenu_press_GO', 'MOUSE');
+	$.DispatchEvent('PlayMainMenuMusic', false, false );
     if (inDirectChallenge()) {
         _DirectChallengeStartSearch();
         return;

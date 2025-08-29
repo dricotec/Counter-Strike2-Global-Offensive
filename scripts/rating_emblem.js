@@ -67,10 +67,10 @@ var RatingEmblem;
         if (debug_wins) {
             wins = Math.floor(Math.random() * 20);
         }
-        rating = options.leaderboard_details.score;
-        wins = options.leaderboard_details.matchesWon;
-        rank = options.leaderboard_details.rank;
-        pct = options.leaderboard_details.pct;
+        //rating = options.leaderboard_details.score;
+        //wins = options.leaderboard_details.matchesWon;
+        //rank = options.leaderboard_details.rank;
+        //pct = options.leaderboard_details.pct;
         _msg(rating_type + root_panel.id);
         root_panel.SwitchClass('type', rating_type);
         if (bFullDetails) {

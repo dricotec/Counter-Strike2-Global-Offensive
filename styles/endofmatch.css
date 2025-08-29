@@ -3,7 +3,7 @@
 	height: 100%;
     padding: 0px;
 
-    background-color: rgba(20, 20, 20, 0.0);
+    background-color: gradient( linear, 0% 100%, 0% 0%, from( #000000a0 ), color-stop (0.5, #00000000), to (#00000000 ) );
 	opacity: 0;
 }
 
@@ -19,15 +19,13 @@
 }
 
 .eom.eom--reveal
-{
-                                                  
+{                                             
 	opacity: 1.0;
-	
-	background-color: gradient( linear, 0% 100%, 0% 0%, from( rgba(0, 0, 0, 1) ), 
-	color-stop( 0.2, rgba(0, 0, 0, 0.9) ), 
-	color-stop( 0.9, rgba(39, 39, 39, 0.9) ), 
-	to( rgba(54, 54, 54, 0.9)) );
-
+    background-color: gradient( linear, 0% 100%, 0% 0%, 
+    from( rgba(0, 0, 0, 1) ), 
+    color-stop( 0.2, rgba(0, 0, 0, 1) ), 
+    color-stop( 0.9, rgba(0, 0, 0, 0.8) ), 
+    to( rgba(0, 0, 0, 0.6)) );
 }
 
 @keyframes 'eom-background-fade-in'
@@ -49,7 +47,7 @@
 .eom.eom--fade-in-enabled.eom--reveal
 {
 	animation-name: eom-background-fade-in;
-	animation-duration: 0.5s;
+	animation-duration: 1.0s;
 	animation-iteration-count: 1;
 }
 

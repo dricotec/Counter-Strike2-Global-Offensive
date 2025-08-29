@@ -82,7 +82,7 @@ var MapDraft = ( function (){
 		  
 		if ( MatchDraftAPI.GetIngamePhase() != _m_nPhase )
 		{	                                       
-			_PlaySoundEffect( 'tab_mainmenu_watch' );
+			_PlaySoundEffect( 'tab_mainmenu_premier_mapnext' );
 		}
 		else
 		{	                                                                                     
@@ -340,7 +340,7 @@ var MapDraft = ( function (){
 		{
 			                                                                                          
 			MatchDraftAPI.ActionIngameCastMyVote( _m_nPhase, matchingVoteSlot, 0 );
-			_PlaySoundEffect( 'buymenu_select' );
+			_PlaySoundEffect( 'tab_mainmenu_premier_deselmap' );
 			return;
 		}
 
@@ -357,7 +357,7 @@ var MapDraft = ( function (){
 			   	 
 			      
 			MatchDraftAPI.ActionIngameCastMyVote( _m_nPhase, 0, oBtnData.voteid );
-			_PlaySoundEffect( 'buymenu_purchase' );
+			_PlaySoundEffect( 'tab_mainmenu_premier_selmap' );
 			return;
 		}
 
@@ -367,7 +367,7 @@ var MapDraft = ( function (){
 		{
 			                                                                                               
 			MatchDraftAPI.ActionIngameCastMyVote( _m_nPhase, freeSlot, oBtnData.voteid );
-			_PlaySoundEffect( 'buymenu_purchase' );
+			_PlaySoundEffect( 'tab_mainmenu_premier_selmap' );
 		}
 		else
 		{

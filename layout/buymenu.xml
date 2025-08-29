@@ -5,7 +5,7 @@
 	</styles>
 	<scripts>
 		<include src="file://{resources}/scripts/buymenu.js" />
-		<include src="file://{resources}/scripts/common/characteranims.js" />
+		<include src="file://{resources}/scripts/common/characteranims_loadout_grid.js" />
 		<include src="file://{resources}/scripts/common/iteminfo.js" />
 		<include src="file://{resources}/scripts/mock_adapter.js" />
 	</scripts>

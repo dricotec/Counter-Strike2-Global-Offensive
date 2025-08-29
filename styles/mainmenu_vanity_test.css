@@ -2,3 +2,29 @@
 {
 visibility: collapse;
 }
+
+.mainmenu-vanity-2
+{
+	width: 900px;
+	z-index: -1;
+	y: -5px;
+}
+
+.mainmenu-vanity-3
+{
+	width: 900px;
+	z-index: -2;
+	y: -5px;
+}
+.mainmenu-vanity-4
+{
+	width: 800px;
+	z-index: -3;
+	y: -20px;
+}
+.mainmenu-vanity-5
+{
+	width: 800px;
+	z-index: -3;
+	y: -20px;
+}

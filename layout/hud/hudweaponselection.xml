@@ -42,31 +42,58 @@
                     <Label class="weapon-selection-item-name-text-owned" text="#Panorama_WeaponSelection_OwnedName" />
                 </Panel>
             </Panel>
-        </snippet>
-        <snippet name="grenadePip">
-            <Panel class="grenade-pip_container">
-                <Image src="file://{images}/hud/weapon_pip.svg" class="grenade-pip" textureheight="80" scaling="stretch-to-fit-preserve-aspect" />
-            </Panel>
-        </snippet>
-        <snippet name="grenadePip--objective">
-            <Panel class="full-width full-height">
-                <Panel class="bomb-pulse-bg pulse1 additive cl-hud-wash-color" />
-                <Panel class="bomb-pulse-bg pulse2 additive cl-hud-wash-color" />
-            </Panel>
-        </snippet>
-        <snippet name="WeaponIcon--ArmsRace">
-            <Panel class="armsrace-item">
-                <Image id="armsrace-weapon-outline" class="armsrace-weapon-icon additive" textureheight="48" svgstrokewidth="1" svgstrokeopacity="1" svgstroke="#ffffff" svgfillopacity="1" />
-                <Image id="armsrace-weapon-filled" class="armsrace-weapon-icon additive cl-hud-wash-color" textureheight="48" />
-                <Label id="armsrace-level" text="{d:armsrace-level}" />
-                <Panel id="armsrace-pips" class=" cl-hud-wash-color" />
-            </Panel>
-        </snippet>
-    </snippets>
-  <CSGOHudWeaponSelection class="weapon-selection" hittest="false" hittestchildren="false">
+    </snippet>
+
+    <snippet name="ProgressionPip">
+      <Panel class="progression-pip" />
+    </snippet>
+
+    <snippet name="ProgressionIcon">
+      <Panel class="weapon-selection-progression-item">
+        <Image class="WEAPON-ICON weapon-selection-progression-item-icon-main" src="file://{images}/icons/equipment/flashbang.svg" textureheight="50"
+               svgstrokewidth="1" svgstrokeopacity="1" svgstroke="#ffffff" svgfillopacity="0" />
+        <Label class="weapon-selection-progression-item-level" text="{d:r:ProgressionIcon--level}" />
+      </Panel>
+    </snippet>
+
+    <snippet name="DemolitionIcon">
+      <Panel class="weapon-selection-demolition-item">
+        <Image class="WEAPON-ICON weapon-selection-demolition-item-icon-main" src="file://{images}/icons/equipment/flashbang.svg" textureheight="50"
+               svgstrokewidth="1" svgstrokeopacity="1" svgstroke="#ffffff" svgfillopacity="0" />
+      </Panel>
+    </snippet>
+  </snippets>
+ <CSGOHudWeaponSelection class="weapon-selection" hittest="false" hittestchildren="false">
+                                                                                      
+                                                                                           
+                                           
     <Panel class="weapon-selection-list" id="weapon-selection-list">
-        <Panel id="weapon-selection-list" class="weapon-selection-list" hittest="false" />
+                                                             
     </Panel>
-    <Panel id="weapon-selection--armsrace-list" />
-</CSGOHudWeaponSelection>
+    <Panel class="weapon-selection-demolition">
+      <Label class="weapon-selection-demolition-label stratum-medium" text="#SFUI_WS_GG_AwardNextRound" />
+      <Panel class="weapon-selection-demolition-rewardrow">
+        <Panel class="weapon-selection-demolition-container" id="weapon-selection-demolition">
+                                                                  
+        </Panel>
+        <Panel class="weapon-selection-demolition-reward">
+          <Label class="weapon-selection-demolition-reward-text stratum-medium" text="#SFUI_ARFlashAlert_BonusGrenade" />
+        </Panel>
+      </Panel>
+    </Panel>
+    <Panel class="weapon-selection-progression">
+      <Panel class="weapon-selection-progression-list" id="weapon-selection-progression">
+                                                                         
+      </Panel>
+      <Panel class="weapon-selection-progression-xp">
+        <Label text="{d:r:HudWeaponSelection--progression-maxlevel}" />
+        <Panel class="weapon-selection-progression-xp-container"  id="weapon-selection-xp">
+                                   </Panel>
+                <Panel class="weapon-row kit">
+                    <Image id="DefuseIcon" class="weapon-selection-list__kit HUD--has-kit--on-pickup--listener hud-colorize-wash" src="file://{images}/icons/equipment/defuser.svg" texturewidth="38px" scaling="stretch-to-fit-preserve-aspect" />                                         
+        </Panel>
+      </Panel>
+    </Panel>
+  </CSGOHudWeaponSelection>
+
 </root>

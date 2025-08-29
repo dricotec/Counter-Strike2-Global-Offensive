@@ -20,7 +20,7 @@ function PlayIntroMovie() {
         $("#IntroMoviePlayer").Play();
 		_InsureSessionCreated();
         
-        $.Schedule(7.0, FadeOutAndSkip);
+        $.Schedule(7.1, FadeOutAndSkip);
     });
 }
 

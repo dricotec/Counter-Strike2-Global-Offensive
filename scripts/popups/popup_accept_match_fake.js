@@ -9,9 +9,11 @@ var PopupAcceptMatch = ( function(){ // script was modified by d3gk, primarily u
 	var m_isReconnect = false;
 	var m_isNqmmAnnouncementOnly = false;
 	var m_lobbySettings;
+	let m_gsLocation = 'TEST';
+	let m_gsPing = 69420;
 	var m_elTimer = $.GetContextPanel().FindChildInLayoutFile ( 'AcceptMatchCountdown' );
 	var m_jsTimerUpdateHandle = false;
-	var bShowPlayerSlots = true;
+	var bShowPlayerSlots = false;
 	          
 	                    
 	          
@@ -20,6 +22,11 @@ var PopupAcceptMatch = ( function(){ // script was modified by d3gk, primarily u
 	{
 		     
 		 m_lobbySettings = LobbyAPI.GetSessionSettings();
+		 
+		m_gsLocation = $.GetContextPanel().GetAttributeString('location', '');
+		m_gsPing = parseInt($.GetContextPanel().GetAttributeString('ping', ''));
+		$.GetContextPanel().SetDialogVariable('region', m_gsLocation);
+		$.GetContextPanel().SetDialogVariableInt('ping', m_gsPing);
 
 		          
 		              
@@ -89,9 +96,19 @@ var PopupAcceptMatch = ( function(){ // script was modified by d3gk, primarily u
 			_UpdateUiState();
 			m_jsTimerUpdateHandle = $.Schedule( 1.9, _OnNqmmAutoReadyUp );
 		}
+		else
+{
+	_UpdateUiState(); // Ensure UI is drawn before timer starts
+	m_jsTimerUpdateHandle = $.Schedule( 1.0, _OnTimerUpdate );
+}
 
 		_PopulatePlayerList();
 	}
+		function _UpdateGameServerUi() {
+        const elGameServer = $.GetContextPanel().FindChildInLayoutFile('AcceptMatchGameServer');
+        elGameServer.SetHasClass('hidden', m_hasPressedAccept || m_isReconnect || m_isNqmmAnnouncementOnly ||
+            !(m_gsLocation && m_gsPing));
+    }
 
 	function _PopulatePlayerList()
 	{
@@ -233,7 +250,7 @@ var PopupAcceptMatch = ( function(){ // script was modified by d3gk, primarily u
 		if ( m_isNqmmAnnouncementOnly )
 		{
 			bShowPlayerSlots = true;
-			bHideTimer = false;
+			bHideTimer = true;
 		}
 		
 		
@@ -258,35 +275,55 @@ var PopupAcceptMatch = ( function(){ // script was modified by d3gk, primarily u
 		}
 	}
 
-	var _UpdateTimeRemainingSeconds = function()
+var _UpdateTimeRemainingSeconds = function()
+{
+	if (m_numSecondsRemaining > 0)
 	{
-		m_numSecondsRemaining = LobbyAPI.GetReadyTimeRemainingSeconds();
-		          
-		              
-			                           
-		          
+		m_numSecondsRemaining--;
 	}
+};
 
-	var _OnTimerUpdate = function()
+var _OnTimerUpdate = function()
+{
+	m_jsTimerUpdateHandle = false;
+
+	_UpdateTimeRemainingSeconds();
+	_UpdateUiState();
+
+	if ( m_numSecondsRemaining > 0 )
 	{
-		m_jsTimerUpdateHandle = false;
-		
-		_UpdateTimeRemainingSeconds();
-		_UpdateUiState();
-
-		if ( m_numSecondsRemaining > 0 )
+		if ( m_hasPressedAccept )
 		{
-			if ( m_hasPressedAccept )
-			{
-				$.DispatchEvent( 'PlaySoundEffect', 'popup_accept_match_waitquiet', 'MOUSE' );
-			}
-			else
-			{
-				$.DispatchEvent( 'PlaySoundEffect', 'popup_accept_match_beep', 'MOUSE' );
-			}
-			m_jsTimerUpdateHandle = $.Schedule( 1.0, _OnTimerUpdate );
+			$.DispatchEvent( 'PlaySoundEffect', 'popup_accept_match_waitquiet', 'MOUSE' );
 		}
+		else
+		{
+			$.DispatchEvent( 'PlaySoundEffect', 'popup_accept_match_beep', 'MOUSE' );
+		}
+		m_jsTimerUpdateHandle = $.Schedule( 1.0, _OnTimerUpdate );
 	}
+	else
+	{
+		// Delay everything by 1 second
+		$.Schedule( 1.0, function()
+		{
+			$.DispatchEvent( "CloseAcceptPopup" );
+			$.DispatchEvent( 'UIPopupButtonClicked', '' );
+			LobbyAPI.StopMatchmaking();
+
+			if ( !m_hasPressedAccept )
+			{
+				UiToolkitAPI.ShowGenericPopupOk(
+					'DID NOT ACCEPT',
+					'A match was found for you, but you did not accept it, so you have been removed from the queue.',
+					'',
+					() => {},
+					false
+				);
+			}
+		});
+	}
+};
 
 	var _FriendsListNameChanged = function ( xuid )
 	{
@@ -425,9 +462,10 @@ var PopupAcceptMatch = ( function(){ // script was modified by d3gk, primarily u
 	var _OnNqmmAutoReadyUp = function ()
 	{
 		m_jsTimerUpdateHandle = false;
-		$.DispatchEvent( 'PlaySoundEffect', 'popup_accept_match_confirmed', 'MOUSE' );
+		//$.DispatchEvent( 'PlaySoundEffect', 'popup_accept_match_confirmed', 'MOUSE' );
 		// LobbyAPI.SetLocalPlayerReady( 'deferred' );
 		$.DispatchEvent( "CloseAcceptPopup" );
+		LobbyAPI.StopMatchmaking();
 		$.DispatchEvent( 'UIPopupButtonClicked', '' );
 	}
 
@@ -479,17 +517,20 @@ function acceptLoop() {
         delay(randomDelay * 1000, () => {
             // $.Msg('End after delay');`
             
-            if (m_numPlayersReady == 10) {
-				if ( IsLetsRoll ) {
-					var mapgroupaaa = LobbyAPI.GetSessionSettings().game;
-					var mapsList = mapgroupaaa.mapgroupname.split(',');
-					var map = mapsList[0].replace(/mg_/g, "");
-					GameInterfaceAPI.ConsoleCommand( "mp_force_pick_time 0; game_mode 1; game_type 0; map " + map );
-				}
-				
-				IsLetsRoll = true;
-				// return;
-            }
+if (m_numPlayersReady == 10) {
+	if (IsLetsRoll) {
+		//$.DispatchEvent('PlaySoundEffect', 'popup_accept_match_confirmed', 'MOUSE');
+		
+		$.Schedule(1.5, function () {
+			var mapgroupaaa = LobbyAPI.GetSessionSettings().game;
+			var mapsList = mapgroupaaa.mapgroupname.split(',');
+			var map = mapsList[0].replace(/mg_/g, "");
+			GameInterfaceAPI.ConsoleCommand("mp_force_pick_time 0; game_mode 1; game_type 0; map " + map);
+			LobbyAPI.StopMatchmaking();
+		});
+	}
+	IsLetsRoll = true;
+}
             loop();
         });
     }

@@ -789,15 +789,9 @@
 					
 					<CSGOSettingsSlider id="vb_sv" text="#SFUI_Settings_ViewmodelBobY" max="2.0" displayprecision="1" min="0.1" convar="cl_bobamt_vert"/>
 					<Panel class="horizontal-separator"/>
-					<CSGOSettingsSlider id="ViewmodelSway" text="#SFUI_Settings_ViewmodelSway" displayprecision="1" min="-1.5" max="2.5" convar="cl_wpn_sway_scale"/><Panel class="horizontal-separator"/>
-					
-
-					        
-					   
+					<CSGOSettingsSlider id="ViewmodelSway" text="#SFUI_Settings_ViewmodelSway" displayprecision="1" min="-1.5" max="2.5" convar="cl_wpn_sway_scale"/><Panel class="horizontal-separator"/>		   
 			</Panel>
-
-			        
-			   
+ 
 		</Panel>
 		<Panel class="content-controls-actions-bar">
 			<Button id="SettingsRestoreKbMouse"

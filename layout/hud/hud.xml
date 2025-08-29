@@ -5,6 +5,7 @@
 	</styles>
     <scripts>
 		<include src="file://{resources}/scripts/mock_adapter.js" />
+		<include src="file://{resources}/scripts/hud/hudversus.js" />
     	<include src="file://{resources}/scripts/hud/hudcolor.js" />
   	</scripts>
 
@@ -20,7 +21,7 @@
 			<CSGOHudDamageIndicator id="HudDamageIndicator"/>
 			<CSGOHudReticle id="HudReticle"/>
 		</Panel>
-
+        <Panel id="HudBottomGradient" hittest="false" />
 		<Frame id="MapDraft" class="full-width full-height" src="file://{resources}/layout/mapdraft.xml"/>
 
 		            

@@ -40,7 +40,6 @@ var ContextMenuLobbies;
             }
         }
         ShowHideNewLobbiesBtn();
-        elInviteContainer.SetSendScrollPositionChangedEvents(true);
     }
     ContextMenuLobbies.Init = Init;
     ;
@@ -112,7 +111,5 @@ var ContextMenuLobbies;
         $.RegisterForUnhandledEvent('PanoramaComponent_PartyBrowser_InviteConsumed', Init);
         $.RegisterForUnhandledEvent('PanoramaComponent_PartyBrowser_InviteReceived', Init);
         let elLister = $.GetContextPanel().FindChildInLayoutFile('id-context-menu-lobbies');
-        elLister.SetSendScrollPositionChangedEvents(true);
-        $.RegisterEventHandler('ScrollPositionChanged', elLister, ShowHideNewLobbiesBtn);
     }
 })(ContextMenuLobbies || (ContextMenuLobbies = {}));

@@ -4,7 +4,10 @@ var MainMenu = ( function() {
 	var _m_activeTab;
 	var _m_sideBarElementContextMenuActive = false;
 	var _m_elContentPanel = $( '#JsMainMenuContent' );
-	var _m_playedInitalFadeUp = false; // d3gks notification debug stuff which is pretty much no longer used because of the new notification button..  
+	var _m_playedInitalFadeUp = false; 
+	let g_bModVersionOutdated = false;
+    let g_sRemoteModVersion = "";
+    const CURRENT_MOD_VERSION = "1.8.5.5"; // update this when releasing a new version
 	var _debug_d3gk_IsQOutOfDate = false; // d3gks notification debug stuff which is pretty much no longer used because of the new notification button..   
 	var _debug_d3gk_IsQVAC = false; // d3gks notification debug stuff which is pretty much no longer used because of the new notification button..    
 	var _debug_d3gk_IsQOverwatch = false; // d3gks notification debug stuff which is pretty much no longer used because of the new notification button..  
@@ -110,18 +113,16 @@ var _SetBackgroundMovie = function() {
     // fades the mainmenu background when disconnecting, changing and loading into the mainmenu
     background.style.opacity = '0';
 	containerpanel.style.opacity = '0';
-
-    _PauseMainMenuCharacter(); // during the background change transition, the vanity pauses and then it's gonna restart the vanity when the unpause script initiates
+    _PauseMainMenuCharacter();
 
     $.Schedule(0.7, function() {
         var backgroundMovie = GameInterfaceAPI.GetSettingString('ui_mainmenu_bkgnd_movie_CC4ECB9'); // ui background movie convar which tracks which background you set, example: inferno or dust2 or train and so on.
-
         _UnPauseMainMenuCharacter();
         videoPlayer.SetAttributeString('data-type', backgroundMovie);
         videoPlayer.SetMovie("file://{resources}/videos/" + backgroundMovie + ".webm");
         videoPlayer.SetSound('UIPanorama.BG_' + backgroundMovie);
         videoPlayer.Play();
-
+        
         if (vanityPanel && vanityPanel.IsValid()) {
             _SetVanityLightingBasedOnBackgroundMovie(vanityPanel);
             vanityPanel.visible = true;   // makes the vanity instantly visible when the background fades in
@@ -134,7 +135,7 @@ var _SetBackgroundMovie = function() {
         _InitVanity();
 		_InitVanityNoGC();
         _ForceRestartVanity();
-        _LobbyPlayerUpdated();
+        //_LobbyPlayerUpdated();
     });
 };
 
@@ -176,7 +177,7 @@ var _OnShowMainMenu = function() {
     _GcLogonNotificationReceived(); // gets information from the gc so that your stuff works like matchmaking, inventory, ranks etc, however as we all know mm is disabled, so is half of the gc now.
     _BetaEnrollmentStatusChange(); // cs2 beta enrollment for those who got it early or late into cs2's beta. screw cs2 it sucks and they should've kept csgo online with all services.
     _UpdateStoreAlert(); // updates the store alert for when you get a drop or something new gets added into it. 
-    _DeleteSurvivalEndOfMatch(); // entirely removes danger zones eom panel from the mainmenu.
+    _DeleteSurvivalEndOfMatch(); // entirely removes danger zones eom panel from the mainmenu. however it might fail sometimes because valve didn't use gamestateapi for it, all they did was use javascript to remove it which causes issues later
     _DeletePauseMenuMissionPanel(); // entirely removes operation mission panels from the mainmenu
     _ShowHideAlertForNewEventForWatchBtn(); // new event in watch tab? not sure what this really does as i've never seen it in action.
     _UpdateUnlockCompAlert(); // gives you the alert when you unlock competitive and wingman.
@@ -184,6 +185,10 @@ var _OnShowMainMenu = function() {
 	_ShowFloatingPanels(); // shows left and right columns in the mainmenu
 	_RightColumnLoad(); // just read the  code for yourself.. i was pulling my hair out trying to fix the right column.
 	_PlayMenuSong(); // plays the mainmenu song without the panoramic effect, because i didn't want to bother fixing the issues so this is the final fix.
+	$.Schedule(3.0, function() {
+    CheckModVersionAsync(); // checks if there is a new mod update available, uses github to validate if the client version is the same as on github.
+	_InsureSessionCreated();
+});
 
   // devmode launch detection code here.. very useless unless you want to see what debug stuff there is..
     if (GameInterfaceAPI.HasCommandLineParm('-devmode')) {
@@ -202,6 +207,33 @@ var _OnShowMainMenu = function() {
         }
     });
 };
+
+
+function CheckModVersionAsync() {
+    $.AsyncWebRequest("https://raw.githubusercontent.com/DeformedSAS/Counter-Strike2-Global-Offensive/refs/heads/main/version.json", {
+        type: "GET",
+        success: function(response) {
+            try {
+                const data = JSON.parse(response);
+                if (data.version !== CURRENT_MOD_VERSION) {
+                    g_bModVersionOutdated = true;
+                    g_sRemoteModVersion = data.version;
+
+                    $.Msg(`Outdated version, please update: local=${CURRENT_MOD_VERSION}, remote=${data.version}`);
+
+                    $.DispatchEvent('PlaySoundEffect', 'PanoramaUI.Lobby.Error', 'MOUSE');
+                } else {
+                    $.Msg("You are up to date.");
+                }
+            } catch (e) {
+                $.Msg("Unable to check for updates:", e);
+            }
+        },
+        error: function(e) {
+            $.Msg("[Mod Version Check] Request failed:", e);
+        }
+    });
+}
 
 	var _TournamentDraftUpdate = function () // major pickems. nothing special here in this script i guess..
 	{
@@ -351,6 +383,7 @@ var _OnShowMainMenu = function() {
         _CancelNotificationSchedule();
         UiToolkitAPI.CloseAllVisiblePopups();
         _StopFetchingTournamentData();
+		_HideFloatingPanels();
     }
 	
 	var _OnShowPauseMenu = function() // does the pause menu magic tricks
@@ -653,7 +686,7 @@ function _OnHideContentPanel() { // hides the content panel, shows left and righ
 		} else
 			$('#MainMenuBackground').AddClass('Dim');
 	};
-	var _InitNewsAndStore = function ()
+	var _InitNewsAndStore = function () // this script is liability.. just like me, apparently
 	{	
 		                             
 		_AddStream();
@@ -745,14 +778,7 @@ function _OnHideContentPanel() { // hides the content panel, shows left and righ
 	function OnHomeButtonPressed()
 	{
 		$.DispatchEvent( 'HideContentPanel' );
-
-		                                            	
-		var vanityPanel = $( '#JsMainmenu_Vanity' );
-		if ( vanityPanel )
-		{
-			 $('#MainMenuNavBarHome').checked = true;
-			vanityPanel.Pause( false );
-		}
+        $('#MainMenuNavBarHome').checked = true;
 	}
 
 	function _OnQuitButtonPressed()
@@ -835,11 +861,68 @@ function _OnHideContentPanel() { // hides the content panel, shows left and righ
             elNewsContainer.RemoveClass('mainmenu-news-container-stream-active');
         }
     }
-	var _ForceRestartVanity = function()
-	{
-		_m_bVanityAnimationAlreadyStarted = false;
-		_InitVanity();
-	};                                               
+var _ForceRestartVanity = function ()
+{
+    _m_bVanityAnimationAlreadyStarted = false;
+
+    var myXuid = MyPersonaAPI.GetXuid();
+    var numPlayers = PartyListAPI.GetCount();
+
+    for (let i = 0; i < numPlayers; i++) {
+        const xuid = PartyListAPI.GetXuidByIndex(i);
+        const vanityPanel = $('#JsMainmenu_Vanity_' + i);
+
+        if (!xuid || !vanityPanel) continue;
+
+        let oSettings;
+
+        if (xuid === myXuid) {
+            // ✅ Local player vanity
+            oSettings = ItemInfo.GetOrUpdateVanityCharacterSettings();
+            _ApplyVanitySettingsToLobbyMetadata(oSettings);
+        } else {
+            // ✅ Remote player vanity
+            const vanityData = PartyListAPI.GetPartyMemberVanity(xuid);
+            if (!vanityData) continue;
+
+            const info = vanityData.split(',');
+            oSettings = {
+                team: info[0],
+                charItemId: info[1],
+                glovesItemId: info[2],
+                loadoutSlot: info[3],
+                weaponItemId: info[4],
+                activity: 'ACT_CSGO_UIPLAYER_WALKUP',
+                arrModifiers: ['vanity']
+            };
+        }
+
+        oSettings.activity = 'ACT_CSGO_UIPLAYER_WALKUP';
+        oSettings.arrModifiers.push('vanity');
+        oSettings.panel = vanityPanel;
+
+        vanityPanel.RemoveClass('hidden');
+        vanityPanel.m_xuid = xuid;
+        vanityPanel.m_agentId = oSettings.charItemId || '';
+        vanityPanel.SetSceneAngles(0, 0, 0, true);
+        vanityPanel.hittest = false;
+
+        if (xuid === myXuid) {
+            CharacterAnims.PlayAnimsOnPanel(oSettings);
+        }
+
+        _SetVanityLightingBasedOnBackgroundMovie(vanityPanel);
+        _RigVanityHover(vanityPanel);
+
+        $.Schedule(0.0, function () {
+            if (vanityPanel && vanityPanel.IsValid()) {
+                vanityPanel.hittest = true;
+            }
+        });
+
+        $.Msg('[Vanity] ForceRestart | xuid: ' + xuid + ' | local: ' + (xuid === myXuid));
+    }
+};
 	function _RigVanityHover ( vanityPanel )
 	{
 		if ( !vanityPanel || !vanityPanel.IsValid() )
@@ -881,39 +964,52 @@ function _OnHideContentPanel() { // hides the content panel, shows left and righ
         _CreatUpdateVanityInfo(oSettings);
     };
 	
-	var _InitVanity = function() // this is the vanity player agent initialization script, basically controls your stuff. api's are documented on valves forum.
-	{                          
-		if ( !MyPersonaAPI.IsInventoryValid() ) {                                             
-			return;
-		}
-		if ( _m_bVanityAnimationAlreadyStarted ) {                                                                         
-			return;
-		}
 
-		var oSettings = ItemInfo.GetOrUpdateVanityCharacterSettings();
-		oSettings.activity = 'ACT_CSGO_UIPLAYER_WALKUP';
-		oSettings.arrModifiers.push( 'vanity' );                                                               
-		_ApplyVanitySettingsToLobbyMetadata( oSettings );
+var _InitVanity = function(id, isLocalPlayer, settings)
+{
+    var vanityPanel = $('#JsMainmenu_Vanity_' + id);
+    if (!vanityPanel) return;
 
-		var vanityPanel = $( '#JsMainmenu_Vanity' );
-		if ( !vanityPanel )
-		{                                                                 
-			return;
-		}
-		oSettings.panel = vanityPanel;                                    
-		vanityPanel.SetSceneAngles( 0, 0, 0, true );                                                                        
-		vanityPanel.hittest = false;                               
-		_m_bVanityAnimationAlreadyStarted = true;
-		CharacterAnims.PlayAnimsOnPanel( oSettings );
-		_SetVanityLightingBasedOnBackgroundMovie( vanityPanel );
-		if ( oSettings.panel.BHasClass( 'hidden' ) ) {
-			oSettings.panel.RemoveClass( 'hidden' );
-		}
+    var oSettings = ItemInfo.GetOrUpdateVanityCharacterSettings();
 
-		_RigVanityHover( vanityPanel );                                                                  
-		$.Schedule( 3.0, function() {if (vanityPanel && vanityPanel.IsValid() ) vanityPanel.hittest = true;} );
-	};
-	var _InitVanityNoGC = function() // all this does is show the vanity while not connected to GC to fix the giant idle ct agent in the ui..
+    if (isLocalPlayer) {
+        oSettings = ItemInfo.GetOrUpdateVanityCharacterSettings();
+    } else {
+        var info = settings.vanity_data.split(',');
+        oSettings = {
+            team: info[0],
+            charItemId: info[1],
+            glovesItemId: info[2],
+            loadoutSlot: info[3],
+            weaponItemId: info[4],
+            activity: 'ACT_CSGO_UIPLAYER_WALKUP',
+            arrModifiers: [ 'vanity' ]
+        };
+    }
+
+    oSettings.activity = 'ACT_CSGO_UIPLAYER_WALKUP';
+    oSettings.arrModifiers.push('vanity');
+    _ApplyVanitySettingsToLobbyMetadata(oSettings);
+
+    oSettings.panel = vanityPanel;
+    vanityPanel.RemoveClass('hidden');
+
+    vanityPanel.m_xuid = settings.xuid;
+
+    vanityPanel.SetSceneAngles(0, 0, 0, true);
+    vanityPanel.hittest = false;
+    _m_bVanityAnimationAlreadyStarted = true;
+
+    CharacterAnims.PlayAnimsOnPanel(oSettings);
+
+    _SetVanityLightingBasedOnBackgroundMovie(vanityPanel);
+    _RigVanityHover(vanityPanel);
+
+    $.Schedule(3.0, function () {
+        if (vanityPanel && vanityPanel.IsValid()) vanityPanel.hittest = true;
+    });
+};
+	var _InitVanityNoGC = function() // all this does is show the vanity while not connected to GC to fix the giant idle ct agent in the ui.. only removed the inventory api thing.
 	{                          
 		if ( _m_bVanityAnimationAlreadyStarted ) {                                                                         
 			return;
@@ -950,14 +1046,53 @@ function _OnHideContentPanel() { // hides the content panel, shows left and righ
 			oSettings.loadoutSlot, oSettings.weaponItemId );
 	};
 
-	var _LobbyPlayerUpdated = function() // this function does nothing and for some reason the game requires it or otherwise it won't load mainmenu.js BUG THIS!
-	{
-		  
+var _m_aCurrentLobbyVanityData = []; // cache for diffing
 
-		  
-	};
+var _LobbyPlayerUpdated = function() {
+    var numPlayers = PartyListAPI.GetCount();
+    var aCurrentLobbyVanityData = [];
 
-	var _SetVanityLightingBasedOnBackgroundMovie = function( vanityPanel )
+    for (let k = 0; k < numPlayers; k++) {
+        var xuid = PartyListAPI.GetXuidByIndex(k);
+        aCurrentLobbyVanityData.push({
+            xuid: xuid,
+            isLocalPlayer: xuid === MyPersonaAPI.GetXuid(),
+            playeridx: k,
+            vanity_data: PartyListAPI.GetPartyMemberVanity(xuid)
+        });
+    }
+
+    _UpdateLobbyVanity(aCurrentLobbyVanityData);
+};
+
+var _UpdateLobbyVanity = function(players)
+{
+    for (let i = 0; i < 5; i++) {
+        let vanityPanel = $('#JsMainmenu_Vanity_' + i);
+
+        if (!players[i]) {
+            if (vanityPanel && !vanityPanel.BHasClass('hidden')) {
+                vanityPanel.AddClass('hidden');
+            }
+            continue;
+        }
+
+        const newData = players[i];
+        const oldData = _m_aCurrentLobbyVanityData[i];
+
+        if (oldData &&
+            oldData.xuid === newData.xuid &&
+            oldData.vanity_data === newData.vanity_data) {
+            continue;
+        }
+
+        _InitVanity(newData.playeridx, newData.isLocalPlayer, newData);
+    }
+
+    _m_aCurrentLobbyVanityData = players;
+};
+
+	var _SetVanityLightingBasedOnBackgroundMovie = function( vanityPanel ) // background lighting, scene angles will be used for each background in the future.
 	{
 		var backgroundMap = $.GetContextPanel().FindChildInLayoutFile( 'MainMenuMovie' ).GetAttributeString( 'data-type', 'dust2' );
                                                                                             
@@ -983,6 +1118,7 @@ function _OnHideContentPanel() { // hides the content panel, shows left and righ
 			vanityPanel.SetDirectionalLightModify( 2 );
 			vanityPanel.SetDirectionalLightColor( 0.0, 0.0, 0.0 );
 			vanityPanel.SetDirectionalLightDirection( 0.76, 0.48, -0.44 );
+			//vanityPanel.SetSceneAngles( 0, 0, 0, true );   
 		}
 else if ( backgroundMap === 'dust2' )
 {
@@ -1008,31 +1144,29 @@ else if ( backgroundMap === 'dust2' )
     vanityPanel.SetDirectionalLightModify( 2 );
     vanityPanel.SetDirectionalLightColor( 0.2, 0.2, 0.18 );
     vanityPanel.SetDirectionalLightDirection( 0.4, 0.4, -0.6 );
+	//vanityPanel.SetSceneAngles( 0, 0, 0, true );   
 }
 else if ( backgroundMap === 'warehouse' )
 {
-
-    vanityPanel.SetFlashlightAmount( 1.5 );
+    vanityPanel.SetFlashlightAmount( 1.8 );
     vanityPanel.SetFlashlightFOV( 55 );
-    vanityPanel.SetFlashlightColor( 1.8, 1.9, 2.2 );
+    vanityPanel.SetFlashlightColor( 2.1, 2.0, 1.7 );
 
-
-    vanityPanel.SetAmbientLightColor( 0.35, 0.4, 0.5 );
-
+    vanityPanel.SetAmbientLightColor( 0.38, 0.36, 0.42 );
 
     vanityPanel.SetDirectionalLightModify( 0 );
-    vanityPanel.SetDirectionalLightColor( 0.2, 0.3, 0.45 );
+    vanityPanel.SetDirectionalLightColor( 0.25, 0.28, 0.4 ); 
     vanityPanel.SetDirectionalLightDirection( -0.5, 0.8, -0.3 );
 
-
     vanityPanel.SetDirectionalLightModify( 1 );
-    vanityPanel.SetDirectionalLightColor( 0.15, 0.15, 0.2 );
+    vanityPanel.SetDirectionalLightColor( 0.28, 0.22, 0.18 );
     vanityPanel.SetDirectionalLightDirection( 0.6, -0.2, -0.6 );
 
-
     vanityPanel.SetDirectionalLightModify( 2 );
-    vanityPanel.SetDirectionalLightColor( 0.08, 0.1, 0.2 );
+    vanityPanel.SetDirectionalLightColor( 0.1, 0.12, 0.18 );
     vanityPanel.SetDirectionalLightDirection( 0.3, 0.5, -0.8 );
+
+    //vanityPanel.SetSceneAngles( 0, 0, 0, true );
 }
 else if ( backgroundMap === 'mirage' )
 {
@@ -1058,6 +1192,7 @@ else if ( backgroundMap === 'mirage' )
     vanityPanel.SetDirectionalLightModify( 2 );
     vanityPanel.SetDirectionalLightColor( 0.22, 0.2, 0.18 );
     vanityPanel.SetDirectionalLightDirection( 0.5, 0.5, -0.6 );
+	//vanityPanel.SetSceneAngles( 0, 0, 0, true );   
 }
 else if ( backgroundMap === 'inferno' )
 {
@@ -1083,49 +1218,50 @@ else if ( backgroundMap === 'inferno' )
     vanityPanel.SetDirectionalLightModify( 2 );
     vanityPanel.SetDirectionalLightColor( 0.2, 0.18, 0.15 );
     vanityPanel.SetDirectionalLightDirection( 0.5, 0.4, -0.6 );
+	//vanityPanel.SetSceneAngles( 0, 0, 0, true );   
 }
-        else if (backgroundMap === 'sirocco') {
-			vanityPanel.SetFlashlightAmount( 3 );
-			                                               
-			                                                            
-			                                                       
-			vanityPanel.SetFlashlightFOV( 60 );
-			                                                            
-			vanityPanel.SetFlashlightColor( 1.8, 1.8, 2 );
-			vanityPanel.SetAmbientLightColor( 0.27, 0.3, 0.4 );
-			
-			vanityPanel.SetDirectionalLightModify( 0 );
-			vanityPanel.SetDirectionalLightColor(0.00, 0.19, 0.38 );
-			vanityPanel.SetDirectionalLightDirection( 0.1, 0.67, -0.71 );
-			
-			vanityPanel.SetDirectionalLightModify( 1 );
-			vanityPanel.SetDirectionalLightColor( 0.05, 0.09, 0.21) ;
-			vanityPanel.SetDirectionalLightDirection(-0.86, -0.18, -0.47 );
+else if (backgroundMap === 'sirocco') {
+    vanityPanel.SetFlashlightAmount( 2.2 );  
+    vanityPanel.SetFlashlightFOV( 65 );
+    vanityPanel.SetFlashlightColor( 2.0, 1.9, 1.7 );  // warm-white light
 
-			vanityPanel.SetDirectionalLightModify( 2 );
-			vanityPanel.SetDirectionalLightColor( 0.0, 0.0, 0.0 );
-			vanityPanel.SetDirectionalLightDirection( 0.76, 0.48, -0.44 );
-        }
-
-else if ( backgroundMap === 'nuke' )
-{
-    vanityPanel.SetFlashlightAmount( 3.0 ); 
-    vanityPanel.SetFlashlightFOV( 50 );
-    vanityPanel.SetFlashlightColor( 1.4, 1.3, 1.1 ); 
-
-    vanityPanel.SetAmbientLightColor( 0.28, 0.25, 0.22 );
+    vanityPanel.SetAmbientLightColor( 0.35, 0.32, 0.28 ); // slightly warm ambient
 
     vanityPanel.SetDirectionalLightModify( 0 );
-    vanityPanel.SetDirectionalLightColor( 0.9, 0.75, 0.55 ); 
+    vanityPanel.SetDirectionalLightColor( 0.9, 0.75, 0.55 ); // sunlight (warm)
+    vanityPanel.SetDirectionalLightDirection( 0.2, 0.7, -0.65 );
+
+    vanityPanel.SetDirectionalLightModify( 1 );
+    vanityPanel.SetDirectionalLightColor( 0.15, 0.18, 0.25 ); // cool shadow fill
+    vanityPanel.SetDirectionalLightDirection( -0.85, -0.2, -0.5 );
+
+    vanityPanel.SetDirectionalLightModify( 2 );
+    vanityPanel.SetDirectionalLightColor( 0.05, 0.05, 0.07 ); // subtle bounce
+    vanityPanel.SetDirectionalLightDirection( 0.7, 0.5, -0.4 );
+
+    // vanityPanel.SetSceneAngles( 0, 0, 0, true );   
+}
+else if ( backgroundMap === 'nuke' )
+{
+    vanityPanel.SetFlashlightAmount( 2.6 ); 
+    vanityPanel.SetFlashlightFOV( 52 );
+    vanityPanel.SetFlashlightColor( 2.1, 2.0, 1.75 ); // warmer flashlight, soft golden white
+
+    vanityPanel.SetAmbientLightColor( 0.38, 0.34, 0.3 ); // warmer ambient with a bit of yellow-brown
+
+    vanityPanel.SetDirectionalLightModify( 0 );
+    vanityPanel.SetDirectionalLightColor( 1.0, 0.9, 0.75 ); // overhead lights with a warm tint
     vanityPanel.SetDirectionalLightDirection( 0.0, -1.0, 0.0 );
 
     vanityPanel.SetDirectionalLightModify( 1 );
-    vanityPanel.SetDirectionalLightColor( 0.35, 0.22, 0.18 );
-    vanityPanel.SetDirectionalLightDirection( 0.5, 0.2, -0.6 );
+    vanityPanel.SetDirectionalLightColor( 0.45, 0.35, 0.22 ); // strong warm bounce from railings
+    vanityPanel.SetDirectionalLightDirection( 0.6, 0.1, -0.5 );
 
     vanityPanel.SetDirectionalLightModify( 2 );
-    vanityPanel.SetDirectionalLightColor( 0.18, 0.14, 0.12 );
-    vanityPanel.SetDirectionalLightDirection( -0.5, 0.4, -0.5 );
+    vanityPanel.SetDirectionalLightColor( 0.22, 0.2, 0.18 ); // softer warm fill instead of cold fill
+    vanityPanel.SetDirectionalLightDirection( -0.4, 0.5, -0.6 );
+
+    //vanityPanel.SetSceneAngles( 0, 0, 0, true );
 }
 else if ( backgroundMap === 'train' )
 {
@@ -1151,6 +1287,7 @@ else if ( backgroundMap === 'train' )
     vanityPanel.SetDirectionalLightModify( 2 );
     vanityPanel.SetDirectionalLightColor( 0.12, 0.14, 0.2 );
     vanityPanel.SetDirectionalLightDirection( -0.4, 0.5, -0.6 );
+	//vanityPanel.SetSceneAngles( 0, 0, 0, true );   
 }
 else if ( backgroundMap === 'office' )
 {
@@ -1176,6 +1313,7 @@ else if ( backgroundMap === 'office' )
     vanityPanel.SetDirectionalLightModify( 2 );
     vanityPanel.SetDirectionalLightColor( 0.2, 0.25, 0.3 );
     vanityPanel.SetDirectionalLightDirection( 0.5, 0.4, -0.3 );
+	//vanityPanel.SetSceneAngles( 0, 0, 0, true );   
 }
 else if ( backgroundMap === 'anubis' )
 {
@@ -1201,6 +1339,7 @@ else if ( backgroundMap === 'anubis' )
     vanityPanel.SetDirectionalLightModify( 2 );
     vanityPanel.SetDirectionalLightColor( 0.15, 0.12, 0.08 );
     vanityPanel.SetDirectionalLightDirection( 0.5, 0.4, -0.6 );
+	//vanityPanel.SetSceneAngles( 0, 0, 0, true );   
 }
 else if ( backgroundMap === 'vertigo' )
 {
@@ -1226,6 +1365,7 @@ else if ( backgroundMap === 'vertigo' )
     vanityPanel.SetDirectionalLightModify( 2 );
     vanityPanel.SetDirectionalLightColor( 0.2, 0.25, 0.35 );
     vanityPanel.SetDirectionalLightDirection( 0.6, 0.5, -0.5 );
+	//vanityPanel.SetSceneAngles( 0, 0, 0, true );   
 }
 		else if ( backgroundMap === 'ancient' )
 		{
@@ -1248,7 +1388,8 @@ else if ( backgroundMap === 'vertigo' )
 
 			vanityPanel.SetDirectionalLightModify( 2 );
 			vanityPanel.SetDirectionalLightColor( 0.0, 0.0, 0.0 );
-			vanityPanel.SetDirectionalLightDirection( 0.76, 0.48, -0.44 );                                              
+			vanityPanel.SetDirectionalLightDirection( 0.76, 0.48, -0.44 );   
+            //vanityPanel.SetSceneAngles( 0, 0, 0, true );   			
 		}
 		else if ( backgroundMap === 'cache' )
 		{
@@ -1271,7 +1412,8 @@ else if ( backgroundMap === 'vertigo' )
 
 			vanityPanel.SetDirectionalLightModify( 2 );
 			vanityPanel.SetDirectionalLightColor( 0.0, 0.0, 0.0 );
-			vanityPanel.SetDirectionalLightDirection( 0.76, 0.48, -0.44 );                                              
+			vanityPanel.SetDirectionalLightDirection( 0.76, 0.48, -0.44 ); 
+            //vanityPanel.SetSceneAngles( 0, 0, 0, true );   			
 		}
 		else if ( backgroundMap === 'blacksite' )
 		{
@@ -1293,6 +1435,7 @@ else if ( backgroundMap === 'vertigo' )
 			vanityPanel.SetDirectionalLightModify( 2 );
 			vanityPanel.SetDirectionalLightColor( 0.75, 1.20, 1.94 );
 			vanityPanel.SetDirectionalLightDirection( 0.76, 0.48, -0.44 );
+			//vanityPanel.SetSceneAngles( 0, 0, 0, true );   
 		}
 	    else if ( backgroundMap === 'cbble' )
 		{
@@ -1315,6 +1458,7 @@ else if ( backgroundMap === 'vertigo' )
 			vanityPanel.SetDirectionalLightModify( 2 );
 			vanityPanel.SetDirectionalLightColor( 0.72, 1.40, 1.68 );
 			vanityPanel.SetDirectionalLightDirection( 0.50, -0.69, -0.52 );
+			//vanityPanel.SetSceneAngles( 0, 0, 0, true );   
 
 			                                                   
 		}
@@ -1340,6 +1484,7 @@ else if ( backgroundMap === 'vertigo' )
 			vanityPanel.SetDirectionalLightModify( 2 );
 			vanityPanel.SetDirectionalLightColor( 0.0, 0.0, 0.0 );
 			vanityPanel.SetDirectionalLightDirection( 0.76, 0.48, -0.44 );
+			//vanityPanel.SetSceneAngles( 0, 0, 0, true );   
 		}
 		
 	};
@@ -1401,9 +1546,11 @@ else if ( backgroundMap === 'vertigo' )
 		                                
 		if ( $.GetContextPanel().BHasClass( 'MainMenuRootPanel--PauseMenuMode' ) ) {
 			$.DispatchEvent( 'CSGOMainMenuResumeGame' );
+			$('#MainMenuNavBarHome').checked = true;
 		}
 		else {
 			MainMenu.OnHomeButtonPressed();
+			$('#MainMenuNavBarHome').checked = true;
 
 			var elPlayButton = $( '#MainMenuNavBarPlay' );
 			if( elPlayButton && !elPlayButton.BHasClass( 'mainmenu-navbar__btn-small--hidden' ) ) {
@@ -1710,15 +1857,6 @@ function _GetNotificationBarData() { // rest in peace 32px line at the top of th
         }
     }
 
-    //if (NewsAPI.IsNewClientAvailable()) {
-    //    const notification = { color_class: "", title: "", tooltip: "", link: "", icon: "" };
-    //    notification.color_class = "yellow-alert";
-    //    notification.icon = "client_update";
-    //    notification.title = $.Localize("#SFUI_MainMenu_Outofdate_Title");
-    //    notification.tooltip = $.Localize("#SFUI_MainMenu_Outofdate_Body");
-    //    aAlerts.push(notification);
-    //}
-
     const nIsVacBanned = MyPersonaAPI.IsVacBanned();
     if (nIsVacBanned != 0) {
         const notification = { color_class: "", title: "", tooltip: "", link: "", icon: "" };
@@ -1772,7 +1910,19 @@ function _GetNotificationBarData() { // rest in peace 32px line at the top of th
             aAlerts.push(notification);
         }
     }
-
+if (g_bModVersionOutdated) {
+    const notification = {
+        color_class: "yellow-alert",
+        icon: "client_update",
+        title: $.Localize("#SFUI_MainMenu_Outofdate_Title"),
+        tooltip:
+            "In order to get the most recent update, please download the latest release and restart.\n\n" +
+            " Installed version: " + CURRENT_MOD_VERSION + "\n" +
+            " Latest version: " + g_sRemoteModVersion,
+        link: "https://github.com/DeformedSAS/Counter-Strike2-Global-Offensive/releases"
+    };
+    aAlerts.push(notification);
+}
     return aAlerts;
 }
 
@@ -2139,19 +2289,17 @@ function _GetNotificationBarData() { // rest in peace 32px line at the top of th
         }
     };
 
-var _PauseMainMenuCharacter = function() { // pauses your agent when changing background or disconnecting from a server.
-    var vanityPanel = $('#JsMainmenu_Vanity');
-
-    if (vanityPanel) {
-        vanityPanel.Pause(true);
+var _PauseMainMenuCharacter = function() {
+    for (let i = 0; i < 5; i++) {
+        let vanityPanel = $('#JsMainmenu_Vanity_' + i);
+        if (vanityPanel) vanityPanel.Pause(true);
     }
 };
 
-var _UnPauseMainMenuCharacter = function() { // unpauses your agent after background change.
-    var vanityPanel = $('#JsMainmenu_Vanity');
-
-    if (vanityPanel) {
-        vanityPanel.Pause(false);
+var _UnPauseMainMenuCharacter = function() {
+    for (let i = 0; i < 5; i++) {
+        let vanityPanel = $('#JsMainmenu_Vanity_' + i);
+        if (vanityPanel) vanityPanel.Pause(false);
     }
 };
 

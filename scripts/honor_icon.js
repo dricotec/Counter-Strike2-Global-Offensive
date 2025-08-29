@@ -38,7 +38,7 @@ var HonorIcon;
         };
         SetOptions(options);
     }
-    $.RegisterEventHandler("HonorIcon_SetOptions", $.GetContextPanel(), SetOptionsEventHandler);
+    //$.RegisterEventHandler("HonorIcon_SetOptions", $.GetContextPanel(), SetOptionsEventHandler);
     function SetOptions(options) {
         const honor_icon_frame_panel = options.honor_icon_frame_panel;
         if (!honor_icon_frame_panel || !honor_icon_frame_panel.IsValid())

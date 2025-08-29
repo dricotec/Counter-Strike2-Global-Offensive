@@ -18,7 +18,6 @@
     x: 0px;
 }
 
-
 .avatar--party .avatar-flair
 {
     height: 20px;
@@ -131,6 +130,7 @@
 .avatar-image__default
 {
     background-color: rgba(209, 209, 209, 0.25);
+    background-image: url("file://{images}/icons/ui/player.svg");
     background-size: 70% 70%;
     background-position: 50% 50%;
     background-repeat: no-repeat;

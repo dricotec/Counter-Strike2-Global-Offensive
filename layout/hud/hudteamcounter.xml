@@ -2,6 +2,7 @@
 	<styles>
 		<include src="file://{resources}/styles/csgostyles.css" />
 		<include src="file://{resources}/styles/hud/hudteamcounter.css" />
+		<include src="file://{resources}/styles/hud/hudteamcounter_equipinfo.css" />
     	<include src="file://{resources}/styles/hud/hudvoicestatus.css" />
 	</styles>
 
@@ -18,9 +19,14 @@
 
 					<Panel id="AvatarL__ImageBG" class="avatarl__imagebg">
 						<CSGOAvatarImage id="AvatarImage" class="Avatar__CommonMargin AvatarL__Internal"/>
-						<CSGOAvatarHealthBar id="HealthBar" class="Avatar__HealthMargin AvatarL__HealthBar"/>
 					</Panel>
-
+				</Panel>
+                <Panel id="HealthBarContainer" class="healthbar-container">
+                    <Panel class="healthbar__bg" />
+                    <CSGOAvatarHealthBar id="HealthBar" class="Avatar__HealthMargin AvatarL__HealthBar" />
+                    <Panel class="healthbar__health-number equipinfo__row--health">
+                        <Label class="equipinfo__health stratum-bold" text="{s:health}" />
+                    </Panel>
 				</Panel>                 
 
 				                                                                                            
@@ -40,7 +46,7 @@
 					<Image id="Bot" class="AvatarL__Bot" src="file://{images}/hud/teamcounter/teamcounter_botavatar.svg"/>
 					<Image id="Dominated" class="AvatarL__Dominated" src="file://{images}/hud/teamcounter/teamcounter_dominated.svg"/>
 					<Image id="Nemesis" class="AvatarL__Nemesis" src="file://{images}/icons/ui/nemesis.svg"/>
-					<Image id="PlayerColor" class="AvatarL__PlayerColor" src="file://{images}/hud/teamcounter/teamcounter_playercolor.png"/>
+					<Image id="PlayerColor" class="avatar-team-color colorize-teammate-color" />
 					<Label id="PlayerLetter" class="AvatarL__PlayerLetter"/>
 
           <Panel id="Sound" class="avatar-speaking">

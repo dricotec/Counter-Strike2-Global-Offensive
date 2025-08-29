@@ -9,7 +9,7 @@ var friendsList = (function() {
 	var m_Sections = $.GetContextPanel().FindChildInLayoutFile( 'id-friendslist-accordian' );
 	var _m_sLobbiesTabListFiltersString = GameInterfaceAPI.GetSettingString( 'ui_nearbylobbies_filter' );
 	var _m_schfnUpdateAntiAddiction = null;
-	var _m_ClosedSectionHeight = Math.floor( $.GetContextPanel().FindChildInLayoutFile( 'id-friendslist-section-recent' ).desiredlayoutheight / $.GetContextPanel().actualuiscale_x );
+	var _m_ClosedSectionHeight = Math.floor( $.GetContextPanel().FindChildInLayoutFile( 'id-friendslist-section-friends' ).desiredlayoutheight / $.GetContextPanel().actualuiscale_x );
 	var _Init = function()
 	{
 		                               
@@ -124,7 +124,7 @@ var friendsList = (function() {
 		                                    
 		if ( _m_ClosedSectionHeight === 0 || _m_ClosedSectionHeight === undefined)
 		{
-			_m_ClosedSectionHeight = Math.floor( $.GetContextPanel().FindChildInLayoutFile( 'id-friendslist-section-recent' ).desiredlayoutheight / $.GetContextPanel().actualuiscale_x );
+			_m_ClosedSectionHeight = Math.floor( $.GetContextPanel().FindChildInLayoutFile( 'id-friendslist-section-friends' ).desiredlayoutheight / $.GetContextPanel().actualuiscale_x );
 			                                                           
 		};
 
@@ -139,21 +139,6 @@ var friendsList = (function() {
 				xml: 'friendtile',
 				xuid_func: funcGetXuid,
 				no_data_String: '#FriendsList_nodata_friends'
-			} );
-		}
-		
-		if ( sectionId === 'id-friendslist-section-recent' || bUpdateAll )
-		{
-			funcGetXuid = _GetRecentXuidByIndex;
-			_UpdateSectionContent( {
-				id: 'id-friendslist-section-recent',
-				count: _GetRecentsCount(),
-				xml: 'friendtile',
-				xuid_func: funcGetXuid,
-				type: 'recent',
-				no_data_String: '#FriendsList_nodata_recents',
-				show_loading_bar_only: _ShowRecentsLoadingBar(),
-				loading_bar_id: 'JsFriendsListRecentsLoadingBar'
 			} );
 		}
 		
@@ -629,7 +614,6 @@ var friendsList = (function() {
 	friendsList.Init();
 	$.RegisterForUnhandledEvent( 'PanoramaComponent_GC_Hello', friendsList.OnGcHello );
 	$.RegisterForUnhandledEvent( "PanoramaComponent_FriendsList_RebuildFriendsList", friendsList.UpdateSection.bind( undefined,'id-friendslist-section-friends', false ));
-	$.RegisterForUnhandledEvent( 'PanoramaComponent_Teammates_Refresh', friendsList.UpdateSection.bind( undefined,'id-friendslist-section-recent', false ) );
 	$.RegisterForUnhandledEvent( 'PanoramaComponent_PartyBrowser_Refresh', friendsList.UpdateSection.bind( undefined,'id-friendslist-section-broadcast', false ) );
 	$.RegisterForUnhandledEvent( 'PanoramaComponent_FriendsList_NameChanged', friendsList.FriendsListNameChanged );
 	$.RegisterForUnhandledEvent( 'PanoramaComponent_PartyBrowser_InviteConsumed', friendsList.UpdateIncomingInvitesContainer );

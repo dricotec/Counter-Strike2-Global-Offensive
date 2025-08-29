@@ -2,6 +2,7 @@
     <styles>
         <include src="file://{resources}/styles/csgostyles.css"/>
         <include src="file://{resources}/styles/mainmenu.css"/>
+		<include src="file://{resources}/styles/mainmenu_vanity_test.css"/>
     </styles>
     <scripts>
         <include src="file://{resources}/scripts/common/promoted_settings.js"/>
@@ -27,10 +28,10 @@
                 </Movie>
             </Panel>
         </snippet>
-        <snippet name="MainMenuVanitySnippet">
-            <Panel>
-                <Panel id="JsMainmenu_Vanity-Container" class="mainmenu-vanity">
-                    <ItemPreviewPanel id="JsMainmenu_Vanity"
+      <snippet name="MainMenuVanitySnippet">
+			<Panel>
+				<Panel id="JsMainmenu_Vanity-Container" class="mainmenu-vanity MainMenuModeOnly">
+					<ItemPreviewPanel id="JsMainmenu_Vanity_0"
                                       class="full-width full-height hidden"
                                       manifest="resource/ui/econ/ItemModelPanelCharWeaponInspect.res"
                                       item="models/player/custom_player/legacy/ctm_sas.mdl"
@@ -38,7 +39,51 @@
                                       enable_floorshadow="true"
                                       hittest="false">
                         <Panel id="id-mainmenu-vanity-hover" hittest="true"/>
-                    </ItemPreviewPanel>
+					</ItemPreviewPanel>
+
+					<ItemPreviewPanel id="JsMainmenu_Vanity_1"
+									class="full-width full-height mainmenu-vanity-2 hidden"
+									style="margin-left: 550px;"
+									manifest="resource/ui/econ/ItemModelPanelCharWeaponInspect.res"
+									item="models/player/custom_player/legacy/ctm_sas.mdl"
+									mouse_rotate="false"
+									enable_floorshadow="true"
+									hittest="false">
+						<Panel id="id-mainmenu-vanity-hover" hittest="true"/>
+					</ItemPreviewPanel>
+
+					<ItemPreviewPanel id="JsMainmenu_Vanity_2"
+									class="full-width full-height mainmenu-vanity-3 hidden"
+									style="margin-left: 10px;"
+									manifest="resource/ui/econ/ItemModelPanelCharWeaponInspect.res"
+									item="models/player/custom_player/legacy/ctm_sas.mdl"
+									mouse_rotate="false"
+									enable_floorshadow="true"
+									hittest="false">
+						<Panel id="id-mainmenu-vanity-hover" hittest="true"/>
+					</ItemPreviewPanel>
+
+					<ItemPreviewPanel id="JsMainmenu_Vanity_3"
+									class="full-width full-height mainmenu-vanity-4 hidden"
+									manifest="resource/ui/econ/ItemModelPanelCharWeaponInspect.res"
+									style="margin-left: 800px;"
+									item="models/player/custom_player/legacy/ctm_sas.mdl"
+									mouse_rotate="false"
+									enable_floorshadow="true"
+									hittest="false">
+						<Panel id="id-mainmenu-vanity-hover" hittest="true"/>
+					</ItemPreviewPanel>
+
+					<ItemPreviewPanel id="JsMainmenu_Vanity_4"
+									class="full-width full-height mainmenu-vanity-5 hidden"
+									style="margin-left: -100px; "
+									manifest="resource/ui/econ/ItemModelPanelCharWeaponInspect.res"
+									item="models/player/custom_player/legacy/ctm_sas.mdl"
+									mouse_rotate="false"
+									enable_floorshadow="true"
+									hittest="false">
+						<Panel id="id-mainmenu-vanity-hover" hittest="true"/>
+					</ItemPreviewPanel>
                 </Panel>
             </Panel>
         </snippet>
@@ -170,6 +215,7 @@
                              <RadioButton id="MainMenuNavBarDevUI"
 			                              class="mainmenu-top-navbar__radio-btn DEVModeONLY"				
 			                              group="NavBar" 
+										  onmouseover="UiToolkitAPI.ShowTextTooltip( &apos;MainMenuNavBarDevUI&apos;, &apos;QUICK DEVELOPER UI PREVIEWS FOR DEBUG&apos; );" onmouseout="UiToolkitAPI.HideTextTooltip();"
 			                              onactivate="MainMenu.NavigateToTab('JsDev', 'mainmenu_tests');">
 			                     <Label class="mainmenu-top-navbar__radio-btn__label stratum-medium" style="font-size: 20;" text="DEV UI" />
 			                          <Panel id="MainMenuWatchAlert" class="navbar-btn__notification hidden">
@@ -180,14 +226,14 @@
                                          class="mainmenu-top-navbar__radio-btn"
                                          group="NavBar"
                                          onactivate="$.DispatchEvent('OpenInventory');">
-                                <Label class="mainmenu-top-navbar__radio-btn__label stratum-medium" style="font-size: 22;" text="#CSGO_MainMenu_Inventory"/>
+                                <Label class="mainmenu-top-navbar__radio-btn__label stratum-medium" style="font-size: 20;" text="#CSGO_MainMenu_Inventory"/>
                                 <Panel id="MainMenuInvAlert" class="navbar-btn__notification hidden">
                                     <Label id="MainMenuInvAlertText" class="navbar-btn__notification-text stratum-medium" style="font-size: 16px;" text=""/>
                                 </Panel>
 							</RadioButton>
-							 <Panel class="mainmenu-top-navbar__play_seperator mainmenu-top-navbar__play_seperator--small DEVModeONLY"/>
+							 <Panel class="mainmenu-top-navbar__play_seperator mainmenu-top-navbar__play_seperator--small"/>
                             <RadioButton id="MainMenuNavBarLoadoutGrid"
-                                         class="mainmenu-top-navbar__radio-btn DEVModeONLY"
+                                         class="mainmenu-top-navbar__radio-btn"
                                          group="NavBar"
                                          onactivate="MainMenu.NavigateToTab('JsLoadout', 'loadout_grid');">
                                 <Label class="mainmenu-top-navbar__radio-btn__label stratum-medium" style="font-size: 22;" text="#inv_nav_loadout"/>
@@ -225,7 +271,7 @@
                                          class="mainmenu-top-navbar__radio-btn"
                                          group="NavBar"
                                          onactivate="MainMenu.NavigateToTab('JsNews', 'mainmenu_news_fullscreen');">
-                                <Label class="mainmenu-top-navbar__radio-btn__label stratum-medium" style="font-size: 22;" text="#CSGO_MainMenu_News"/>
+                                <Label class="mainmenu-top-navbar__radio-btn__label stratum-medium" style="font-size: 20;" text="#CSGO_MainMenu_News"/>
                                 <Panel id="MainMenuWatchAlert" class="navbar-btn__notification hidden">
                                </Panel>
 						   </RadioButton>
@@ -233,6 +279,7 @@
                             <RadioButton id="MainMenuNavBarControlsLibrary"
 			                           class="mainmenu-top-navbar__radio-btn DEVModeONLY"
 			                           group="NavBar" 
+									   onmouseover="UiToolkitAPI.ShowTextTooltip( &apos;MainMenuNavBarControlsLibrary&apos;, &apos;CONTROLS LIBRARY IS USED FOR UI DEBUG AND PREVIEWS&apos; );" onmouseout="UiToolkitAPI.HideTextTooltip();"
 			                           onactivate="MainMenu.NavigateToTab('JsControls', 'controlslibrary');">
 			                    <Label class="mainmenu-top-navbar__radio-btn__label stratum-medium" style="font-size: 20;" text="TESTS" />
 			                    <Panel id="MainMenuWatchAlert" class="navbar-btn__notification hidden">
@@ -242,6 +289,7 @@
                             <RadioButton id="MainMenuNavBarItemPrevDbg"
 			                           class="mainmenu-top-navbar__radio-btn DEVModeONLY"
 			                           group="NavBar" 
+									   onmouseover="UiToolkitAPI.ShowTextTooltip( &apos;MainMenuNavBarItemPrevDbg&apos;, &apos;INSTA CRASH WHEN YOU DO SOMETHING!&apos; );" onmouseout="UiToolkitAPI.HideTextTooltip();"
 			                           onactivate="MainMenu.NavigateToTab('JsItemPrevDbg', 'itempreviewdebug');">
 			                    <Label class="mainmenu-top-navbar__radio-btn__label stratum-medium" style="font-size: 20;" text="ITEMDBG" />
 			                    <Panel id="MainMenuWatchAlert" class="navbar-btn__notification hidden">

@@ -28,14 +28,14 @@ var Leaderboard;
     function RegisterEventHandlers() {
         _msg('RegisterEventHandlers');
         if (!m_bEventsRegistered) {
-            m_LeaderboardsDirtyEventHandler = $.RegisterForUnhandledEvent('PanoramaComponent_Leaderboards_Dirty', OnLeaderboardDirty);
+            //m_LeaderboardsDirtyEventHandler = $.RegisterForUnhandledEvent('PanoramaComponent_Leaderboards_Dirty', OnLeaderboardDirty);
             m_LeaderboardsStateChangeEventHandler = $.RegisterForUnhandledEvent('PanoramaComponent_Leaderboards_StateChange', OnLeaderboardStateChange);
             m_FriendsListNameChangedEventHandler = $.RegisterForUnhandledEvent('PanoramaComponent_FriendsList_NameChanged', _UpdateName);
             if (m_lbType === 'party') {
                 m_LobbyPlayerUpdatedEventHandler = $.RegisterForUnhandledEvent("PanoramaComponent_PartyList_RebuildPartyList", _UpdatePartyList);
             }
             if (m_lbType === 'general') {
-                m_NameLockEventHandler = $.RegisterForUnhandledEvent('PanoramaComponent_MyPersona_SetPlayerLeaderboardSafeName', _UpdateNameLockButton);
+                //m_NameLockEventHandler = $.RegisterForUnhandledEvent('PanoramaComponent_MyPersona_SetPlayerLeaderboardSafeName', _UpdateNameLockButton);
             }
             m_bEventsRegistered = true;
         }
@@ -57,25 +57,27 @@ var Leaderboard;
         }
     }
     Leaderboard.UnregisterEventHandlers = UnregisterEventHandlers;
-    function _Init() {
-        _msg('init');
-        m_lbType = $.GetContextPanel().GetAttributeString('lbtype', '');
-        RegisterEventHandlers();
-        _SetTitle();
-        _InitNavPanels();
-        _UpdateLeaderboardName();
-        if (m_lbType === 'party') {
-            _UpdatePartyList();
-            if (LeaderboardsAPI.DoesTheLocalPlayerNeedALeaderboardSafeNameSet()) {
-                _AutomaticLeaderboardNameLockPopup();
-            }
-        }
-        else if (m_lbType === 'general') {
-            UpdateLeaderboardList();
-            $.Schedule(0.5, _UpdateNameLockButton);
-        }
-        _ShowGlobalRank();
+function _Init() {
+    _msg('init');
+    m_lbType = $.GetContextPanel().GetAttributeString('lbtype', '');
+    RegisterEventHandlers();
+    _SetTitle();
+    _InitNavPanels();
+    _UpdateLeaderboardName();
+
+    if (m_lbType === 'party') {
+        _UpdatePartyList();
+        //if (LeaderboardsAPI.DoesTheLocalPlayerNeedALeaderboardSafeNameSet()) {
+        //    _AutomaticLeaderboardNameLockPopup();
+        //}
     }
+    else if (m_lbType === 'general') {
+        UpdateLeaderboardList();
+        $.Schedule(0.5, _UpdateNameLockButton);
+    }
+
+    _ShowGlobalRank();
+}
     function _SetHonorIcon(elPanel, xuid) {
         const honorIconOptions = {
             honor_icon_frame_panel: elPanel.FindChildTraverse('jsHonorIcon'),
@@ -93,85 +95,108 @@ var Leaderboard;
         let elSeasonDropdown = $('#jsNavSeason');
         elSeasonDropdown.visible = true;
         elSeasonDropdown.RemoveAllOptions();
-        let lbs = LeaderboardsAPI.GetAllSeasonPremierLeaderboards();
-        for (let i = 0; i < lbs.length; i++) {
-            let szLb = lbs[i];
-            const elEntry = $.CreatePanel('Label', elSeasonDropdown, szLb, {
-                'class': ''
-            });
-            elEntry.SetAttributeString('leaderboard', szLb);
-            elEntry.SetAcceptsFocus(true);
-            elEntry.text = $.Localize('#' + szLb + '_name');
-            elSeasonDropdown.AddOption(elEntry);
-        }
-        elSeasonDropdown.SetSelected(LeaderboardsAPI.GetCurrentSeasonPremierLeaderboard());
+        //let lbs = LeaderboardsAPI.GetAllSeasonPremierLeaderboards();
+        //for (let i = 0; i < lbs.length; i++) {
+        //    let szLb = lbs[i];
+        //    const elEntry = $.CreatePanel('Label', elSeasonDropdown, szLb, {
+        //        'class': ''
+        //    });
+        //    elEntry.SetAttributeString('leaderboard', szLb);
+        //    elEntry.SetAcceptsFocus(true);
+        //    elEntry.text = $.Localize('#' + szLb + '_name');
+        //    elSeasonDropdown.AddOption(elEntry);
+        //}
+        //elSeasonDropdown.SetSelected(LeaderboardsAPI.GetCurrentSeasonPremierLeaderboard());
     }
-    function _InitLocationDropdown() {
-        let elLocationDropdown = $('#jsNavLocation');
-        elLocationDropdown.visible = true;
-        elLocationDropdown.RemoveAllOptions();
-        let regions = LeaderboardsAPI.GetAllSeasonPremierLeaderboardRegions();
-        regions.sort();
-        regions.unshift('World');
-        regions.unshift('Friends');
-        let defaultRegion = 'World';
-        for (let i = 0; i < regions.length; i++) {
-            const szRegion = regions[i];
-            const elEntry = $.CreatePanel('Label', elLocationDropdown, szRegion);
-            const bCurrentRegion = _FindLocalPlayerInRegion(szRegion);
-            elEntry.SetHasClass('of-interest', bCurrentRegion);
-            switch (szRegion) {
-                case 'World':
-                    elEntry.SetAttributeString('leaderboard-class', szRegion.toLowerCase());
-                    break;
-                case 'Friends':
-                    elEntry.SetAttributeString('friendslb', 'true');
-                    elEntry.SetAttributeString('leaderboard-class', 'friends');
-                    break;
-                default:
-                    elEntry.SetAttributeString('location-suffix', '_' + szRegion);
-                    elEntry.SetAttributeString('leaderboard-class', szRegion.toLowerCase());
-                    if (bCurrentRegion) {
-                        defaultRegion = szRegion;
-                    }
-            }
-            elEntry.SetAcceptsFocus(true);
-            elEntry.text = $.Localize('#leaderboard_region_' + szRegion);
-            elLocationDropdown.AddOption(elEntry);
-        }
-        if (MyPersonaAPI.GetLauncherType() === "perfectworld") {
-            defaultRegion = 'friends';
-        }
-        elLocationDropdown.SetSelected(defaultRegion);
+function _InitLocationDropdown() {
+    let elLocationDropdown = $('#jsNavLocation');
+    elLocationDropdown.visible = true;
+    elLocationDropdown.RemoveAllOptions();
+
+    let regions = [];
+    if (LeaderboardsAPI.GetAllSeasonPremierLeaderboardRegions) {
+        regions = LeaderboardsAPI.GetAllSeasonPremierLeaderboardRegions();
+    } else if (LeaderboardsAPI.GetRegions) {
+        regions = LeaderboardsAPI.GetRegions();
+    } else {
+        // fallback: just use a couple of safe defaults
+        regions = ['World', 'Friends'];
     }
+
+    regions.sort();
+    if (regions.indexOf('World') === -1) regions.unshift('World');
+    if (regions.indexOf('Friends') === -1) regions.unshift('Friends');
+
+    let defaultRegion = 'World';
+
+    for (let i = 0; i < regions.length; i++) {
+        const szRegion = regions[i];
+        const elEntry = $.CreatePanel('Label', elLocationDropdown, szRegion);
+        const bCurrentRegion = _FindLocalPlayerInRegion(szRegion);
+
+        elEntry.SetHasClass('of-interest', bCurrentRegion);
+        switch (szRegion) {
+            case 'World':
+                elEntry.SetAttributeString('leaderboard-class', szRegion.toLowerCase());
+                break;
+            case 'Friends':
+                elEntry.SetAttributeString('friendslb', 'true');
+                elEntry.SetAttributeString('leaderboard-class', 'friends');
+                break;
+            default:
+                elEntry.SetAttributeString('location-suffix', '_' + szRegion);
+                elEntry.SetAttributeString('leaderboard-class', szRegion.toLowerCase());
+                if (bCurrentRegion) {
+                    defaultRegion = szRegion;
+                }
+        }
+
+        elEntry.SetAcceptsFocus(true);
+        elEntry.text = $.Localize('#leaderboard_region_' + szRegion);
+        elLocationDropdown.AddOption(elEntry);
+    }
+
+    if (MyPersonaAPI.GetLauncherType() === "perfectworld") {
+        defaultRegion = 'friends';
+    }
+    elLocationDropdown.SetSelected(defaultRegion);
+}
+
     function _getRegionFromLeaderboardName(lbname) {
         return lbname.split('_').slice(-1)[0];
     }
     function _isLeaderboardTheFriendsLeaderboard(lbname) {
         return lbname.split('.').slice(-1)[0] === 'friends';
     }
-    function _FindLocalPlayerInRegion(region) {
-        let arrLBsOfInterest = LeaderboardsAPI.GetPremierLeaderboardsOfInterest();
-        let elSeasonDropdown = $('#jsNavSeason');
-        let elSeason = elSeasonDropdown.GetSelected();
-        let lb = elSeason.GetAttributeString('leaderboard', '');
-        for (let i = 0; i < arrLBsOfInterest.length; i++) {
-            switch (region) {
-                case 'World':
-                    if (arrLBsOfInterest[i] === lb)
-                        return true;
-                    break;
-                case 'Friends':
-                    if (_isLeaderboardTheFriendsLeaderboard(arrLBsOfInterest[i]))
-                        return true;
-                    break;
-                default:
-                    if (_getRegionFromLeaderboardName(arrLBsOfInterest[i]) === region)
-                        return true;
-            }
-        }
+function _FindLocalPlayerInRegion(region) {
+    //let arrLBsOfInterest = LeaderboardsAPI.GetPremierLeaderboardsOfInterest();
+    let elSeasonDropdown = $('#jsNavSeason');
+    if (!elSeasonDropdown)
         return false;
+
+    let elSeason = elSeasonDropdown.GetSelected();
+    if (!elSeason)
+        return false;
+
+    let lb = elSeason.GetAttributeString('leaderboard', '');
+    for (let i = 0; i < arrLBsOfInterest.length; i++) {
+        switch (region) {
+            case 'World':
+                if (arrLBsOfInterest[i] === lb)
+                    return true;
+                break;
+            case 'Friends':
+                if (_isLeaderboardTheFriendsLeaderboard(arrLBsOfInterest[i]))
+                    return true;
+                break;
+            default:
+                if (_getRegionFromLeaderboardName(arrLBsOfInterest[i]) === region)
+                    return true;
+        }
     }
+    return false;
+}
+
     function _UpdateLeaderboardName() {
         if (m_lbType === 'general') {
             let elSeasonDropdown = $('#jsNavSeason');
@@ -189,48 +214,55 @@ var Leaderboard;
             }
         }
         else if (m_lbType === 'party') {
-            m_leaderboardName = LeaderboardsAPI.GetCurrentSeasonPremierLeaderboard() + '.party';
+            //m_leaderboardName = LeaderboardsAPI.GetCurrentSeasonPremierLeaderboard() + '.party';
         }
         _msg(m_leaderboardName);
         return m_leaderboardName;
     }
-    function _UpdateNameLockButton() {
-        let elNameButton = $.GetContextPanel().FindChildTraverse('lbNameButton');
-        elNameButton.visible = true;
-        let status = MyPersonaAPI.GetMyLeaderboardNameStatus();
-        let needsName = LeaderboardsAPI.DoesTheLocalPlayerNeedALeaderboardSafeNameSet();
-        let showButton = status !== '' || needsName;
-        elNameButton.visible = showButton;
-        elNameButton.SetHasClass('no-hover', status !== '');
-        elNameButton.ClearPanelEvent('onactivate');
-        let buttonText = '';
-        if (status) {
-            let name = MyPersonaAPI.GetMyLeaderboardName();
-            elNameButton.SetDialogVariable('leaderboard-name', name);
-            buttonText = $.Localize('#leaderboard_namelock_button_hasname', elNameButton);
-            let tooltipText = '';
-            switch (status) {
-                case 'submitted':
-                    elNameButton.SwitchClass('status', 'submitted');
-                    tooltipText = $.Localize('#leaderboard_namelock_button_tooltip_submitted');
-                    break;
-                case 'approved':
-                    elNameButton.SwitchClass('status', 'approved');
-                    tooltipText = $.Localize('#leaderboard_namelock_button_tooltip_approved');
-                    break;
-            }
-            function onMouseOver(id, tooltipText) {
-                UiToolkitAPI.ShowTextTooltip(id, tooltipText);
-            }
-            elNameButton.SetPanelEvent('onmouseover', onMouseOver.bind(elNameButton, elNameButton.id, tooltipText));
-            elNameButton.SetPanelEvent('onmouseout', () => UiToolkitAPI.HideTextTooltip());
+function _UpdateNameLockButton() {
+    let elNameButton = $.GetContextPanel().FindChildTraverse('lbNameButton');
+    if (!elNameButton) return;
+
+    elNameButton.visible = true;
+
+    // Stub values for CS:GO
+    let status = '';      // no leaderboard name
+    let needsName = false; // CS:GO does not require name lock
+
+    let showButton = status !== '' || needsName;
+    elNameButton.visible = showButton;
+    elNameButton.SetHasClass('no-hover', status !== '');
+    elNameButton.ClearPanelEvent('onactivate');
+
+    let buttonText = '';
+    if (status) {
+        let name = MyPersonaAPI.GetMyLeaderboardName();
+        elNameButton.SetDialogVariable('leaderboard-name', name);
+        buttonText = $.Localize('#leaderboard_namelock_button_hasname', elNameButton);
+        let tooltipText = '';
+        switch (status) {
+            case 'submitted':
+                elNameButton.SwitchClass('status', 'submitted');
+                tooltipText = $.Localize('#leaderboard_namelock_button_tooltip_submitted');
+                break;
+            case 'approved':
+                elNameButton.SwitchClass('status', 'approved');
+                tooltipText = $.Localize('#leaderboard_namelock_button_tooltip_approved');
+                break;
         }
-        else if (needsName) {
-            buttonText = $.Localize('#leaderboard_namelock_button_needsname');
-            elNameButton.SetPanelEvent('onactivate', _NameLockPopup);
+        function onMouseOver(id, tooltipText) {
+            UiToolkitAPI.ShowTextTooltip(id, tooltipText);
         }
-        elNameButton.SetDialogVariable('leaderboard_namelock_button', buttonText);
+        elNameButton.SetPanelEvent('onmouseover', onMouseOver.bind(elNameButton, elNameButton.id, tooltipText));
+        elNameButton.SetPanelEvent('onmouseout', () => UiToolkitAPI.HideTextTooltip());
     }
+    else if (needsName) {
+        buttonText = $.Localize('#leaderboard_namelock_button_needsname');
+        elNameButton.SetPanelEvent('onactivate', _NameLockPopup);
+    }
+    elNameButton.SetDialogVariable('leaderboard_namelock_button', buttonText);
+}
+
     function _InitNavPanels() {
         $('#jsNavSeason').visible = false;
         $('#jsNavLocation').visible = false;
@@ -245,13 +277,13 @@ var Leaderboard;
         let showRank = $.GetContextPanel().GetAttributeString('showglobaloverride', 'true');
         $.GetContextPanel().SetHasClass('hide-global-rank', showRank === 'false');
     }
-    function _UpdateGoToMeButton() {
-        let lb = m_leaderboardName;
-        let arrLBsOfInterest = LeaderboardsAPI.GetPremierLeaderboardsOfInterest();
-        let myIndex = LeaderboardsAPI.GetIndexByXuid(lb, m_myXuid);
-        let bPresent = arrLBsOfInterest.includes(lb) && myIndex !== -1;
-        $.GetContextPanel().FindChildInLayoutFile('jsGoToMe').enabled = bPresent;
-    }
+function _UpdateGoToMeButton() {
+    let btn = $.GetContextPanel().FindChildInLayoutFile('jsGoToMe');
+    if (btn)
+        btn.enabled = false; // always disabled in CS:GO
+}
+
+
     function UpdateLeaderboardList() {
         _msg('-------------- UpdateLeaderboardList ' + m_leaderboardName);
         _UpdateGoToMeButton();
@@ -354,7 +386,7 @@ var Leaderboard;
                     };
             }
             RatingEmblem.SetXuid(options);
-            elEntry.SetDialogVariable('player-name', oPlayer.displayName ?? FriendsListAPI.GetFriendName(oPlayer.XUID));
+            elEntry.SetDialogVariable('player-name', oPlayer.displayName || FriendsListAPI.GetFriendName(oPlayer.XUID));
             elEntry.Data().allowNameUpdates = !oPlayer.hasOwnProperty('displayName');
             elEntry.SetDialogVariable('player-wins', oPlayer.hasOwnProperty('matchesWon') ? String(oPlayer.matchesWon) : '-');
             let bHasRank = oPlayer.hasOwnProperty('rank') && oPlayer.rank > 0;
@@ -418,17 +450,27 @@ var Leaderboard;
                 }
                 return oPlayer;
             }
-            elList.SetLoadListItemFunction((parent, nPanelIdx, reusePanel) => {
-                let oPlayer = GetPartyLBRow(nPanelIdx);
-                if (!reusePanel || reusePanel.IsValid()) {
-                    reusePanel = $.CreatePanel("Button", elList, oPlayer ? oPlayer.XUID : '');
-                    reusePanel.BLoadLayoutSnippet("leaderboard-entry");
-                }
-                _AddPlayer(reusePanel, oPlayer, nPanelIdx);
-                reusePanel.SetPanelEvent('onmouseover', oPlayer ? OnMouseOver.bind(reusePanel, oPlayer.XUID) : OnMouseOut);
-                reusePanel.SetPanelEvent('onmouseout', OnMouseOut);
-                return reusePanel;
-            });
+let elList = $.GetContextPanel().FindChildInLayoutFile('id-leaderboard-entries');
+if (!elList) {
+    $.Msg("[leaderboard.js] Missing panel: id-leaderboard-entries");
+    return;
+}
+
+elList.SetLoadListItemFunction((parent, nPanelIdx, reusePanel) => {
+    let oPlayer = GetPartyLBRow(nPanelIdx);
+
+    if (!reusePanel || !reusePanel.IsValid()) {
+        reusePanel = $.CreatePanel("Button", elList, oPlayer ? oPlayer.XUID : '');
+        reusePanel.BLoadLayoutSnippet("leaderboard-entry");
+    }
+
+    _AddPlayer(reusePanel, oPlayer, nPanelIdx);
+
+    reusePanel.SetPanelEvent('onmouseover', oPlayer ? OnMouseOver.bind(reusePanel, oPlayer.XUID) : OnMouseOut);
+    reusePanel.SetPanelEvent('onmouseout', OnMouseOut);
+
+    return reusePanel;
+});
             elList.UpdateListItems(PartyListAPI.GetCount());
         }
     }

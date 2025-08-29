@@ -1,5 +1,3 @@
-                                        
-
 .TitleTextContents
 {
     width: 350px;
@@ -8,25 +6,24 @@
 
 #TitleLabel
 {
+    font-size: 18px;
 	font-family: Stratum2;
-    font-size: 20px;
     color: white;
     font-weight: bold;
-                                
 }
 
 #TextLabel
 {
+    font-size: 14px;
 	font-family: Stratum2;
-    font-size: 20px;
 	font-weight: medium;
     color: #bbbbbb;
 }
 
 #TextPercentage
 {
+    font-size: 12px;
 	font-family: Stratum2;
-    font-size: 20px;
 	font-weight: medium;
     color: #bbbbbb;
     margin-right: 4px;
@@ -36,22 +33,22 @@
 .tooltip-progress-bar
 {
     vertical-align: center;
-	width: 100%;
-	height: fit-children;
-	box-shadow: shadowOffset;
+    width: 100%;
+    height: fit-children;
+    box-shadow: shadowOffset;
 }
 
 .tooltip-progress-bar__bar
 {
-	background-color: #062f46;
-	height: 8px;
-	width: 100%;
-	
+    background-color: #062f46;
+    height: 8px;
+    width: 100%;
 }
 
 .tooltip-progress-bar__bar--inner
 {
-	background-color: gradient( linear, 0% 0%, 100% 0%, from ( #0A5A84 ), to( #5DC6FF ));
-	width: 50%;
-	height: 100%;
+    background-color: gradient( linear, 0% 0%, 100% 0%, from ( #0A5A84 ), to( #5DC6FF ));
+    width: 50%;
+    height: 100%;
 }
+

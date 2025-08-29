@@ -31,7 +31,7 @@
 								class="eom-win__model hidden" 
 								manifest="resource/ui/econ/ItemModelPanelCharWeaponInspect.res"
 								item="models/inventory_items/scoreboard_logos/logo_ct.mdl"
-								mouse_rotate="true"/>
+								mouse_rotate="false"/>
 
 			<Label id="WinTeamName" class="eom-win__text" text="{s:teamname}"/>
 		</Panel>

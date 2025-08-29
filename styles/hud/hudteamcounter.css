@@ -26,18 +26,19 @@
 @define GGIconPanelHeight: 18px;
 
 @define SkullSize: 42px;
-
-                                                                               
-   
-                                                                               
-
 CSGOHudTeamCounter
 {
     opacity: 1.0;
-	transition-property: opacity;
-	transition-timing-function: linear;
+    transition-property: opacity;
+    transition-timing-function: linear;
     transition-duration: 0.1s;
     background-color: #ffffff00;
+}
+
+#TeamCounterBG
+{
+    flow-children: down;
+    margin-top: 2px;
 }
 
 CSGOHudTeamCounter Label
@@ -263,7 +264,7 @@ CSGOHudTeamCounter Label
 {
     border: 0px solid #00000000;
 }
- 
+
 .Avatar__PlayerOutline--White
 {
     border: 2.5px solid white;
@@ -302,12 +303,12 @@ CSGOHudTeamCounter Label
 
 .Avatar__PlayerBorder--CT
 {
-    border: 2.5px solid color-CT;
+    border: 2px solid color-CT;
 }
 
 .Avatar__PlayerBorder--T
 {
-    border: 2.5px solid color-T;
+    border: 2px solid color-T;
 }
 
 .Avatar__Skull--White
@@ -417,7 +418,7 @@ CSGOHudTeamCounter Label
 
 .Avatar__HealthBar--Red
 {
-	 background-color: white;
+	 background-color: red;
 }
 
 .Avatar__HealthBar--Normal
@@ -475,7 +476,9 @@ CSGOHudTeamCounter Label
 .AvatarL__HealthBar
 {
     vertical-align: bottom;
-    height: 3px;
+    box-shadow: 0px 0px 4px 2px rgba(0, 0, 0, 0.7);
+	margin-top: 2px;
+    height: 6px;
 }
 
 .AvatarL__Default--CT
@@ -516,14 +519,8 @@ CSGOHudTeamCounter Label
 
 .AvatarL__PlayerColor
 {
-    y: -4px;
-
-    width: 32px;
-    height: 16px;
-
     horizontal-align: center;
-
-    img-shadow: 0px 0px 1px 1.0 #000000CC;
+    border: 7px;
 }
 
 .avatar-speaking
@@ -608,9 +605,13 @@ CSGOHudTeamCounter Label
 
 .AvatarL__PlayerLetter
 {
-    y: -26px;
-    horizontal-align: center;
-    text-shadow: 2px 2px 2px 2.0 black;
+    horizontal-align: left;
+    vertical-align: top;
+    text-shadow: 1px 1px 2px 4 black;
+    font-size: 14;
+    y: 3px;
+    x: 5px;
+    color: white;
 }
 
 .AvatarL__Spectate
@@ -637,11 +638,14 @@ CSGOHudTeamCounter Label
 
 .AvatarL__GGTextBG
 {
-    width: GGTextPanelWidth;
+    width: 100%;
     height: GGTextPanelHeight;
     horizontal-align: center;
     background-color: #0000006f;
     border-radius: 0px;
+    background-image: url("file://{images}/backgrounds/bluedots_large.png");
+    background-size: backgroundDotsSize;
+    background-img-opacity: 0.03;
 }
 
 .AvatarL__GGText
@@ -723,8 +727,52 @@ CSGOHudTeamCounter Label
 .AvatarS__HealthBar
 {
     vertical-align: bottom;
-    height: 2px;
+    height: 3px;
 }
+.healthbar-container
+{
+    vertical-align: top;
+    height: 10px;
+    margin: 2px;
+    width: 58px;
+    horizontal-align: center;
+    transition-property: height;
+    transition-duration: 0.5s;
+}
+.SHOW-EQUIPINFO .healthbar-container
+{
+    height: 14px;
+}
+
+.healthbar-container .healthbar__health-number
+{
+    margin: 0px;
+    height: 14px;
+    horizontal-align: left;
+    visibility: collapse;
+}
+
+.healthbar-container .healthbar__health-number Label
+{
+    font-size: 14px;
+    vertical-align: center;
+    text-align: center;
+    color: black;
+    text-shadow: 0px 0px 1px 3 rgba(255, 255, 255, 0.4);
+    y:-.5px;
+    x: 1px;
+}
+
+.SHOW-EQUIPINFO .healthbar-container .healthbar__health-number
+{
+    visibility: visible;
+}
+
+.dead .healthbar-container .healthbar__health-number
+{
+    opacity: 0;
+}
+
 
 .AvatarS__Default--CT
 {
@@ -746,7 +794,7 @@ CSGOHudTeamCounter Label
 
 .AvatarS__Overlay--Empty
 {
-    Opacity: 0.5;
+    Opacity: 0.0;
     width: AvatarSBGWidth;
     height: AvatarSBGHeight;
     background-image: url( "file://{images}/hud/teamcounter/teamcounter_skull-teammate.png" );
@@ -949,6 +997,15 @@ CSGOHudTeamCounter Label
     text-shadow: 1px 1px 1px 2.0 #000000;
     margin-bottom: 4px;
     color: white;
+	background-color: rgba(0, 0, 0, 0.918);
+    background-image: url("file://{images}/backgrounds/bluedots_large.png");
+    background-size: backgroundDotsSize;
+    background-img-opacity: 0.05;
+    background-position: 100% 100%;
+    opacity-mask: url("file://{images}/masks/playercount-mask.svg");
+    transition-property: opacity;
+    transition-duration: 0.2s;
+    transition-timing-function: ease-in-out;
 }
 
 .TeamCounter__AliveSkull

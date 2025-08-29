@@ -7,8 +7,7 @@
     flow-children: up;
     visibility: collapse;
 	transform: translateX(0);
-    opacity: 0; 
-    transition-property: opacity, transform;
+    transition-property: transform;
     transition-duration: .25s;
     transition-timing-function: ease-in-out;
 }
@@ -17,5 +16,4 @@
 {
     transform: translateX(-100%);
 }
-
 

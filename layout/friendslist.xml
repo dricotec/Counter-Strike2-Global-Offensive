@@ -93,15 +93,6 @@
 					<Frame id="id-friendslist-nodata" snippet="NoData" />
 					<Panel id="id-friendslist-section-list-contents" class="friendslist-accordian__section__list__contents" />
 				</Panel>
-			</RadioButton>
-			<RadioButton id="id-friendslist-section-recent" class="friendslist-accordian__section hide-notification" group="friends_accordian" onactivate="friendsList.OnSectionPressed(&apos;id-friendslist-section-recent&apos;)">
-				<Panel class="friendslist-accordian__section__header">
-					<Panel class="friendslist-accordian__section__header__icon__container">
-						<Image class="friendslist-accordian__section__header__icon" src="file://{images}/icons/ui/recent.svg" />
-						<Frame id="id-friendslist-counter" class="text-only" src="file://{resources}/layout/btn_alert.xml" />
-					</Panel>
-					<Label class="stratum-medium fontSize-ml text-letterspace-0px fontcolor-basetext left-margin-none" text="#SFUI_Friends_Recent" />
-				</Panel>
 				<Panel id="id-friendslist-section-list" class="friendslist-accordian__section__list friendslist-accordian__section__header--bg">
 					<Frame id="id-friendslist-nodata" snippet="NoData" />
 					<Panel id="JsFriendsListRecentsLoadingBar" class="friendslist-loadingbar hidden">

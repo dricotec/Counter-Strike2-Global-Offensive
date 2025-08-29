@@ -12,30 +12,30 @@
 
 	<Panel useglobalcontext="true" class="SettingsMenuTab">
 
-		<Panel class="content-navbar content-navbar--short" >
-			<Panel class="content-navbar__tabs content-navbar__tabs--small">
+		<Panel class="content-navbar content-navbar__tabs--noflow content-navbar__tabs" >
+			<Panel class="content-navbar__tabs__center-container   content-navbar__tabs--small">
 
-				<RadioButton onactivate="SettingsMenuShared.ScrollToId('SettingsLaunchSteamInput')" group="SettingsSteamInput" selectionpos="auto">
+				<RadioButton class="content-navbar__tabs__btn" onactivate="SettingsMenuShared.ScrollToId('SettingsLaunchSteamInput')" group="SettingsSteamInput" selectionpos="auto">
 					<Label text="#settings_steam_input_button_bindings"/>
 				</RadioButton>
 				
-				<RadioButton onactivate="SettingsMenuShared.ScrollToId('SettingsController-AimStick')" group="SettingsSteamInput" selectionpos="auto">
+				<RadioButton class="content-navbar__tabs__btn" onactivate="SettingsMenuShared.ScrollToId('SettingsController-AimStick')" group="SettingsSteamInput" selectionpos="auto">
 					<Label text="#settings_steam_input_aim_stick"/>
 				</RadioButton>
 
-				<RadioButton onactivate="SettingsMenuShared.ScrollToId('SettingsController-GyroAim')" group="SettingsSteamInput" selectionpos="auto">
+				<RadioButton class="content-navbar__tabs__btn" onactivate="SettingsMenuShared.ScrollToId('SettingsController-GyroAim')" group="SettingsSteamInput" selectionpos="auto">
 					<Label text="#settings_steam_input_aim_gyro"/>
 				</RadioButton>
 
-				<RadioButton onactivate="SettingsMenuShared.ScrollToId('SettingsController-TouchPadAim')" group="SettingsSteamInput" selectionpos="auto">
+				<RadioButton class="content-navbar__tabs__btn" onactivate="SettingsMenuShared.ScrollToId('SettingsController-TouchPadAim')" group="SettingsSteamInput" selectionpos="auto">
 					<Label text="#settings_steam_input_touch_pad_aim"/>
 				</RadioButton>
 
-				<RadioButton onactivate="SettingsMenuShared.ScrollToId('SettingsController-MovementStick')" group="SettingsSteamInput" selectionpos="auto">
+				<RadioButton class="content-navbar__tabs__btn" onactivate="SettingsMenuShared.ScrollToId('SettingsController-MovementStick')" group="SettingsSteamInput" selectionpos="auto">
 					<Label text="#settings_steam_input_move_stick"/>
 				</RadioButton>
 
-				<RadioButton onactivate="SettingsMenuShared.ScrollToId('SettingsController-MovementTouchPad')" group="SettingsSteamInput" selectionpos="auto">
+				<RadioButton class="content-navbar__tabs__btn" onactivate="SettingsMenuShared.ScrollToId('SettingsController-MovementTouchPad')" group="SettingsSteamInput" selectionpos="auto">
 					<Label text="#settings_steam_input_move_touch_pad"/>
 				</RadioButton>
 

@@ -1,33 +1,5 @@
 'use strict';
 
-                                               
-                
-             
-          
-                  
-            
-                   
-                
-                      
-                        
-                     
-                   
-                     
-                       
-                         
-                    
-                     
-                
-                
-               
-              
-            
-  
-
-
-                                                     
-                                                       
-                                                     
 var elPartySection = $( '#PartyList' );
 
 var PartyMenu = ( function()
@@ -114,7 +86,7 @@ var PartyMenu = ( function()
     {
                                                                           
                                                                                                   
-        var maxAllowedInLobby = 10;
+        var maxAllowedInLobby = 15;
         var numPlayersPossibleInMode = SessionUtil.GetMaxLobbySlotsForGameMode( lobbySettings.mode );
 
         if ( elPartySection.BHasClass( 'hidden' ) )
@@ -346,11 +318,18 @@ var PartyMenu = ( function()
         elLeaveBtn.visible = ( !GameStateAPI.IsLocalPlayerPlayingMatch() && LobbyAPI.IsSessionActive() );
     };
 
-    var _AddOnActivateLeaveBtn= function ()
-    {
-        var elLeaveBtn = elPartySection.FindChildInLayoutFile( 'PartyLeaveBtn' );
-        elLeaveBtn.SetPanelEvent( 'onactivate', function(){ LobbyAPI.CloseSession(); } );
-    };
+var _AddOnActivateLeaveBtn = function ()
+{
+    var elLeaveBtn = elPartySection.FindChildInLayoutFile( 'PartyLeaveBtn' );
+    elLeaveBtn.SetPanelEvent( 'onactivate', function()
+    { 
+        LobbyAPI.CloseSession();
+
+        $.Schedule( 0.1, function() {
+            LobbyAPI.CreateSession();
+        });
+    });
+};
     
                                                                                                         
                               
@@ -391,6 +370,7 @@ var PartyMenu = ( function()
 	var _ShowMatchAcceptPopUp = function( map )
 	{
 		var popup = UiToolkitAPI.ShowGlobalCustomLayoutPopupParameters( '', 'file://{resources}/layout/popups/popup_accept_match.xml', 'map_and_isreconnect=' + map + ',false' );
+		//var popup = UiToolkitAPI.ShowGlobalCustomLayoutPopupParameters( '', 'file://{resources}/layout/popups/popup_accept_match_fake.xml', 'map_and_isreconnect=' + map + ',false' );
 		$.DispatchEvent( "ShowAcceptPopup", popup );
 	};
 
