@@ -1,6 +1,6 @@
 
 # CS2:GO, A mod that adds some CS2 features and content to CS:GO.
-
+[![Discord](https://img.shields.io/discord/000000000000000000?label=Discord&logo=discord&logoColor=white&color=5865F2)](https://discord.gg/4AeURZa2p2)
 # MainMenu
 - All of the core UI changes.
 ![image](https://github.com/user-attachments/assets/2fa96441-985f-42ae-9e0d-7c4ee86adbfa)
