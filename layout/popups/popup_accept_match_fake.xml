@@ -84,7 +84,7 @@
 					<Label  class="stratum-medium" text="#match_ready_accept"/>
 				</Button>
 				<Panel id="AcceptMatchGameServer" class="accept-match__data__gameserver">
-                    <Label text="GAME SERVER IN: BLABLATRUC SDSADSADSADSADSADAD" class="accept-match__data__gameserver__text stratum-regular" />
+                    <Label text="#match_ready_gameserver" class="accept-match__data__gameserver__text stratum-regular" />
                 </Panel>
 
 				<Panel id="AcceptMatchCountdown" class="accept-match__data__time">

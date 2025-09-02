@@ -5,14 +5,15 @@ var MainMenu = ( function() {
 	var _m_sideBarElementContextMenuActive = false;
 	var _m_elContentPanel = $( '#JsMainMenuContent' );
 	var _m_playedInitalFadeUp = false; 
+	const g_bModIsBeta = true;
 	let g_bModVersionOutdated = false;
     let g_sRemoteModVersion = "";
-    const CURRENT_MOD_VERSION = "1.8.5.5"; // update this when releasing a new version
+    const CURRENT_MOD_VERSION = "1.9.0b"; // update this when releasing a new version
 	var _debug_d3gk_IsQOutOfDate = false; // d3gks notification debug stuff which is pretty much no longer used because of the new notification button..   
-	var _debug_d3gk_IsQVAC = false; // d3gks notification debug stuff which is pretty much no longer used because of the new notification button..    
-	var _debug_d3gk_IsQOverwatch = false; // d3gks notification debug stuff which is pretty much no longer used because of the new notification button..  
+	var _debug_d3gk_IsQVAC = false;   
+	var _debug_d3gk_IsQOverwatch = false; 
 	const _m_elNotificationsContainer = $('#id-notifications-container');
-	var _debug_d3gk_IsQOffline = false;    // d3gks notification debug stuff which is pretty much no longer used because of the new notification button..       
+	var _debug_d3gk_IsQOffline = false;       
 	var _m_notificationSchedule = false;  // schedules the notifications i guess? i don't really know what it does and i'm lazy to take a look at it..
 	var _m_bVanityAnimationAlreadyStarted = false; // checks if the vanity agent anim is already playing. this is causing the vanity to appear for a split second when disconnecting from a server. unable to fix for now.
 	var _m_bHasPopupNotification = false; // if you have a popup notification this will turn to true, if not it's going to stay at false.
@@ -150,63 +151,68 @@ function HideVanity() {
 var devmode = 0;
 
 var _OnShowMainMenu = function() {
-    $.DispatchEvent('PlayMainMenuMusic', true, true); // plays the mainmenu music.. kinda is responsible for blowing your ears out if it's set to max volume, limited via settings_audio.xml to 0.3 volume.
-    $('#MainMenuNavBarHome').checked = true; // makes sure that the home button is always pressed in when the game boots up or you disconnect from a local server or whatever..
+    $.DispatchEvent('PlayMainMenuMusic', true, true); 
+    $('#MainMenuNavBarHome').checked = true;
 
-    GameInterfaceAPI.SetSettingString('panorama_play_movie_ambient_sound', '1'); // plays the background ambient sound for the specific map you set. this is always forced even when in a content panel, does not work ingame which is intended!
-    GameInterfaceAPI.ConsoleCommand("mirv_cvar_unhide_all"); // unhides all ingame commands via hlae. useful for panorama debug commands and some other stuff.
-    GameInterfaceAPI.ConsoleCommand('@panorama_ECO_mode 0'); // disables the eco mode for low settings, if enabled, this causes the blur to be low framerate and update slowly. 
-	GameInterfaceAPI.ConsoleCommand('sv_allowupload 1'); // this is to fix the issue with "file uploads disabled" when trying to connect to game servers, it's forced when onshowmainmenu executes every time.
-    GameInterfaceAPI.SetSettingString('dsp_room', '0'); // digital singal processing, the thing that makes stuff go echo. very cool tech...
-    GameInterfaceAPI.SetSettingString('snd_soundmixer', 'MainMenu_Mix'); // no clue what this really does... all i can tell is it makes the mainmenu louder when the code is in..
-
+    GameInterfaceAPI.SetSettingString('panorama_play_movie_ambient_sound', '1');
+    GameInterfaceAPI.ConsoleCommand("mirv_cvar_unhide_all");
+    GameInterfaceAPI.ConsoleCommand('@panorama_ECO_mode 0');
+    GameInterfaceAPI.ConsoleCommand('sv_allowupload 1');
+    GameInterfaceAPI.SetSettingString('dsp_room', '0');
+    GameInterfaceAPI.SetSettingString('snd_soundmixer', 'MainMenu_Mix');
 
     _m_bVanityAnimationAlreadyStarted = false;
     _SetBackgroundMovie();
-	//_CreatUpdateVanityInfo();
 
-    $('#MainMenuNavBarPlay').SetHasClass('pausemenu-navbar__btn-small--hidden', false); // unhides the play button from the navbar after disconnecting from a server
-	var elScoreboard = $.GetContextPanel().FindChildInLayoutFile('Scoreboard'); // gets the scoreboard layout code.
-    if (elScoreboard) elScoreboard.visible = false; // hides it when you disconnect or start the game.
+    $('#MainMenuNavBarPlay').SetHasClass('pausemenu-navbar__btn-small--hidden', false);
+    var elScoreboard = $.GetContextPanel().FindChildInLayoutFile('Scoreboard');
+    if (elScoreboard) elScoreboard.visible = false;
 
-    _OnInitFadeUp(); // this does the magic fade in animation
+    _OnInitFadeUp();
 
-    _UpdateNotifications(); // updates ui notifications for cooldowns, griefing reports, your griefing reports to other players.. overwatch xp bonus and more..
-    _ShowWeaponUpdatePopup(); // shows weaponupdate popup although it's not really used for that stuff anymore so it can be reused for one time popups easily.. like the welcome popup that you get for the first time.
-    _UpdateInventoryBtnAlert(); // updates the inventory button alert when you get a new item or accept the new item
-    _GcLogonNotificationReceived(); // gets information from the gc so that your stuff works like matchmaking, inventory, ranks etc, however as we all know mm is disabled, so is half of the gc now.
-    _BetaEnrollmentStatusChange(); // cs2 beta enrollment for those who got it early or late into cs2's beta. screw cs2 it sucks and they should've kept csgo online with all services.
-    _UpdateStoreAlert(); // updates the store alert for when you get a drop or something new gets added into it. 
-    _DeleteSurvivalEndOfMatch(); // entirely removes danger zones eom panel from the mainmenu. however it might fail sometimes because valve didn't use gamestateapi for it, all they did was use javascript to remove it which causes issues later
-    _DeletePauseMenuMissionPanel(); // entirely removes operation mission panels from the mainmenu
-    _ShowHideAlertForNewEventForWatchBtn(); // new event in watch tab? not sure what this really does as i've never seen it in action.
-    _UpdateUnlockCompAlert(); // gives you the alert when you unlock competitive and wingman.
-    _FetchTournamentData(); // fetches your client tournament aka major data for the watch tab.
-	_ShowFloatingPanels(); // shows left and right columns in the mainmenu
-	_RightColumnLoad(); // just read the  code for yourself.. i was pulling my hair out trying to fix the right column.
-	_PlayMenuSong(); // plays the mainmenu song without the panoramic effect, because i didn't want to bother fixing the issues so this is the final fix.
-	$.Schedule(3.0, function() {
-    CheckModVersionAsync(); // checks if there is a new mod update available, uses github to validate if the client version is the same as on github.
-	_InsureSessionCreated();
-});
+    _UpdateNotifications();
+    _ShowWeaponUpdatePopup();
+    _UpdateInventoryBtnAlert();
+    _GcLogonNotificationReceived();
+    _BetaEnrollmentStatusChange();
+    _UpdateStoreAlert();
+    _DeleteSurvivalEndOfMatch();
+    _DeletePauseMenuMissionPanel();
+    _ShowHideAlertForNewEventForWatchBtn();
+    _UpdateUnlockCompAlert();
+    _FetchTournamentData();
+    _ShowFloatingPanels();
+    _RightColumnLoad();
+    _PlayMenuSong();
 
-  // devmode launch detection code here.. very useless unless you want to see what debug stuff there is..
+    $.Schedule(3.0, function() {
+        CheckModVersionAsync();
+    });
+
     if (GameInterfaceAPI.HasCommandLineParm('-devmode')) {
         devmode = 1;
     } else {
         devmode = 0;
     }
-    // finds .DEVModeONLY css class from mainmenu.css
+
     var devButtons = $.GetContextPanel().FindChildrenWithClassTraverse('DEVModeONLY');
 
     devButtons.forEach(function(button) {
         if (devmode === 1) {
-            button.RemoveClass('DEVModeONLY'); // if -devmode is present, it deletes the css class completely from memory and reveals debug buttons on the navbar
+            button.RemoveClass('DEVModeONLY');
         } else {
-            button.AddClass('DEVModeONLY'); // if -devmode is not present in the launch options, the script will not reveal the hidden buttons.
+            button.AddClass('DEVModeONLY');
         }
     });
-};
+
+    const notifContainer = $('#id-notifications-container');
+    if (notifContainer) {
+        notifContainer.visible = true;
+    }
+	if (!LobbyAPI.IsSessionActive()) {
+            LobbyAPI.CreateSession();
+        }
+}; 
 
 
 function CheckModVersionAsync() {
@@ -373,18 +379,23 @@ function CheckModVersionAsync() {
 			btn.SetHasClass( 'hidden', !bShowEnrollIntoBetaButton );
 	}
 
-    function _OnHideMainMenu() { // stops all mainmenu stuff that are listed here
-        const vanityPanel = $('#JsMainmenu_Vanity');
-        if (vanityPanel) {
-            CharacterAnims.CancelScheduledAnim(vanityPanel);
-        }
-        _m_elContentPanel.RemoveClass('mainmenu-content--animate');
-        _m_elContentPanel.AddClass('mainmenu-content--offscreen');
-        _CancelNotificationSchedule();
-        UiToolkitAPI.CloseAllVisiblePopups();
-        _StopFetchingTournamentData();
-		_HideFloatingPanels();
+function _OnHideMainMenu() { // stops all mainmenu stuff that are listed here
+    const vanityPanel = $('#JsMainmenu_Vanity');
+    if (vanityPanel) {
+        CharacterAnims.CancelScheduledAnim(vanityPanel);
     }
+    _m_elContentPanel.RemoveClass('mainmenu-content--animate');
+    _m_elContentPanel.AddClass('mainmenu-content--offscreen');
+    _CancelNotificationSchedule();
+    UiToolkitAPI.CloseAllVisiblePopups();
+    _StopFetchingTournamentData();
+    _HideFloatingPanels();
+
+    const notifContainer = $('#id-notifications-container');
+    if (notifContainer) {
+        notifContainer.visible = false;
+    }
+}
 	
 	var _OnShowPauseMenu = function() // does the pause menu magic tricks
 	{
@@ -877,11 +888,9 @@ var _ForceRestartVanity = function ()
         let oSettings;
 
         if (xuid === myXuid) {
-            // ✅ Local player vanity
             oSettings = ItemInfo.GetOrUpdateVanityCharacterSettings();
             _ApplyVanitySettingsToLobbyMetadata(oSettings);
         } else {
-            // ✅ Remote player vanity
             const vanityData = PartyListAPI.GetPartyMemberVanity(xuid);
             if (!vanityData) continue;
 
@@ -1910,7 +1919,7 @@ function _GetNotificationBarData() { // rest in peace 32px line at the top of th
             aAlerts.push(notification);
         }
     }
-if (g_bModVersionOutdated) {
+    if (g_bModVersionOutdated) {
     const notification = {
         color_class: "yellow-alert",
         icon: "client_update",
@@ -1922,7 +1931,21 @@ if (g_bModVersionOutdated) {
         link: "https://github.com/DeformedSAS/Counter-Strike2-Global-Offensive/releases"
     };
     aAlerts.push(notification);
-}
+    }
+    if (g_bModIsBeta) {
+    const notification = {
+        color_class: "green-alert",
+        icon: "ban_competitive",
+        title: "Beta Version Running",
+        tooltip:
+            "You are currently running a **beta build** of the mod.\n\n" +
+            " Expect bugs, crashes, and unfinished features.\n" +
+            " Please report any issues to the developers. \n\n" +
+			" Also join the Discord server where all the fun happens. ",
+        link: "https://discord.com/invite/4AeURZa2p2" 
+    };
+    aAlerts.push(notification);
+    }
     return aAlerts;
 }
 

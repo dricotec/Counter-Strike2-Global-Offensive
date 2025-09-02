@@ -380,7 +380,7 @@
                 </Panel>
                 <Panel id="PlayMenuActionBar" class="play-menu-controls-actions-bar">
 					<ItemPreviewPanel id="GoBtnParticle"
-										class="UIMenuPlayActionBar hidden"
+										class="go-btn-particle hidden"
 										manifest="resource/ui/econ/ItemModelPanelCharWeaponInspect.res"
 										hittest="false"
 										item=""

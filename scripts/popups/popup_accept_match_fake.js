@@ -9,8 +9,8 @@ var PopupAcceptMatch = ( function(){ // script was modified by d3gk, primarily u
 	var m_isReconnect = false;
 	var m_isNqmmAnnouncementOnly = false;
 	var m_lobbySettings;
-	let m_gsLocation = 'TEST';
-	let m_gsPing = 69420;
+	let m_gsLocation = 'Europe, Serbia';
+	let m_gsPing = 69;
 	var m_elTimer = $.GetContextPanel().FindChildInLayoutFile ( 'AcceptMatchCountdown' );
 	var m_jsTimerUpdateHandle = false;
 	var bShowPlayerSlots = false;
@@ -23,8 +23,8 @@ var PopupAcceptMatch = ( function(){ // script was modified by d3gk, primarily u
 		     
 		 m_lobbySettings = LobbyAPI.GetSessionSettings();
 		 
-		m_gsLocation = $.GetContextPanel().GetAttributeString('location', '');
-		m_gsPing = parseInt($.GetContextPanel().GetAttributeString('ping', ''));
+		m_gsLocation = $.GetContextPanel().GetAttributeString('location', 'Europe, Serbia');
+		m_gsPing = parseInt($.GetContextPanel().GetAttributeString('ping', '69420'));
 		$.GetContextPanel().SetDialogVariable('region', m_gsLocation);
 		$.GetContextPanel().SetDialogVariableInt('ping', m_gsPing);
 

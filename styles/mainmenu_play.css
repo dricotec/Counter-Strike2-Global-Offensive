@@ -2172,3 +2172,16 @@ ToggleButton .map-selection-info__new,RadioButton .map-selection-info__new
     width: 14px;
     height: 14px;
 }
+.go-btn-particle
+{
+	width: 256px;
+	height: 256px;
+
+	vertical-align: center;
+	horizontal-align: right;
+	-s2-mix-blend-mode: additive;
+}
+.hidden_Particle
+{
+	visibility:collapse;
+}

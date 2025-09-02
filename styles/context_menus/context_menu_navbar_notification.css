@@ -38,6 +38,11 @@
     border-left: 1px solid #E1C111;
 }
 
+.context-menu-notification .context-menu-notification__text-block.beta-alert
+{
+    border-left: 1px solid #4AA8FF;
+}
+
 .context-menu-notification .context-menu-notification__text-block .context-menu-notification__label.title
 {
     font-size: 16px;

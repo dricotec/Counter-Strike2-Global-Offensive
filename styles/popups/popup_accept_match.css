@@ -183,7 +183,7 @@
 
 .accept-match__data__time.hidden
 {
-    visibility: collapse;
+    visibility: visible;
 }
 
 .accept-match__data__gameserver
@@ -194,7 +194,7 @@
     vertical-align: bottom;
     horizontal-align: center;
     margin-bottom: 44px;
-	visibility: collapse;
+	visibility: visible;
 }
 
 .accept-match__data__gameserver__text

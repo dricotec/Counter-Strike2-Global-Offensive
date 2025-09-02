@@ -89,7 +89,7 @@ $.Schedule(3.0, () => {
         for (var j = 0; j < 10; ++j) {
             var elPanel = $.GetContextPanel().FindChildTraverse('EomCancelReason' + j);
             if (elPanel)
-                elPanel.RemoveClass('show');
+                elPanel.AddClass('show');
         }
 });
 
