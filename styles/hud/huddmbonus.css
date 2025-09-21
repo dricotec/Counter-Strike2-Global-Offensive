@@ -1,4 +1,4 @@
-@define TimeToDisplayBonusKill: 2.0s;
+@define TimeToDisplayBonusKill: 1.0s;
 .bonuspanel
 {
     width: 100%;

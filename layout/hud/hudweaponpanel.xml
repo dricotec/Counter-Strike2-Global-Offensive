@@ -3,8 +3,66 @@
 		<include src="file://{resources}/styles/csgostyles.css" />
 		<include src="file://{resources}/styles/hud/hudweaponpanel.css" />
 	</styles>
+	
+	<scripts>
+		<include src="file://{resources}/scripts/mock_adapter.js" />
+    	<include src="file://{resources}/scripts/hud/hudcolor.js" />
+  	</scripts>
 
-	<CSGOHudWeaponPanel class="WeaponPanel" hittest="false">
+	<CSGOHudWeaponPanel>
+			<Panel class="center_indicator">
+				<Panel class="Kills cl-hud-wash-color">
+					<Panel>
+						<Panel id="KillCountIcons" class="Kills__Count Kills__Count--RightLeftFlow">
+							<Panel class="Kills__Icon">
+
+							</Panel>
+							
+							<Panel class="Kills__Icon2">
+								
+							</Panel>
+							
+							<Panel class="Kills__Icon3">
+								
+							</Panel>
+							
+							<Panel class="Kills__Icon4">
+								
+							</Panel>
+							
+							<Panel class="Kills__Icon5">
+								
+							</Panel>
+						</Panel>
+						<Panel id="KillCountText" class="Kills__Count">
+							<Panel id="KillCountTextIcon" class="Kills__Icon" />
+							<Label id="KillCount" class="Kills__Text" />
+						</Panel>
+					</Panel>
+					<Panel id="KillEaterContent" class="Kills__KillEater cl-hud-wash-color">
+						<Label class="Kills__KillEaterText" text="#csgo_killeater_hud" />
+						<Label id="KillEaterCount" class="Kills__KillEaterText cl-hud-wash-color" text="0" />
+					</Panel>
+				</Panel>
+				
+				<Panel class="team_indicator cl-hud-wash-color">
+						<Image id="TeamLogoHud" />
+				</Panel>
+				
+				<Panel id="AmmoContent" class="Ammo">
+					<Label id="AmmoTextClip" class="Ammo__Clip cl-hud-wash-color" text="10" />
+					<Label id="AmmoTextTotal" class="Ammo__Total cl-hud-wash-color" text="20" />
+					<Panel id="AmmoBurstIcons" class="Ammo__Burst Ammo__Burst--Single cl-hud-wash-color">
+						<Panel class="Ammo__BurstIcon" />
+						<Panel class="Ammo__BurstIcon" />
+						<Panel class="Ammo__BurstIcon" />
+					</Panel>
+				</Panel>
+			</Panel>
+			
+				
+	<Panel  class="WeaponPanel" hittest="false">
+	
 		<Panel class="WeaponPanelTop">
 			<Image id="DefuseIcon" class="WeaponPanelTop__Icon WeaponPanelTop__Icon--Defuse cl-hud-wash-color hidden" src="file://{images}/icons/equipment/defuser.svg" scaling="stretch-to-fit-preserve-aspect" />
 		</Panel>
@@ -17,40 +75,12 @@
 
 			                
 			<Panel id="WeaponPanelBottomContent">
-				                               
-				<Panel class="Kills">
-					<Panel>
-						<Panel id="KillCountIcons" class="Kills__Count Kills__Count--RightLeftFlow">
-							<Panel class="Kills__Icon" />
-							<Panel class="Kills__Icon" />
-							<Panel class="Kills__Icon" />
-							<Panel class="Kills__Icon" />
-							<Panel class="Kills__Icon" />
-						</Panel>
-						<Panel id="KillCountText" class="Kills__Count">
-							<Panel id="KillCountTextIcon" class="Kills__Icon" />
-							<Label id="KillCount" class="Kills__Text" />
-						</Panel>
-					</Panel>
-					<Panel id="KillEaterContent" class="Kills__KillEater cl-hud-wash-color">
-						<Label class="Kills__KillEaterText" text="#csgo_killeater_hud" />
-						<Label id="KillEaterCount" class="Kills__KillEaterText cl-hud-wash-color" text="0" />
-					</Panel>
-				</Panel>
 				                  
 		        <CCSGOSteamInputAction actionset="GameControls" action="firingmodetoggle" separatortext="I" controllernumber = "1"/> 
          		                  
-				             
-				<Panel id="AmmoContent" class="Ammo">
-					<Label id="AmmoTextClip" class="Ammo__Clip cl-hud-wash-color" text="10" />
-					<Label id="AmmoTextTotal" class="Ammo__Total cl-hud-wash-color" text="20" />
-					<Panel id="AmmoBurstIcons" class="Ammo__Burst Ammo__Burst--Single cl-hud-wash-color">
-						<Panel class="Ammo__BurstIcon" />
-						<Panel class="Ammo__BurstIcon" />
-						<Panel class="Ammo__BurstIcon" />
-					</Panel>
+				<Panel class="table_ammo">             
+				
 				</Panel>
-
 				                       
 				<Panel id="AmmoAnim" class="AmmoAnim WeaponPanel-apply-hud-color-bg">
 					<Panel id="AmmoAnimBullets" class="AmmoAnim__Bullets">
@@ -84,5 +114,6 @@
 				</Panel>
 			</Panel>
 		</Panel>
+	</Panel>
 	</CSGOHudWeaponPanel>
 </root>

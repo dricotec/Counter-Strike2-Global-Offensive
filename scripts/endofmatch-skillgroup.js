@@ -14,44 +14,52 @@ var EOM_Skillgroup = (function () {
 
 	var _DisplayMe = function()
 	{
-		
-		var showAnimation = true;
-		var showFakeStatsIfRankUnknown = false;
+		                                     
+		    
+		   	             
+		    
 
-		var compWins = FriendsListAPI.GetFriendCompetitiveWins( MyPersonaAPI.GetXuid(), 'wingman' );
-		var currentRank = FriendsListAPI.GetFriendCompetitiveRank( MyPersonaAPI.GetXuid(), 'wingman' );
-
-		if(currentRank < 0) { //if rank not supported (dz or competitive)
-			if(showFakeStatsIfRankUnknown) { //if you turn the fake stats up
-				currentRank = 18; //fake rank
-				compWins = 1500; //fake wins
-			}
-			else return false;
+		if ( !_m_cP.bSkillgroupDataReady && !MockAdapter.GetMockData() )
+		{
+			return false;
 		}
 
-        var oData = {
-            currentRank: currentRank,
-            compWins: compWins,
-            rankInfo: '',
-            rankDesc: '',
-            mode: MockAdapter.GetGameModeInternalName( true ),
-            model: '',
-            image: ''
-        };
+		if( MyPersonaAPI.GetElevatedState() !== 'elevated' )
+		{
+			return false;
+		}
 
-        var winsNeededForRank = SessionUtil.GetNumWinsNeededForRank( oData.mode );
+		var oSkillgroupData = MockAdapter.SkillgroupDataJSO( _m_cP );
 
-        _m_cP.SetDialogVariable( 'eom_mode', MockAdapter.GetGameModeName( true ) );
+		var compWins = oSkillgroupData[ "num_wins" ];
+		var oldRank = oSkillgroupData[ "old_rank" ];
+		var newRank = oSkillgroupData[ "new_rank" ];
+		var currentRank = oldRank < newRank ? newRank : oldRank;
+
+		var oData = {
+			currentRank: currentRank,
+			compWins: compWins,
+			rankInfo: '',
+			rankDesc: '',
+			mode: MockAdapter.GetGameModeInternalName( true ),
+			model: '',
+			image: ''
+		};
+
+		var winsNeededForRank = SessionUtil.GetNumWinsNeededForRank( oData.mode );
+
+		_m_cP.SetDialogVariable( 'eom_mode', MockAdapter.GetGameModeName( true ) );
 
 		if ( oData.mode === 'survival' && currentRank < 1 )
-		{
+		{	                                                
 			_LoadAndShowRank();
 
 			oData.rankInfo = $.Localize( '#eom-skillgroup-needed-dzgames', _m_cP );
 			oData.image = 'file://{images}/icons/skillgroups/dangerzone0.svg';
 		}
 		else if ( currentRank < 1 && compWins >= winsNeededForRank )
-		{	       
+		{	
+			                                              
 			_LoadAndShowRank();
 
 			var modePrefix = ( oData.mode === 'scrimcomp2v2' ) ? 'wingman' : ( ( oData.mode === 'survival' ) ? 'dangerzone' : 'skillgroup' );
@@ -65,6 +73,7 @@ var EOM_Skillgroup = (function () {
 		}
 		else if ( currentRank < 1 )
 		{
+			                                   
 			var matchesNeeded = winsNeededForRank - compWins;
 			_LoadAndShowRank();
 			_m_cP.SetDialogVariableInt( 'num_matches', matchesNeeded );
@@ -77,13 +86,14 @@ var EOM_Skillgroup = (function () {
 		}
 		else if ( currentRank >= 1 )
 		{
+			                         
 			var modePrefix = ( oData.mode === 'scrimcomp2v2' ) ? 'skillgroup_wingman' : ( ( oData.mode === 'survival' ) ? 'skillgroup_dangerzone' : 'skillgroup' );
 			var modelPath = 'models/inventory_items/skillgroups/' + modePrefix + currentRank + '.mdl';
 			oData.model = modelPath;
 			oData.rankInfo = $.Localize( ( oData.mode === 'survival' ) ? '#skillgroup_'+currentRank+'dangerzone' : 'RankName_' + currentRank );
 			oData.rankDesc = $.Localize( '#eom-skillgroup-name', _m_cP );
 
-			if ( showAnimation )
+			if ( oldRank < newRank )                             
 			{
 				_m_pauseBeforeEnd = 3.0;
 				_LoadAndShowNewRankReveal();

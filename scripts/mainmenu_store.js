@@ -29,7 +29,7 @@ var MainMenuStore = ( function()
 		if ( ( tournamentId !== 0 ) &&
 			( '' !== StoreAPI.GetStoreItemSalePrice( InventoryAPI.GetFauxItemIDFromDefAndPaintIndex( g_ActiveTournamentStoreLayout[ 0 ][ 0 ], 0 ), 1, '' ) ) )
 		{
-			var oWinningTeam = EventUtil.GetTournamentWinner( tournamentId, 1 );
+			//var oWinningTeam = EventUtil.GetTournamentWinner( tournamentId, 1 );
 			                                                           
 			                                        
 			var sRestriction = InventoryAPI.GetDecodeableRestriction( "capsule" );

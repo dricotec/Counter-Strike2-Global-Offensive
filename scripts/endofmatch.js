@@ -76,6 +76,7 @@ function _Initialize()
 
 	_m_cP.Data()._m_currentPanelIndex = -1;
 	_m_cP.Data()._m_elActiveTab = null;
+	EndOfMatch_Music('loading');
 
 	if ( _m_cP.Data()._m_jobStart !== null )
 	{
@@ -89,7 +90,7 @@ $.Schedule(3.0, () => {
         for (var j = 0; j < 10; ++j) {
             var elPanel = $.GetContextPanel().FindChildTraverse('EomCancelReason' + j);
             if (elPanel)
-                elPanel.AddClass('show');
+                elPanel.RemoveClass('show');
         }
 });
 
@@ -127,6 +128,23 @@ $.Schedule(3.0, () => {
 
 	_m_cP.SetFocus();
 }
+
+	var EndOfMatch_Music = function ( type )
+	{
+		var itemId = LoadoutAPI.GetItemID( 'noteam', 'musickit' );
+		var musicId = InventoryAPI.GetItemAttributeValue( itemId, 'music id' );
+		var musicName = InventoryAPI.GetMusicNameFromMusicID(musicId);
+		musicName = musicName.replace(/^#musickit_/, '');
+
+		if(type == 'loading' && GameStateAPI.GetCSGOGameUIStateName() == 'CSGO_GAME_UI_STATE_INGAME') {
+			$.DispatchEvent('PlayMainMenuMusic', false, false );
+			InventoryAPI.PlayItemPreviewMusic( itemId, 'endofmatch.mp3' );
+			InventoryAPI.StopItemPreviewMusic();
+			$.Schedule(0.01, function(){
+				$.DispatchEvent('PlaySoundEffect', 'Music.EndOfMatch.' + musicName, 'MOUSE');
+			});
+		}
+	}
 
 
 	function _ShowPanelStart()

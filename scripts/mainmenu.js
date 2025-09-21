@@ -8,7 +8,7 @@ var MainMenu = ( function() {
 	const g_bModIsBeta = true;
 	let g_bModVersionOutdated = false;
     let g_sRemoteModVersion = "";
-    const CURRENT_MOD_VERSION = "1.9.0b"; // update this when releasing a new version
+    const CURRENT_MOD_VERSION = "1.9.0"; // update this when releasing a new version
 	var _debug_d3gk_IsQOutOfDate = false; // d3gks notification debug stuff which is pretty much no longer used because of the new notification button..   
 	var _debug_d3gk_IsQVAC = false;   
 	var _debug_d3gk_IsQOverwatch = false; 
@@ -137,6 +137,10 @@ var _SetBackgroundMovie = function() {
 		_InitVanityNoGC();
         _ForceRestartVanity();
         //_LobbyPlayerUpdated();
+		
+		if (!LobbyAPI.IsSessionActive()) {
+            LobbyAPI.CreateSession();
+        }
     });
 };
 
@@ -155,7 +159,7 @@ var _OnShowMainMenu = function() {
     $('#MainMenuNavBarHome').checked = true;
 
     GameInterfaceAPI.SetSettingString('panorama_play_movie_ambient_sound', '1');
-    GameInterfaceAPI.ConsoleCommand("mirv_cvar_unhide_all");
+    GameInterfaceAPI.ConsoleCommand("cvar_unhide_all");
     GameInterfaceAPI.ConsoleCommand('@panorama_ECO_mode 0');
     GameInterfaceAPI.ConsoleCommand('sv_allowupload 1');
     GameInterfaceAPI.SetSettingString('dsp_room', '0');
@@ -209,9 +213,6 @@ var _OnShowMainMenu = function() {
     if (notifContainer) {
         notifContainer.visible = true;
     }
-	if (!LobbyAPI.IsSessionActive()) {
-            LobbyAPI.CreateSession();
-        }
 }; 
 
 
@@ -1591,16 +1592,13 @@ else if ( backgroundMap === 'vertigo' )
         _m_bHasPopupNotification = false;
         _msg('_OnRankUpRedemptionStoreClosed');
     }
-	var _UpdateInventoryBtnAlert = function()
-	{
-		var aNewItems = AcknowledgeItems.GetItems();
-		var count = aNewItems.length;
-		var elNavBar = $.GetContextPanel().FindChildInLayoutFile('JsMainMenuTopNavBar'),
-		elAlert = elNavBar.FindChildInLayoutFile('MainMenuInvAlert');
-
-		elAlert.FindChildInLayoutFile('MainMenuInvAlertText').text = count;
-		elAlert.SetHasClass( 'hidden', count < 1 );
-	};
+    function _UpdateInventoryBtnAlert() {
+        const aNewItems = AcknowledgeItems.GetItems();
+        const count = aNewItems.length;
+        const elNavBar = $.GetContextPanel().FindChildInLayoutFile('MainMenuNavBarTop'), elAlert = elNavBar.FindChildInLayoutFile('MainMenuInvAlert');
+        elAlert.SetDialogVariable("alert_value", count.toString());
+        elAlert.SetHasClass('hidden', count < 1);
+    }
     function _OnInventoryInspect(id, contextmenuparam) {
         let inspectviewfunc = contextmenuparam ? contextmenuparam : 'primary';
         UiToolkitAPI.ShowCustomLayoutPopupParameters('', 'file://{resources}/layout/popups/popup_inventory_inspect.xml', `itemid=${id}&inspectonly=true&viewfunc=${inspectviewfunc}`);
@@ -2270,9 +2268,51 @@ function _GetNotificationBarData() { // rest in peace 32px line at the top of th
 		'dim' );
 	};
 	
+var _ShowDevContextMenu = function() {
+    function showOperation() {
+        var elPanel = UiToolkitAPI.ShowCustomLayoutPopupParameters(
+            '',
+            'file://{resources}/layout/operation/operation_main.xml',
+            'none'
+        );
+        $.DispatchEvent('PlaySoundEffect', 'tab_mainmenu_inventory', 'MOUSE');
+        elPanel.SetAttributeInt("season_access", 9);
+    }
+
+    var items = [
+        { label: 'Dev Tools', style: 'Disabled' },
+        { label: 'ControlsLib', jsCallback: _NavigateToTab.bind(undefined, 'JSConsolsLib', 'controlslibrary') },
+        { label: 'DevUI', jsCallback: _NavigateToTab.bind(undefined, 'JSTests1', 'mainmenu_tests') },
+        { label: 'CS360', jsCallback: _NavigateToTab.bind(undefined, 'JSCS360', 'mainmenu_playerstats') },
+
+        { label: 'Main Menu Testing', style: 'TopSeparator' },
+        { label: 'MainMenuTests', jsCallback: _NavigateToTab.bind(undefined, 'JsTests', 'mainmenu_tests') },
+        { label: 'MainMenuPerf', jsCallback: _NavigateToTab.bind(undefined, 'JsPerf', 'mainmenu_perf') },
+
+        { label: 'Store & News', style: 'TopSeparator' },
+        { label: 'CSGOsStore', jsCallback: _NavigateToTab.bind(undefined, 'JSSmallStore', 'mainmenu_store') },
+        { label: 'CSGOsNews', jsCallback: _NavigateToTab.bind(undefined, 'JSNews', 'mainmenu_news') },
+
+
+        { label: 'External Tools', style: 'TopSeparator' },
+        { label: 'ServerBrowser', jsCallback: _NavigateToTab.bind(undefined, 'JSServerBrowser', 'server_browser/server_browser') },
+        { label: 'YouTube', jsCallback: _WebBrowser.bind(undefined) },
+
+        { label: 'Operation', style: 'TopSeparator' },
+        { label: 'OperationMain', jsCallback: showOperation.bind(undefined) },
+		{ label: 'OperationStore', jsCallback: OperationUtil.OpenPopupCustomLayoutOperationStore.bind(undefined) }
+    ];
+
+    UiToolkitAPI.ShowSimpleContextMenu('', 'DevContextMenu', items);
+};
+
 	var _WebBrowser = function()
 {
     UiToolkitAPI.ShowCustomLayoutPopupParameters( '', 'file://{resources}/layout/popups/popup_browser.xml', '', 'none' );
+};
+var _OpStore = function()
+{
+    UiToolkitAPI.ShowCustomLayoutPopupParameters( '', 'file://{resources}/layout/operation/operation_store.xml', '', 'none' );
 };
 
 	var _ShowOperationLaunchPopup = function() // when is a new operation coming valve? in cs2 it seems to be never sadly, armory is the permanent operation that you get in cs2 now and is never going away unless they change their mind.
@@ -2530,6 +2570,8 @@ var _UnPauseMainMenuCharacter = function() {
 		OnEquipSlotChanged	 				: _OnEquipSlotChanged,
 		OpenPlayMenu						: _OpenPlayMenu,
 		WebBrowser                          : _WebBrowser,
+		OpStore                             : _OpStore,
+		ShowDevContextMenu                    : _ShowDevContextMenu,
 		OpenWatchMenu						: _OpenWatchMenu,
 		OpenStatsMenu						: _OpenStatsMenu,
 		OpenInventory						: _OpenInventory,

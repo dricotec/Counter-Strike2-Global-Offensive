@@ -153,48 +153,12 @@
                                 </Panel>
                             </RadioButton>
                             <RadioButton id="MainMenuNavBarDevAlertMgr"
-                                        class="mainmenu-top-navbar__radio-iconbtn hidedevbutton"
+                                        class="mainmenu-top-navbar__radio-iconbtn DEVModeOnly"
                                         group="NavBar"
-                                        onactivate="MainMenu.DevAlertMgr()"
-                                        onmouseover="UiToolkitAPI.ShowTextTooltip( 'MainMenuNavBarDevAlertMgr', 'Notifications Debugger' );"
+                                        onactivate="MainMenu.ShowDevContextMenu();"
+                                        onmouseover="UiToolkitAPI.ShowTextTooltip( 'MainMenuNavBarDevAlertMgr', 'DEV BUTTON CONTEXT' );"
                                         onmouseout="UiToolkitAPI.HideTextTooltip();">
-                                <Image class="mainmenu-top-navbar__radio-btn__icon" src="file://{images}/icons/ui/info.svg"/>
-                            </RadioButton>
-                            <RadioButton id="MainMenuNavBarDevPopups"
-                                        class="mainmenu-top-navbar__radio-iconbtn DEVModeONLY"
-                                        group="NavBar"
-                                        onactivate="MainMenu.DevPopups()"
-                                        onmouseover="UiToolkitAPI.ShowTextTooltip( 'MainMenuNavBarDevPopups', 'Dev popups' );"
-                                        onmouseout="UiToolkitAPI.HideTextTooltip();">
-                                <Image class="mainmenu-top-navbar__radio-btn__icon" src="file://{images}/icons/ui/unlocked.svg"/>
-                            </RadioButton>
-                            <Button id="MainMenuNavBarBrowser"
-                                    class="mainmenu-top-navbar__radio-iconbtn DEVModeONLY"
-									group="NavBar"
-                                    onactivate="MainMenu.WebBrowser()"
-                                    onmouseover="UiToolkitAPI.ShowTextTooltip( 'MainMenuNavBarBrowser', 'YouTube' );"
-                                    onmouseout="UiToolkitAPI.HideTextTooltip();">
-                                <Image class="mainmenu-top-navbar__radio-btn__icon" src="file://{images}/icons/ui/community_servers.svg"/>
-                            </Button>
-                            <Button id="MainMenuNavBarPlayerStats"
-                                    class="mainmenu-top-navbar__radio-iconbtn DEVModeONLY"
-									group="NavBar"
-                                    onactivate="MainMenu.NavigateToTab('JsPlayerStats', 'mainmenu_playerstats'); MainMenu.StatsBtnPressedUpdateAlert();"
-                                    onmouseover="UiToolkitAPI.ShowTextTooltip( 'MainMenuNavBarPlayerStats', 'Stats and stuff' );"
-                                    onmouseout="UiToolkitAPI.HideTextTooltip();">
-                                <Image class="mainmenu-top-navbar__radio-btn__icon" src="file://{images}/icons/ui/stats_logo.svg"/>
-                            </Button>
-                            <RadioButton id="MainMenuNavBarOverwatch"
-                                         class="mainmenu-top-navbar__radio-iconbtn DEVModeONLY"
-                                         group="NavBar"
-                                         onactivate="MainMenu.NavigateToTab('JsOverwatch', 'mainmenu_overwatch');"
-                                         onmouseover="UiToolkitAPI.ShowTextTooltip( 'MainMenuNavBarOverwatch', 'Overwatch' );"
-                                         onmouseout="UiToolkitAPI.HideTextTooltip();">
-                                <Image class="mainmenu-top-navbar__radio-btn__icon"
-                                       src="file://{images}/icons/ui/overwatch.svg"/>
-                                <Panel id="MainMenuSubscriptionAlert" class="navbar-btn__notification overwatch">
-                                    <Label id="MainMenuSubscriptionAlertText" class="navbar-btn__notification-text" text="+"/>
-                                </Panel>
+                                <Image class="mainmenu-top-navbar__radio-btn__icon" src="file://{images}/icons/ui/bug.svg"/>
                             </RadioButton>
                             <RadioButton id="MainMenuNavBarQuit"    
 							        class="mainmenu-top-navbar__radio-iconbtn MainMenuModeOnly"
@@ -212,24 +176,12 @@
                             </Panel>
                         </Panel>
                         <Panel id="MainMenuNavBarCenterContainer" class="mainmenu-top-navbar__center-container">
-                             <RadioButton id="MainMenuNavBarDevUI"
-			                              class="mainmenu-top-navbar__radio-btn DEVModeONLY"				
-			                              group="NavBar" 
-										  onmouseover="UiToolkitAPI.ShowTextTooltip( &apos;MainMenuNavBarDevUI&apos;, &apos;QUICK DEVELOPER UI PREVIEWS FOR DEBUG&apos; );" onmouseout="UiToolkitAPI.HideTextTooltip();"
-			                              onactivate="MainMenu.NavigateToTab('JsDev', 'mainmenu_tests');">
-			                     <Label class="mainmenu-top-navbar__radio-btn__label stratum-medium" style="font-size: 20;" text="DEV UI" />
-			                          <Panel id="MainMenuWatchAlert" class="navbar-btn__notification hidden">
-		                     </Panel>
-		                   </RadioButton>
-						   <Panel class="mainmenu-top-navbar__play_seperator mainmenu-top-navbar__play_seperator--small DEVModeONLY" />
                             <RadioButton id="MainMenuNavBarInventory"
                                          class="mainmenu-top-navbar__radio-btn"
                                          group="NavBar"
                                          onactivate="$.DispatchEvent('OpenInventory');">
                                 <Label class="mainmenu-top-navbar__radio-btn__label stratum-medium" style="font-size: 20;" text="#CSGO_MainMenu_Inventory"/>
-                                <Panel id="MainMenuInvAlert" class="navbar-btn__notification hidden">
-                                    <Label id="MainMenuInvAlertText" class="navbar-btn__notification-text stratum-medium" style="font-size: 16px;" text=""/>
-                                </Panel>
+                                <Frame id="MainMenuInvAlert" class="hidden" src="file://{resources}/layout/btn_alert.xml" />
 							</RadioButton>
 							 <Panel class="mainmenu-top-navbar__play_seperator mainmenu-top-navbar__play_seperator--small"/>
                             <RadioButton id="MainMenuNavBarLoadoutGrid"
@@ -258,13 +210,6 @@
                                 <Panel id="MainMenuStoreAlert" class="navbar-btn__notification hidden">
                                     <Label id="MainMenuStoreAlertText" class="navbar-btn__notification-text" text=""/>
                                 </Panel>
-							</RadioButton>
-							<Panel class="mainmenu-top-navbar__play_seperator mainmenu-top-navbar__play_seperator--small visible-if-not-limitedbeta"/>
-                            <RadioButton id="MainMenuNavBarStats" class="mainmenu-top-navbar__radio-btn visible-if-not-limitedbeta" group="NavBar" onactivate="MainMenu.NavigateToTab(&apos;JsPlayerStats&apos;, &apos;mainmenu_playerstats&apos;); MainMenu.StatsBtnPressedUpdateAlert();" onmouseover="UiToolkitAPI.ShowTextTooltip( &apos;MainMenuNavBarStats&apos;, &apos;#tooltip_navbar_stats&apos; );" onmouseout="UiToolkitAPI.HideTextTooltip();">
-                                <Label class="mainmenu-top-navbar__radio-btn__label stratum-medium" style="font-size: 23;" text="#SFUI_MainMenu_Stats_TopNav" />
-								<Panel id="MainMenuSubscriptionAlert" class="navbar-btn__notification hidden">
-								<Label id="MainMenuSubscriptionAlertText" class="navbar-btn__notification-text stratum-medium" style="font-size: 22;" text="#Store_Price_New"/>
-								</Panel>
                             </RadioButton>
                             <Panel class="mainmenu-top-navbar__play_seperator mainmenu-top-navbar__play_seperator--small"/>
                             <RadioButton id="MainMenuNavBarNews"
@@ -274,26 +219,6 @@
                                 <Label class="mainmenu-top-navbar__radio-btn__label stratum-medium" style="font-size: 20;" text="#CSGO_MainMenu_News"/>
                                 <Panel id="MainMenuWatchAlert" class="navbar-btn__notification hidden">
                                </Panel>
-						   </RadioButton>
-			                <Panel class="mainmenu-top-navbar__play_seperator mainmenu-top-navbar__play_seperator--small DEVModeONLY" />
-                            <RadioButton id="MainMenuNavBarControlsLibrary"
-			                           class="mainmenu-top-navbar__radio-btn DEVModeONLY"
-			                           group="NavBar" 
-									   onmouseover="UiToolkitAPI.ShowTextTooltip( &apos;MainMenuNavBarControlsLibrary&apos;, &apos;CONTROLS LIBRARY IS USED FOR UI DEBUG AND PREVIEWS&apos; );" onmouseout="UiToolkitAPI.HideTextTooltip();"
-			                           onactivate="MainMenu.NavigateToTab('JsControls', 'controlslibrary');">
-			                    <Label class="mainmenu-top-navbar__radio-btn__label stratum-medium" style="font-size: 20;" text="TESTS" />
-			                    <Panel id="MainMenuWatchAlert" class="navbar-btn__notification hidden">
-		                     </Panel>
-							</RadioButton>
-			                <Panel class="mainmenu-top-navbar__play_seperator mainmenu-top-navbar__play_seperator--small DEVModeONLY" />
-                            <RadioButton id="MainMenuNavBarItemPrevDbg"
-			                           class="mainmenu-top-navbar__radio-btn DEVModeONLY"
-			                           group="NavBar" 
-									   onmouseover="UiToolkitAPI.ShowTextTooltip( &apos;MainMenuNavBarItemPrevDbg&apos;, &apos;INSTA CRASH WHEN YOU DO SOMETHING!&apos; );" onmouseout="UiToolkitAPI.HideTextTooltip();"
-			                           onactivate="MainMenu.NavigateToTab('JsItemPrevDbg', 'itempreviewdebug');">
-			                    <Label class="mainmenu-top-navbar__radio-btn__label stratum-medium" style="font-size: 20;" text="ITEMDBG" />
-			                    <Panel id="MainMenuWatchAlert" class="navbar-btn__notification hidden">
-		                     </Panel>
                             </RadioButton>
                         </Panel>
                     </Panel>

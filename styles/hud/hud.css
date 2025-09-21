@@ -109,12 +109,12 @@ CSGOHud,
 
 #HudLowerLeft
 {
-	padding-right: 750px;
+	padding-right: 650px;
+	padding-bottom: 25px;
     horizontal-align: center;
-    vertical-align: bottom;
-	padding-bottom: 10px;
-                                                                                                                                         
+    vertical-align: bottom;                                                                                                                                   
 }
+
 #HudLowerLeftChatStatus
 {
     horizontal-align: left;

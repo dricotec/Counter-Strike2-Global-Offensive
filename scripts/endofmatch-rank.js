@@ -5,14 +5,33 @@ var EOM_Rank = (function () {
 
 	var _m_pauseBeforeEnd = 1.0;
 	var _m_cP = $.GetContextPanel();
-	GameInterfaceAPI.ConsoleCommand('mp_match_restart_delay  60');
+
+
+                                                     
 
 	_m_cP.Data().m_retries = 0;
 	
 	var _DisplayMe = function()
 	{
 
-		var xPPerLevel = 5000;
+		                                     
+		    
+		                                          
+		   	             
+		    
+
+		if ( !_m_cP.bXpDataReady && !MockAdapter.GetMockData() )
+		{
+		                                                           
+			return false;
+		}
+
+		if( MyPersonaAPI.GetElevatedState() !== 'elevated' )
+		{
+			return false;
+		}
+
+		var xPPerLevel = MyPersonaAPI.GetXpPerLevel();
 		
 		var xp_t = ( function( reason, xp )
 		{
@@ -28,37 +47,6 @@ var EOM_Rank = (function () {
 		} );
 
 		var oXpData = MockAdapter.XPDataJSO( _m_cP );
-		oXpData['current_xp'] = 1000; // your current xp
-		oXpData['current_level'] = 40; // your current level (level can only increase by one)
-		oXpData['xp_earned'] = { // column of the levels, example -> reason(id): earned(xp)
-			88: 2000,
-			3: 2000
-		};
-
-		/*  IDs for xp_earned
-
-			Old Current XP
-			0 *empty text*
-			1 Earned XP (Your Score x %s2 Multiplier)
-			2 Earned XP (Rounds Won x %s2 Multiplier)
-			3 Weekly XP Bonus
-			4 Overwatch XP Reward
-			5 Weekly XP Bonus (for Overwatch XP)
-			6 Mission Completion
-			7 Mission Bonus
-			8 Blitz Mission XP
-			9 Operation XP (Your score x War Game Multiplier)
-			10 Operation XP (Rounds Won x Event Multiplier)
-			51 Earned XP (Your Score x Reduced %s2 Multiplier)
-			52 Earned XP (Rounds Won x Reduced %s2 Multiplier)
-			54 Overwatch XP (Your Reward x Reduced Multiplier)
-			58 Blitz Mission XP (Your XP x Reduced Multiplier)
-			59 Operation XP (Event XP Exhausted)
-			81 Earned XP (Your Score x Private Rank %s2 Multiplier)
-			82 Earned XP (Rounds Won x Private Rank %s2 Multiplier)
-			88 Blitz Mission XP (Your XP x Private Rank Blitz Multiplier)
-
-		*/ 
 
 		if ( !oXpData )
 			return false;
@@ -74,7 +62,7 @@ var EOM_Rank = (function () {
 		var arrPostRankXP = [];                                    
 		var totalXP = 0;
 
-		var maxLevel = 40;
+		var maxLevel = InventoryAPI.GetMaxLevel();
 
 		               
 		var currentRank = oXpData[ "current_level" ];
@@ -87,7 +75,6 @@ var EOM_Rank = (function () {
 
 		            
 		var newRank = currentRank < maxLevel ?  ( currentRank + 1 ) : maxLevel;
-		$.Msg(newRank);
 		
 		elNew.SetDialogVariableInt( "level", newRank );
 		elNew.SetDialogVariable( 'rank_new_name', $.Localize( '#XP_RankName_' + newRank, elNew ) );
@@ -101,8 +88,11 @@ var EOM_Rank = (function () {
 
 		var xp = 0;
 
+		
 		var _AddXPBar = function( reason, xp )
 		{
+			                                                         
+
 			var sPerXp = 0.0005;
 
 			var duration = sPerXp * xp;

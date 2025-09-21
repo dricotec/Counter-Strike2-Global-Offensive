@@ -9,13 +9,28 @@ var PopupAcceptMatch = ( function(){ // script was modified by d3gk, primarily u
 	var m_isReconnect = false;
 	var m_isNqmmAnnouncementOnly = false;
 	var m_lobbySettings;
-	let m_gsLocation = 'Europe, Serbia';
-	let m_gsPing = 69;
+	let m_gsLocation = '';
+	let m_gsPing = 0;
 	var m_elTimer = $.GetContextPanel().FindChildInLayoutFile ( 'AcceptMatchCountdown' );
 	var m_jsTimerUpdateHandle = false;
 	var bShowPlayerSlots = false;
 	          
-	                    
+	var AcceptMatchMusic = function ( type )
+	{
+		var itemId = LoadoutAPI.GetItemID( 'noteam', 'musickit' );
+		var musicId = InventoryAPI.GetItemAttributeValue( itemId, 'music id' );
+		var musicName = InventoryAPI.GetMusicNameFromMusicID(musicId);
+		musicName = musicName.replace(/^#musickit_/, '');
+
+		if(type == 'loading' && GameStateAPI.GetCSGOGameUIStateName() == 'CSGO_GAME_UI_STATE_MAINMENU') {
+			$.DispatchEvent('PlayMainMenuMusic', false, false );
+			InventoryAPI.PlayItemPreviewMusic( itemId, 'startround_01.mp3' );
+			InventoryAPI.StopItemPreviewMusic();
+			$.Schedule(0.01, function(){
+				$.DispatchEvent('PlaySoundEffect', 'Music.StartRound.' + musicName, 'MOUSE');
+			});
+		}
+	}
 	          
 	
 	var _Init = function ()
@@ -27,6 +42,7 @@ var PopupAcceptMatch = ( function(){ // script was modified by d3gk, primarily u
 		m_gsPing = parseInt($.GetContextPanel().GetAttributeString('ping', '69420'));
 		$.GetContextPanel().SetDialogVariable('region', m_gsLocation);
 		$.GetContextPanel().SetDialogVariableInt('ping', m_gsPing);
+		AcceptMatchMusic('loading');
 
 		          
 		              

@@ -171,9 +171,9 @@ function MakeTabsBtnsFromStoreData() {
 
         if (elParent) {
             for (let [key, value] of Object.entries(oItemsByCategory)) {
-                if (key === 'tournament') { // to remove this code that skips the tournament store button, just type // at if (key, continue: and the }. this will enable the tournament store button but however its broken.
-                    continue; // this shit basically does the job of not showing the tournament items tab.
-                }
+               // if (key === 'tournament') { // to remove this code that skips the tournament store button, just type // at if (key, continue: and the }. this will enable the tournament store button but however its broken.
+                //    continue; // this shit basically does the job of not showing the tournament items tab.
+               // }
 
                 let panelIdString = 'id-store-nav-' + key;
                 let elButton = elParent.FindChildInLayoutFile(panelIdString);
@@ -191,22 +191,6 @@ function MakeTabsBtnsFromStoreData() {
                         NavigateToTab(_m_pagePrefix + key, key);
                     });
                 }
-            }
-
-            //custom
-            let elButton = elParent.FindChildInLayoutFile('id-store-nav-cases');
-
-            if (!elButton) {
-                elButton = $.CreatePanel('RadioButton', elParent, 'id-store-nav-cases', {
-                    group: 'store-top-nav',
-                    class: 'content-navbar__tabs__btn'
-                });
-
-                $.CreatePanel('Label', elButton, '', { text: '#store_nav_cases' });
-
-                elButton.SetPanelEvent('onactivate', () => {
-                    NavigateToTab(_m_pagePrefix + 'cases', 'cases');
-                });
             }
         }
     } catch (e) {
@@ -235,11 +219,6 @@ function MakePageFromStoreData(typeKey) {
 
 function UpdateDynamicLister(elList, typeKey) {
     let oItemsByCategory = StoreItems.GetStoreItems();
-    var isCasesMenu = false;
-    if(typeKey == 'cases') {
-        typeKey = 'coupon';
-        isCasesMenu = true;
-    }
     let aItemsList = oItemsByCategory[typeKey];
 
     // Ensure the number of panels matches the number of items
@@ -251,16 +230,6 @@ function UpdateDynamicLister(elList, typeKey) {
     // Loop through the items and either create or update panels
     for (let i = 0; i < numItems; i++) {
         let item = aItemsList[i];
-
-        let itemName = InventoryAPI.GetItemDefinitionName(item.id);
-        var cratesName = ['crate_community', 'crate_esports', 'crate_valve', 'crate_operation', 'gamma'];
-        var isCase = cratesName.some(pattern => itemName.includes(pattern));
-        
-        if(isCasesMenu && !isCase) {
-            continue;
-        } else if (!isCasesMenu && isCase) {
-            continue;
-        }
         let itemPanel = elList.FindChildInLayoutFile(item.id);
 
         // If the panel doesn't exist, create a new one
@@ -323,9 +292,9 @@ $.Schedule(0.1, function() {
             elBalance.text = '#Store_SteamChina_Wallet';
             return;
         }
-        var balance = (MyPersonaAPI.GetLauncherType() === 'perfectworld') ? StoreAPI.GetAccountWalletBalance() : '';
+        var balance = (MyPersonaAPI.GetLauncherType() === 'perfectworld') ? StoreAPI.GetAccountWalletBalance() : '69420';
         if (balance === '' || balance === undefined || balance === null) {
-            elBalance.AddClass('hidden');
+            elBalance.AddClass('visible');
         }
         else {
             elBalance.SetDialogVariable('balance', balance);

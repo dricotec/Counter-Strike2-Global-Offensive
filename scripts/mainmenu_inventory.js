@@ -21,17 +21,12 @@ var InventoryPanel = ( function (){
 		}
 		
 		_RunEveryTimeInventoryIsShown();
+		InventoryAPI.GetUnacknowledgeItemsCount();
 		_CreateCategoriesNavBar();
 		_InitMarketLink();
 		_InitXrayBtn();
 		_LoadEquipNotification();
 
-		                                           	
-		var vanityPanel = $( '#JsMainmenu_Vanity' );
-		if ( vanityPanel && UiToolkitAPI.IsPanoramaInECOMode() )
-		{
-			vanityPanel.Pause( true );
-		}
 	};
 
 	var _RunEveryTimeInventoryIsShown = function()

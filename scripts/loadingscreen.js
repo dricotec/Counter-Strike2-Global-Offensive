@@ -23,6 +23,8 @@ var LoadingScreen = ( function() {
 		elBackgroundImage.SetImage("file://{images}/map_icons/screenshots/1080p/background.png");
 
 	    $('#LoadingScreenIcon').visible = false;
+		
+		LDNScreenMusicS2('loading');
 	}
 
 	var _UpdateLoadingScreenInfo = function (mapName, prettyMapName, prettyGameModeName, gameType, gameMode, descriptionText)
@@ -117,6 +119,23 @@ var LoadingScreen = ( function() {
 		}
 		else
 			elInfoBlock.AddClass( 'hidden' );
+	}
+	
+	var LDNScreenMusicS2 = function ( type )
+	{
+		var itemId = LoadoutAPI.GetItemID( 'noteam', 'musickit' );
+		var musicId = InventoryAPI.GetItemAttributeValue( itemId, 'music id' );
+		var musicName = InventoryAPI.GetMusicNameFromMusicID(musicId);
+		musicName = musicName.replace(/^#musickit_/, '');
+
+		if (type == 'loading' && GameStateAPI.GetCSGOGameUIStateName() == 'CSGO_GAME_UI_STATE_LOADINGSCREEN') {
+			InventoryAPI.PlayItemPreviewMusic( itemId, 'startround_01.mp3' );
+			InventoryAPI.StopItemPreviewMusic();
+	
+			var randomAction = Math.random() < 0.5 ? "Music.StartAction_01." : "Music.StartAction_02.";
+	
+			$.DispatchEvent('PlaySoundEffect', 'Music.StartAction.' + musicName, 'MOUSE');
+		}
 	}
 
 	var _SetCharacterAnim = function ( elPanel, settings )

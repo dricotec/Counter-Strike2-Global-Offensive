@@ -58,7 +58,7 @@ var OperationMainMenu = ( function()
 
 		if ( !_m_nSeasonIndex )
 		{
-			_m_nSeasonIndex = GameTypesAPI.GetActiveSeasionIndexValue();
+			_m_nSeasonIndex = 10;
 			                                                                                              
 		}
 

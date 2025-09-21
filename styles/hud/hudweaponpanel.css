@@ -14,7 +14,7 @@
 
 CSGOHudWeaponPanel
 {
-	flow-children: down;
+
 }
 
 CSGOHudWeaponPanel Label
@@ -42,6 +42,8 @@ CSGOHudWeaponPanel Label
 	transition-property:  opacity, transform;
 	transition-duration: .25s;
 	transition-timing-function: ease-in-out;
+	margin-bottom: 16px;
+	padding-right: 32px;
 }
 
 .WeaponPanel--Hidden
@@ -150,24 +152,36 @@ CSGOHudWeaponPanel Label
                                  	
 }
 
-                                            
+.center_indicator
+{
+
+}
+
+.team_indicator
+{
+	width: 502px;
+	height: 62px;
+	margin-right: 548px;
+	margin-top: 36px;
+
+}                                          
 
 .Kills
 {
-	                      
-	height: 100%;
+	width: 94px;
+	height: 99px;
+	margin-left: 206px;
+	margin-bottom: 16px;
 }
 
 .Kills__Count
 {
-	flow-children: right;
-	horizontal-align: right;
-	padding-top: 4px;
+
 }
 
 .Kills__Count--RightLeftFlow
 {
-	flow-children: left;
+
 }
 
 .Kills__Count--Hidden
@@ -177,16 +191,16 @@ CSGOHudWeaponPanel Label
 
 .Kills__Icon
 {
-	background-image: url( "file://{images}/hud/weaponpanel/kill_icon.png" );
+	background-image: url( "file://{images}/hud/kill_1_def.png" );
 	background-size: 100% 100%;
-	width: killIconSize;
-	height: killIconSize;
-	margin-left: 1px;
+	width: 94px;
+	height: 99px;
+
 }
 
 .Kills__Icon--Headshot
 {
-	background-image: url( "file://{images}/hud/weaponpanel/kill_icon_headshot.png" );
+	background-image: url( "file://{images}/hud/kill_1_head.png" );
 }
 
 .Kills__Icon--Outline
@@ -200,6 +214,140 @@ CSGOHudWeaponPanel Label
 }
 
 .Kills__Icon--Animate
+{
+	animation-name: KillIconShowAnim; 
+	animation-duration: .33s;
+	animation-delay: 0s;
+	sound: "UIPanorama.kill_doof";
+	animation-timing-function: linear;
+	animation-iteration-count: 1;
+}
+
+.Kills__Icon2
+{
+	background-image: url( "file://{images}/hud/kill_2_def.png" );
+	background-size: 100% 100%;
+	width: 94px;
+	height: 99px;
+
+}
+
+.Kills__Icon2--Headshot
+{
+	background-image: url( "file://{images}/hud/kill_2_head.png" );
+}
+
+.Kills__Icon2--Outline
+{
+	background-image: url( "file://{images}/hud/weaponpanel/kill_icon_outline.png" );
+}
+
+.Kills__Icon2--Hidden
+{
+	opacity: 0.0;
+}
+
+.Kills__Icon2--Animate
+{
+	animation-name: KillIconShowAnim; 
+	animation-duration: .33s;
+	animation-delay: 0s;
+	sound: "UIPanorama.kill_doof";
+	animation-timing-function: linear;
+	animation-iteration-count: 1;
+}
+
+.Kills__Icon3
+{
+	background-image: url( "file://{images}/hud/kill_3_def.png" );
+	background-size: 100% 100%;
+	width: 94px;
+	height: 99px;
+
+}
+
+.Kills__Icon3--Headshot
+{
+	background-image: url( "file://{images}/hud/kill_3_head.png" );
+}
+
+.Kills__Icon3--Outline
+{
+	background-image: url( "file://{images}/hud/weaponpanel/kill_icon_outline.png" );
+}
+
+.Kills__Icon3--Hidden
+{
+	opacity: 0.0;
+}
+
+.Kills__Icon3--Animate
+{
+	animation-name: KillIconShowAnim; 
+	animation-duration: .33s;
+	animation-delay: 0s;
+	sound: "UIPanorama.kill_doof";
+	animation-timing-function: linear;
+	animation-iteration-count: 1;
+}
+
+.Kills__Icon4
+{
+	background-image: url( "file://{images}/hud/kill_4_def.png" );
+	background-size: 100% 100%;
+	width: 94px;
+	height: 99px;
+}
+
+.Kills__Icon4--Headshot
+{
+	background-image: url( "file://{images}/hud/kill_4_head.png" );
+}
+
+.Kills__Icon4--Outline
+{
+	background-image: url( "file://{images}/hud/weaponpanel/kill_icon_outline.png" );
+}
+
+.Kills__Icon4--Hidden
+{
+	opacity: 0.0;
+}
+
+.Kills__Icon4--Animate
+{
+	animation-name: KillIconShowAnim; 
+	animation-duration: .33s;
+	animation-delay: 0s;
+	sound: "UIPanorama.kill_doof";
+	animation-timing-function: linear;
+	animation-iteration-count: 1;
+}
+
+.Kills__Icon5
+{
+	background-image: url( "file://{images}/hud/kill_5_def.png" );
+	background-size: 100% 100%;
+	width: 94px;
+	height: 99px;
+}
+
+.Kills__Icon5--Headshot
+{
+	background-image: url( "file://{images}/hud/kill_5_head.png" );
+}
+
+.Kills__Icon5--Outline
+{
+	background-image: url( "file://{images}/hud/weaponpanel/kill_icon_outline.png" );
+}
+
+.Kills__Icon5--Hidden
+{
+	opacity: 0.0;
+}
+
+.Kills__Icon5--Animate
 {
 	animation-name: KillIconShowAnim; 
 	animation-duration: .33s;
@@ -264,6 +412,8 @@ CSGOHudWeaponPanel Label
 .Ammo
 {
 	width: 125px;
+	margin-top: 43px;
+	margin-left: 499px;
 	animation-name: weapon--change;
     animation-duration: 0.1s;
     animation-timing-function: ease-in-out;

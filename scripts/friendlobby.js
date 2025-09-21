@@ -100,7 +100,7 @@ var friendLobby;
             let elEmpty = playerSlot.FindChildTraverse('JsFriendAvatarEmpty');
             let elAvatar = playerSlot.FindChildTraverse('JsFriendAvatar');
             if (xuid) {
-                elAvatar.PopulateFromSteamID(xuid);
+                elAvatar.steamid = xuid;
                 playerSlot.FindChild('JsFriendAvatarBtn').SetPanelEvent('onactivate', () => _OpenContextMenu(xuid));
                 elEmpty.visible = false;
                 elAvatar.visible = true;
