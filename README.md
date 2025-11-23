@@ -1,7 +1,7 @@
 
 # CS2:GO - Unofficial Fork
 
-**Unofficial Fork maintained by dricotec**
+**Unofficial Fork maintained by dricotec cus i want to do sum shit to this**
 
 This is an unofficial fork of the original CS2:GO mod by [DeformedSAS](https://github.com/DeformedSAS/Counter-Strike2-Global-Offensive). The original project backports Counter-Strike 2 (CS2) UI features and content to Counter-Strike: Global Offensive (CS:GO), creating a modernized interface experience.
 
