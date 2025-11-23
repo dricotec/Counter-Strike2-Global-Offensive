@@ -165,10 +165,10 @@ function _TriggerFakeConfirm() {
     elStatusSearching.RemoveClass('hidden');
     elLabel.text = $.Localize("Searching for players and servers...");
 
-    $.Schedule(15.0, function() {
+    $.Schedule(10.0, function() {
         elLabel.text = $.Localize("Confirming match...");
 
-        $.Schedule(3.0, function() {
+        $.Schedule(1.0, function() {
             $.DispatchEvent('PlaySoundEffect', 'popup_accept_match_found', 'MOUSE');
 
             UiToolkitAPI.ShowCustomLayoutPopupParameters(
@@ -184,7 +184,8 @@ function _TriggerFakeConfirm() {
         _fakeConfirmActive = false;
     });
 }
- // call with debugger
-$.RegisterForUnhandledEvent("Fake_StartConfirmSimulation", _TriggerFakeConfirm);
 
 })(MatchmakingStatus || (MatchmakingStatus = {}));
+
+// not meant for actual use. it's for debugging and only shows the fake match accept which is also just for show. not real matchmaking here. 
+// yes this is based off of valves matchmaking_status.vts_c from cs2, don't think i ever updated it once i just copy pasted the code from cs2..

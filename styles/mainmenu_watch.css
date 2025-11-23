@@ -64,8 +64,7 @@
 
 .MatchList--Selector Label
 {
-    font-size: 17px;
-	font-family: Stratum2;
+    font-size: 14px;
     text-overflow: shrink;
 }
 
@@ -221,10 +220,10 @@
 .Info-Message
 {
     font-size:16;
-    font-weight:medium;
+    font-weight:lighter;
     text-align:left;
     margin-left:0px;
-    font-family: Stratum2, 'Arial Unicode MS';
+    font-family: notosans, 'Arial Unicode MS';
     text-shadow: 0px 0px 0px;
     line-height:24px;
 }
@@ -244,7 +243,6 @@
 #Stream-text
 {
     font-weight:bold;
-	font-family: Stratum2;
     font-size: 16px;
     margin-top: 5px;
     color: white;
@@ -253,8 +251,7 @@
 #Stream-views
 {
     color: #cfcfcf;
-	font-family: Stratum2;
-    font-size: 15px;
+    font-size: 13px;
 }
 
 #CountryFlag
@@ -713,7 +710,6 @@
 .matchinfo-tournamentinfo-minimal--score-label
 {
     font-size: 64px;
-	font-family: Stratum2;
     font-weight: bold;
 }
 

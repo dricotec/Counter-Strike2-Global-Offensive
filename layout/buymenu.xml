@@ -242,7 +242,7 @@
 			</Panel>
 			<Panel id="BuyMenuNavBar" class="buymenu-navbar pccontrols">
 				<Panel class="vertical-center left-right-flow horizontal-align-right">
-					<Label id="BuyForTeammateLabel" class="buymenu__for-teammate" text="#BuyMenu_BuyForTeammate" html="true"/>
+					<Label id="BuyForTeammateLabel" class="buymenu__for-teammate stratum-medium" text="#BuyMenu_BuyForTeammate" html="true"/>
 					<Button class="PopupButton" onactivate="GameInterfaceAPI.ConsoleCommand( 'rebuy' )">
 						<Label text="#BuyMenu_Buyprev" html="true" />
 					</Button>

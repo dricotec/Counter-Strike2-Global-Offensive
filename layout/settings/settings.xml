@@ -36,6 +36,11 @@
                 <RadioButton id="ControllerRadio" group="SettingsNavBar" class="content-navbar__tabs__btn" onactivate='SettingsMenu.NavigateToTab("ControllerSettings")'>
                     <Label class="" text="#settings_controller" />
                 </RadioButton>       
+				<Panel class="game-mode-selection-radios-spacer"></Panel>
+
+				<RadioButton id="CreditsRadio" group="SettingsNavBar" class="content-navbar__tabs__btn" onactivate='SettingsMenu.NavigateToTab( "CreditsSettings" ); SettingsMenuCredits.RefreshUsers()'>
+					<Label class="" text="#settings_credits"/>
+				</RadioButton>
             </Panel>
         </Panel>
         <Panel id="SettingsMenuContent" class="full-width full-height" />

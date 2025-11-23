@@ -792,51 +792,44 @@
 					                              
 		<snippet name="snippet_scoreboard-classic__row--teammatchmaking">
 			<Panel class="sb-row" cachepaintcmdlist="true" >
-				<Frame	snippet="stat--STATUS" />
-				<Frame	snippet="stat--PING" />
-				<Frame	snippet="stat--RANK" />
-				<Frame	snippet="stat--AVATAR"/>
-				<Frame	snippet="stat--NAME-W-COMMENDS"/>
-				<Frame	snippet="stat--FLAIR" />	
-				<Frame	snippet="stat--MONEY"				data-set='0'/>
-				<Frame	snippet="stat--KILLS" 				data-set='0'/>
-				<Frame	snippet="stat--ASSISTS" 			data-set='0'/>
-				<Frame	snippet="stat--HSP" 				data-set='0'/>
-				<Frame	snippet="stat--MVPS" 				data-set='0'/>	
-
-				<Frame	snippet="stat--DEATHS" 				data-set='1'/>				
-				<Frame	snippet="stat--UTILITYDAMAGE" 		data-set='1'/>
-				<Frame	snippet="stat--ENEMIESFLASHED" 		data-set='1'/>
-				<Frame	snippet="stat--KDR" 				data-set='1'/>	
-				<Frame	snippet="stat--ADR" 				data-set='1'/>		
-
-				<Frame	snippet="stat--DAMAGE" 				/>				
-
-	
-
+                    <Frame snippet="stat--STATUS" />
+                    <Frame snippet="stat--PING" />
+                    <Frame snippet="stat--FLAIR" />
+                    <Frame snippet="stat--AVATAR" />
+                    <Frame snippet="stat--NAME" />
+                    <Frame snippet="stat--MONEY" data-set="0" />
+                    <Frame snippet="stat--KILLS" data-set="0" />
+                    <Frame snippet="stat--DEATHS" data-set="0" />
+                    <Frame snippet="stat--ASSISTS" data-set="0" />
+                    <Frame snippet="stat--HSP" data-set="0" />
+                    <Frame snippet="stat--MVPS" data-set="1" />
+                    <Frame snippet="stat--UTILITYDAMAGE" data-set="1" />
+                    <Frame snippet="stat--ENEMIESFLASHED" data-set="1" />
+                    <Frame snippet="stat--KDR" data-set="1" />
+                    <Frame snippet="stat--ADR" data-set="1" />
+                    <Frame snippet="stat--DAMAGE" />
 			</Panel>
 		</snippet>
 
 					                          
 		<snippet name="snippet_scoreboard-classic__row--comp">
 			<Panel class="sb-row" cachepaintcmdlist="true" >
-				<Frame	snippet="stat--STATUS" />
-				<Frame	snippet="stat--PING" />
-				<Frame	snippet="stat--RANK" />
-				<Frame	snippet="stat--AVATAR"/>
-				<Frame	snippet="stat--NAME-W-COMMENDS"/>
-				<Frame	snippet="stat--FLAIR" />	
-				<Frame	snippet="stat--MONEY" 				data-set='0'/>	
-				<Frame	snippet="stat--KILLS" 				data-set='0'/>
-				<Frame	snippet="stat--ASSISTS" 			data-set='0'/>
-				<Frame	snippet="stat--DEATHS" 				data-set='0'/>
-				<Frame	snippet="stat--MVPS" 				data-set='0'/>
-				<Frame	snippet="stat--HSP" 				data-set='1'/>
-				<Frame	snippet="stat--KDR" 				data-set='1'/>				
-				<Frame	snippet="stat--ADR" 				data-set='1'/>
-				<Frame	snippet="stat--UTILITYDAMAGE" 		data-set='1'/>
-				<Frame	snippet="stat--ENEMIESFLASHED" 		data-set='1'/>
-				<Frame	snippet="stat--SCORE" />
+                    <Frame snippet="stat--STATUS" />
+                    <Frame snippet="stat--PING" />
+                    <Frame snippet="stat--FLAIR" />
+                    <Frame snippet="stat--AVATAR" />
+                    <Frame snippet="stat--NAME" />
+                    <Frame snippet="stat--MONEY" data-set="0" />
+                    <Frame snippet="stat--KILLS" data-set="0" />
+                    <Frame snippet="stat--DEATHS" data-set="0" />
+                    <Frame snippet="stat--ASSISTS" data-set="0" />
+                    <Frame snippet="stat--HSP" data-set="0" />
+                    <Frame snippet="stat--MVPS" data-set="1" />
+                    <Frame snippet="stat--UTILITYDAMAGE" data-set="1" />
+                    <Frame snippet="stat--ENEMIESFLASHED" data-set="1" />
+                    <Frame snippet="stat--KDR" data-set="1" />
+                    <Frame snippet="stat--ADR" data-set="1" />
+                    <Frame snippet="stat--DAMAGE" />
 			</Panel>
 		</snippet>
 

@@ -34,28 +34,6 @@
         </Panel>
         <Panel class="top-bottom-flow full-width">
 
-            <TooltipPanel id="MainMenuMovieSceneSelector" class="SettingsMenuDropdownContainer" tooltip="#GameUI_MainMenuMovieScene_Tooltip">
-                <Label text="#GameUI_MainMenuMovieScene" class="half-width"/>
-                <CSGOSettingsEnumDropDown class="PopupButton" convar="ui_mainmenu_bkgnd_movie_CC4ECB9" ondropdownselectionchanged="$.DispatchEvent('CSGOMainInitBackgroundMovie');">
-                    <Label text="#SFUI_Map_de_ancient" value="ancient" id="ui_mainmenu_bkgnd_movie_ancient"/>
-                    <Label text="#SFUI_Map_de_anubis" value="anubis" id="ui_mainmenu_bkgnd_movie_anubis"/>
-                    <Label text="#SFUI_Map_de_overpass" value="overpass" id="ui_mainmenu_bkgnd_movie_overpass"/>
-                    <Label text="#SFUI_Map_dz_sirocco" value="sirocco" id="ui_mainmenu_bkgnd_movie_sirocco"/>
-                    <Label text="#SFUI_Map_de_cbble" value="cbble" id="ui_mainmenu_bkgnd_movie_cbble"/>
-                    <Label text="#SFUI_Map_coop_kasbah" value="sirocco_night" id="ui_mainmenu_bkgnd_movie_sirocco_night"/>
-                    <Label text="#SFUI_Map_de_vertigo" value="vertigo" id="ui_mainmenu_bkgnd_movie_vertigo"/>
-                    <Label text="#SFUI_Map_cs_office" value="office" id="ui_mainmenu_bkgnd_movie_office"/>
-                    <Label text="#SFUI_Map_de_nuke" value="nuke" id="ui_mainmenu_bkgnd_movie_nuke"/>
-                    <Label text="#SFUI_Map_de_dust2" value="dust2" id="ui_mainmenu_bkgnd_movie_dust2"/>
-                    <Label text="#SFUI_Map_de_train" value="train" id="ui_mainmenu_bkgnd_movie_train"/>
-                    <Label text="#SFUI_Map_de_mirage" value="mirage" id="ui_mainmenu_bkgnd_movie_mirage"/>
-                    <Label text="#SFUI_Map_de_inferno" value="inferno" id="ui_mainmenu_bkgnd_movie_inferno"/>
-                    <Label text="#SFUI_Map_dz_blacksite" value="blacksite" id="ui_mainmenu_bkgnd_movie_blacksite"/>
-                    <Label text="Warehouse" value="warehouse" id="ui_mainmenu_bkgnd_movie_warehouse"/>
-                </CSGOSettingsEnumDropDown>
-            </TooltipPanel>
-            <Panel class="horizontal-separator"/>
-
             <Panel class="SettingsMenuDropdownContainer">
                 <Label text="#GameUI_DisplayMode" class="half-width"/>
                 <CSGOSettingsEnumDropDown onuserinputsubmit="SettingsMenuShared.VideoSettingsOnUserInputSubmit()" class="PopupButton" id="ColorMode">
@@ -118,6 +96,7 @@
                     <Label text="Disabled" value="0" id="panofps0" />
                     <Label text="Enabled" value="1" id="panofps1" />
                 </CSGOSettingsEnumDropDown>
+			<!--	
             </TooltipPanel>
             <Panel class="horizontal-separator"/>
 
@@ -127,6 +106,7 @@
                     <Label text="Enabled" value="0" id="blur_enable" />
                     <Label text="Disabled" value="1" id="blur_disable"/>
                 </CSGOSettingsEnumDropDown>
+		    -->
             </TooltipPanel>
             <Panel class="horizontal-separator"/>
 

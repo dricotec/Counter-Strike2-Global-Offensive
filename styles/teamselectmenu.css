@@ -448,11 +448,11 @@ Label
     }
     
 }
-/* agents in loading screen panel */
+/* agents in loading screen panel, they're actually not a part of the loading screen but valve does things differently i guess? */
 
 .loading-screen-model
 {
-	width: 850px;
+	width: 800px;
 	height: 100%;
 	horizontal-align: center;
 	vertical-align: middle;
@@ -481,9 +481,9 @@ Label
 .loading-screen-model--right.highlight,
 .loading-screen-model--left.highlight
 {
-	ui-scale: 104%;
+	ui-scale: 100%;
 
-	brightness: 2.0;
+	brightness: 4.0;
 
 	transition-property: ui-scale;
 	transition-duration: .25s;

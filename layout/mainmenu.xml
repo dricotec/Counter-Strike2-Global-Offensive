@@ -34,7 +34,7 @@
 					<ItemPreviewPanel id="JsMainmenu_Vanity_0"
                                       class="full-width full-height hidden"
                                       manifest="resource/ui/econ/ItemModelPanelCharWeaponInspect.res"
-                                      item="models/player/custom_player/legacy/ctm_sas.mdl"
+                                      item="models/player/custom_player/legacy/tm_phoenix.mdl"
                                       mouse_rotate="false"
                                       enable_floorshadow="true"
                                       hittest="false">
@@ -43,9 +43,9 @@
 
 					<ItemPreviewPanel id="JsMainmenu_Vanity_1"
 									class="full-width full-height mainmenu-vanity-2 hidden"
-									style="margin-left: 550px;"
+									style="margin-left: 600px;"
 									manifest="resource/ui/econ/ItemModelPanelCharWeaponInspect.res"
-									item="models/player/custom_player/legacy/ctm_sas.mdl"
+									item="models/player/custom_player/legacy/tm_balkan_variantf.mdl"
 									mouse_rotate="false"
 									enable_floorshadow="true"
 									hittest="false">
@@ -56,7 +56,7 @@
 									class="full-width full-height mainmenu-vanity-3 hidden"
 									style="margin-left: 10px;"
 									manifest="resource/ui/econ/ItemModelPanelCharWeaponInspect.res"
-									item="models/player/custom_player/legacy/ctm_sas.mdl"
+									item="models/player/custom_player/legacy/tm_professional_varf1.mdl"
 									mouse_rotate="false"
 									enable_floorshadow="true"
 									hittest="false">
@@ -67,7 +67,7 @@
 									class="full-width full-height mainmenu-vanity-4 hidden"
 									manifest="resource/ui/econ/ItemModelPanelCharWeaponInspect.res"
 									style="margin-left: 800px;"
-									item="models/player/custom_player/legacy/ctm_sas.mdl"
+									item="models/player/custom_player/legacy/tm_balkan_variantj.mdl"
 									mouse_rotate="false"
 									enable_floorshadow="true"
 									hittest="false">
@@ -78,7 +78,7 @@
 									class="full-width full-height mainmenu-vanity-5 hidden"
 									style="margin-left: -100px; "
 									manifest="resource/ui/econ/ItemModelPanelCharWeaponInspect.res"
-									item="models/player/custom_player/legacy/ctm_sas.mdl"
+									item="models/player/custom_player/legacy/tm_phoenix.mdl"
 									mouse_rotate="false"
 									enable_floorshadow="true"
 									hittest="false">
@@ -99,6 +99,7 @@
                 <CSGOBlurTarget id="MainMenuCore" blurrects="ChatLinesContainerBg mainmenu-sidebar__blur-target JsMainMenuTopNavBar eom-winner">
                     <CSGOBlurTarget id="MainMenuBackground" blurrects="mainmenu-content__blur-target id-mainmenu-mini-store-panel Scoreboard JsStreamPanel JsMainMenuNavBar">
                         <Panel class="mainmenu-vanity__vignette" hittest="false"/>
+						<Panel class="mainmenu-vanity__vignette--bottom" hittest="false" />
 						<Panel id="MainMenuVanityInfo" class="full-width full-height MainMenuModeOnly" />
                         <CSGOBackbufferImagePanel class="full-width full-height PauseMenuModeOnly"/>
                         <Panel id="MainMenuMovieParent"></Panel>
@@ -153,7 +154,7 @@
                                 </Panel>
                             </RadioButton>
                             <RadioButton id="MainMenuNavBarDevAlertMgr"
-                                        class="mainmenu-top-navbar__radio-iconbtn DEVModeOnly"
+                                        class="mainmenu-top-navbar__radio-iconbtn DEVModeONLY"
                                         group="NavBar"
                                         onactivate="MainMenu.ShowDevContextMenu();"
                                         onmouseover="UiToolkitAPI.ShowTextTooltip( 'MainMenuNavBarDevAlertMgr', 'DEV BUTTON CONTEXT' );"
@@ -207,9 +208,8 @@
                                          group="NavBar"
                                          onactivate="$.DispatchEvent('OpenFullscreenStore');">
                                 <Label class="mainmenu-top-navbar__radio-btn__label stratum-medium" style="font-size: 23;" text="#CSGO_MainMenu_Store"/>
-                                <Panel id="MainMenuStoreAlert" class="navbar-btn__notification hidden">
+                                <Frame id="MainMenuStoreAlert" class="hidden" src="file://{resources}/layout/btn_alert.xml" />
                                     <Label id="MainMenuStoreAlertText" class="navbar-btn__notification-text" text=""/>
-                                </Panel>
                             </RadioButton>
                             <Panel class="mainmenu-top-navbar__play_seperator mainmenu-top-navbar__play_seperator--small"/>
                             <RadioButton id="MainMenuNavBarNews"

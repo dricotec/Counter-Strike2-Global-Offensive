@@ -32,6 +32,10 @@ var SettingsMenu = ( function () {
 			xml: "settings_video",
 			radioid: "VideoRadio"
 		},
+		CreditsSettings: {
+			xml: "settings_credits",
+			radioid: "CreditsRadio"
+		},
 		Search: {
 			xml: "settings_search",
 			radioid: "SettingsRadio"

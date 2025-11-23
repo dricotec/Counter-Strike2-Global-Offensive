@@ -214,55 +214,46 @@ CSGOMainMenu.PopupBackgroundBlur #MainMenuInput
 
 #VanityControls
 {
-	opacity: 0.5;
-	vertical-align: bottom;
+    opacity: 1;
+    vertical-align: bottom;
 	horizontal-align: right;
-	flow-children: right;
-	margin-left: 300px;
-	margin-bottom: 14px;
-
-	transition-property:  opacity, brightness;
-	transition-duration: 0.25s;
-	transition-timing-function: ease-in-out;
-}
-
-#VanityControls:hover
-{
-	opacity:0.8;
+    margin-right: 16px;
+    z-index: 3;
+    transition-property: opacity, brightness;
+    transition-duration: 0.25s;
+    transition-timing-function: ease-in-out;
 }
 
 #VanityControls Button
 {
-	vertical-align:center;
-	brightness: 0.5;
+    vertical-align:center;
+    brightness: 1;
+    z-index: 2;
+    border-radius: 10px;
+    padding: 8px;
+    transition-property: background-color;
+    transition-duration: .25s;
+    transition-timing-function: ease-in-out;
+}
 
-	width: 60px;
+#VanityControls Button Image
+{
+    vertical-align: center;
+    horizontal-align: center;
+    img-shadow: 0px 0px 4px 1 rgba(0, 0, 0, 0.04);
+}
 
-	background-color: #404040ff;
-	border-radius: 10px;
-	padding: 10px;
-	margin:10px;
-
-	transition-property:  brightness, opacity;
-	transition-duration: .25s;
-	transition-timing-function: ease-in-out;
+#VanityControls:hover Button
+{
+    background-color: rgba(255, 255, 255, 0.205);
+    transition-property: background-color;
+    transition-duration: .25s;
+    transition-timing-function: ease-in-out;
 }
 
 #VanityControls Button.hidden
 {
 	visibility: collapse;
-}
-
-#VanityControls Button Image
-{
-	vertical-align: center;
-	horizontal-align: center;
-}
-#VanityControls Button:hover
-{
-	brightness: 2;
-	vertical-align:center;
-	wash-color: white;
 }
 
 #id-mainmenu-vanity-hover
@@ -285,10 +276,10 @@ CSGOMainMenu.PopupBackgroundBlur #MainMenuInput
 }
  .mainmenu-vanity
 {
-	width: 1300px;
+	width: 1250px;
 	z-index: 1;
 	overflow: noclip;
-	y: 30px;
+	y: 15px;
 	margin-right: 100px;
 }
 #JsMainmenu_Vanity.hidden
@@ -304,11 +295,20 @@ CSGOMainMenu.PopupBackgroundBlur #MainMenuInput
 
 .mainmenu-vanity__vignette
 {
-	width: 100%;
-	height: 25%;
-	vertical-align: bottom;
-	background-color: gradient( linear, 0% 100%, 0% 0%, from( #000000DD ), to( #00000000 ));
-	z-index: 2;
+    width: 100%;
+    height: 25%;
+    vertical-align: top;
+    background-color: gradient( linear, 0% 0%, 0% 100%, from( #000000DD ), to( #00000000 ));
+    z-index: 1;
+}
+
+.mainmenu-vanity__vignette--bottom
+{
+    vertical-align: bottom;
+    background-color: gradient( linear, 0% 100%, 0% 0%, from( #00000094 ), to( #00000000 ));
+    height: 15%;
+    width: 100%;
+    z-index: 1;
 }
 
 .mainmenu-vanity__settings
@@ -716,22 +716,22 @@ CSGOEndOfMatch.mainmenu-content__container {
 
 .content-navbar
 {
-	flow-children: right;
-	height: 48px;
-	width: 100%;
+    flow-children: right;
+    height: 48px;
+    width: 100%;
 }
 
 .content-navbar--dropdown
 {
-	padding-left: 18px;
-	vertical-align: center;
-	background-color: rgba(0, 0, 0, 0.25);
+    padding-left: 18px;
+    vertical-align: center;
+    background-color: rgba(0, 0, 0, 0.25);
 }
 
 .content-navbar--dropdown DropDown
 {
-	min-width: 300px;
-	background-color: gradient( linear, 100% 0%, 0% 0%, from( #00000000), color-stop( 0, #00000030 ), to( #00000030 ) );
+    min-width: 300px;
+    background-color: gradient( linear, 100% 0%, 0% 0%, from( #00000000), color-stop( 0, #00000030 ), to( #00000030 ) );
 }
 
 .content-navbar__title
@@ -746,114 +746,165 @@ CSGOEndOfMatch.mainmenu-content__container {
 
 .content-navbar__tabs
 {
-	flow-children: right;
-	height: 48px;
-	width: 100%;
-	background-color: rgba(0, 0, 0, 0.25);
-	transition-property: height;
-	transition-duration: .25s;
-	transition-timing-function: ease-in-out;
+    flow-children: right;
+    height: 48px;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.25);
+    transition-property: height;
+    transition-duration: .25s;
+    transition-timing-function: ease-in-out;
 }
 
+.content-navbar__tabs.content-navbar__chatwheel-tabs.content-navbar__tabs--small
+{
+    horizontal-align: center;
+    width: fit-children;
+    padding-left: 40px;
+    padding-right: 40px;
+    background-color: rgba(0, 0, 0, 0.0);
+}
 
 .content-navbar__tabs--dark
 {
-	height: 42px;
-	background-color: rgba(0, 0, 0, 0.00);
+    height: 42px;
+    background-color: rgba(0, 0, 0, 0.00);
 }
 
 .content-navbar__tabs--pickem
 {
-	background-color: none;
-	width: fit-children;
-	height:fit-children;
-	padding: 8px 0px 8px 8px;
+    background-color: none;
+    width: fit-children;
+    height:fit-children;
+    padding: 8px 0px 8px 8px;
 }
 
 .workshop #id-navbar-tabs,.content-navbar__tabs.collapse
 {
-	height: 0px;
-	transition-property: height;
-	transition-duration: .25s;
-	transition-timing-function: ease-in-out;
+    height: 0px;
+    transition-property: height;
+    transition-duration: .25s;
+    transition-timing-function: ease-in-out;
 }
 
 .content-navbar__tabs__center-container
 {
-	horizontal-align: center;
-	flow-children: right;
-	height: 100%;
+    horizontal-align: center;
+    flow-children: right;
+    height: 100%;
 }
 
 .content-navbar__tabs--noflow
 {
-	flow-children:none;
+    flow-children:none;
 }
 
 .content-navbar__tabs__btn .RadioBox,.content-navbar__tabs .RadioBox
 {
-	visibility: collapse;
+    visibility: collapse;
 }
 
 .content-navbar__tabs__btn,.content-navbar__tabs__btn--small
 {
-	margin: 0px 6px;
-	vertical-align: center;
-	border-radius: 3px;
-	border: 1px solid rgba(255, 255, 255, 0);
+    margin: 0px 6px;
+    vertical-align: center;
+    border-radius: 3px;
+    border: 1px solid rgba(255, 255, 255, 0);
+    overflow: noclip;
 }
 
 .content-navbar__tabs__btn Label,.content-navbar__tabs__btn--small Label,.content-navbar__tabs__toggle-button Label
 {
-	font-size: 16px;
-	padding: 4px 6px;
-	text-align: center;
-	font-weight: medium;
-	color: white;
-	margin-left: 0px;
-	vertical-align: center;
-	text-transform: uppercase;
-	font-family: Stratum2, "Arial Unicode MS";
-}
-
-RadioButton.content-navbar__tabs__btn--small Label
-{
-	font-size: 12px;
-	font-weight: normal;
-}
-
-.content-navbar__tabs__btn:not(:disabled):hover,.content-navbar__tabs__toggle-button:not(:disabled):hover
-{
-	background-color: rgba(255, 255, 255, 0.025);
-	sound: "UIPanorama.loadout_sector_scroll";
-}
-
-.content-navbar__tabs__btn:selected,.content-navbar__tabs__toggle-button:selected
-{
-	background-color: #82d7ff1a;
-}
-
-.content-navbar__tabs__btn:disabled:selected,.content-navbar__tabs__toggle-button:disabled:selected
-{
-	border: 1px solid white;
-	background-color: none;
+    font-size: 16px;
+    padding: 4px 6px;
+    text-align: center;
+    font-weight: medium;
+    color: white;
+    margin-left: 0px;
+    vertical-align: center;
+    text-transform: uppercase;
+    font-family: Stratum2, "Arial Unicode MS";
 }
 
 .content-navbar__tabs__btn:not(:disabled):selected Label,.content-navbar__tabs__btn--small:not(:disabled):selected Label
 {
-	color: selectedNavColor;
-	sound: "UIPanorama.submenu_select";
+    sound: "UIPanorama.submenu_select";
+}
+
+.content-navbar__tabs__btn Label.new
+{
+    font-size: 10px;
+    margin: 0px;
+    padding: 1px 3px;
+    border-radius: 3px;
+    text-align: center;
+    horizontal-align: center;
+    margin-left: 2px;
+    transform: translateX(4px);
+    background-color: new-item-gradient;
+    color: white;
+    font-weight: medium;
+    box-shadow: shadowOffset;
+}
+
+RadioButton.content-navbar__tabs__btn--small Label
+{
+    font-size: 12px;
+    font-weight: normal;
+}
+
+.content-navbar__tabs__btn:not(:disabled):hover,.content-navbar__tabs__toggle-button:not(:disabled):hover
+{
+    background-color: rgba(255, 255, 255, 0.025);
+    sound: "UIPanorama.loadout_sector_scroll";
+}
+
+.content-navbar__tabs__btn:selected,.content-navbar__tabs__toggle-button:selected
+{
+    background-color: #82d7ff1a;
+}
+
+.content-navbar__tabs__btn:disabled:selected,.content-navbar__tabs__toggle-button:disabled:selected
+{
+    border: 1px solid white;
+    background-color: none;
+}
+
+.content-navbar__tabs__btn:not(:disabled):selected Label,.content-navbar__tabs__btn--small:not(:disabled):selected Label
+{
+    color: selectedNavColor;
+    sound: "UIPanorama.submenu_select";
 }
 
 .content-navbar__tabs__btn:disabled,.content-navbar__tabs__btn.locked
 {
-	color: white;
-	wash-color: disabledColor;
+    color: white;
+    wash-color: disabledColor;
 }
 
 .content-navbar__tabs__btn:disabled Label,.content-navbar__tabs__btn.locked Label
 {
-	margin-left: 0px;
+    margin-left: 0px;
+}
+
+#id-store-nav-xpshop.content-navbar__tabs__btn
+{
+    overflow:noclip;
+    border-radius: 0px;
+    flow-children: none;
+}
+
+#id-store-nav-xpshop.content-navbar__tabs__btn .content-navbar__tabs__btn-new
+{
+    padding: 1px 3px;
+    font-size: 10px;
+    font-family: Stratum2 Medium Italic, "Arial Unicode MS";
+    background-color: gradient( linear, 0% 0%, 100% 0%, from( rgb(177, 69, 204)), to( rgb(145, 10, 179)) );
+    color: white;
+    box-shadow: fill #000000af 0px 1px 6px 0px;
+    border-radius: 2px;
+    vertical-align: bottom;
+    horizontal-align: center;
+    transform: translateY( 8px );
 }
 
 .content-navbar__tabs__dropdown
@@ -867,111 +918,111 @@ RadioButton.content-navbar__tabs__btn--small Label
 
 .content-navbar__tabs__dropdown--right-margin
 {
-	margin-right: 64px;
+    margin-right: 64px;
 }
 
 .content-navbar__tabs__dropdown .DropDownMenu,.content-navbar__tabs__dropdown .DropDownChild
 {
-	padding: 0px 0px 0px 8px;
-	vertical-align: center;
-	font-weight: medium;
-	text-transform: none;
-	font-family: Stratum2, "Arial Unicode MS";
-	text-overflow: shrink;
+    padding: 0px 0px 0px 8px;
+    vertical-align: center;
+    font-weight: medium;
+    text-transform: none;
+    font-family: Stratum2, "Arial Unicode MS";
+    text-overflow: shrink;
 }
 
 .content-navbar__tabs__dropdown:not(:focus):hover
 {
-	background-color: rgba(0, 0, 0, 0.205);
+    background-color: rgba(0, 0, 0, 0.205);
 }
 
 .content-navbar__tabs__dropdown:focus Label
 {
-	color: white;
+    color: white;
 }
 
 .content-navbar__tabs__toggle-button
 {
-	flow-children: right;
-	padding: 0px 6px;
+    flow-children: right;
+    padding: 0px 6px;
 }
 
 .content-navbar__tabs__toggle-button .TickBox
 {
-	background-size: 18px 18px;
-	position: 0px 0px 0px;
-	vertical-align: center;
-	background-color: None;
-	border-radius: 2px;
-	z-index: 1;
-	border: 2px solid white;
-	box-shadow: #00000000 0px 0px 2px 2px ;
-	transition-property: background-color, wash-color;
-	transition-duration: 0.20s;
-	transition-timing-function: ease-in-out;
+    background-size: 18px 18px;
+    position: 0px 0px 0px;
+    vertical-align: center;
+    background-color: None;
+    border-radius: 2px;
+    z-index: 1;
+    border: 2px solid white;
+    box-shadow: #00000000 0px 0px 2px 2px ;
+    transition-property: background-color, wash-color;
+    transition-duration: 0.20s;
+    transition-timing-function: ease-in-out;
 }
 
 .content-navbar__tabs__toggle-button:selected .TickBox
 {
-	height: 18px;
-	background-image: url("file://{images}/icons/ui/checkbox.svg");
-	background-size: 18px 18px;
-	background-color: None;
-	box-shadow: #00000000 2px 0px 3px 0px;
-	transition-property: wash-color, background-color;
-	transition-duration: 0.20s;
-	transition-timing-function: ease-in-out;
+    height: 18px;
+    background-image: url("file://{images}/icons/ui/checkbox.svg");
+    background-size: 18px 18px;
+    background-color: None;
+    box-shadow: #00000000 2px 0px 3px 0px;
+    transition-property: wash-color, background-color;
+    transition-duration: 0.20s;
+    transition-timing-function: ease-in-out;
 }
 
 .content-navbar__tabs__toggle-button Label
 {
-	font-size: 16px;
-	font-family: Stratum2, "Arial Unicode MS";
+    font-size: 16px;
+    font-family: Stratum2, "Arial Unicode MS";
 }
 
 .content-navbar__extra-buttons
 {
-	horizontal-align: left;
-	vertical-align: middle;
-	flow-children: left;
-	height: 64px;
-	padding: 0px 16px 0px 0px;
+    horizontal-align: left;
+    vertical-align: middle;
+    flow-children: left;
+    height: 64px;
+    padding: 0px 16px 0px 0px;
 }
 
 .content-navbar__extra-buttons--right
 {
-	horizontal-align: right;
-	margin-right: 64px;
+    horizontal-align: right;
+    margin-right: 64px;
 }
 
 .content-navbar__extra-buttons .PopupButton
 {
-	margin: 0px 8px;
+    margin: 0px 8px;
 }
 
 .content-navbar__seperator
 {
-	height: 1px;
-	width: 100%;
-	opacity: .25;
-	background-color: #ffffff;
+    height: 1px;
+    width: 100%;
+    opacity: .25;
+    background-color: #ffffff;
 }
 
 .content-navbar__seperator--dark
 {
-	height: 1px;
-	width: 100%;
-	opacity: .75;
-	background-color: #3E3E3E;
+    height: 1px;
+    width: 100%;
+    opacity: .75;
+    background-color: #3E3E3E;
 }
 
 .content-controls-actions-bar
 {
-	width: 100%;
-	height: 96px;
-	padding: 0px 64px;
-	vertical-align: bottom;
-	border-top: 1px solid rgba(255, 255, 255, 0.05);
+    width: 100%;
+    height: 96px;
+    padding: 0px 64px;
+    vertical-align: bottom;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .Language_schinese .TopBarMenuItem Label
@@ -1395,19 +1446,18 @@ RadioButton.content-navbar__tabs__btn--small Label
 
 .mainmenu-top-navbar__radio-iconbtn
 {
-	vertical-align: center;
-	flow-children: none;
-	margin: 0px 12px;
-	border-radius: 3px;
-	width: 40px;
-	height: 40px;
-	overflow: noclip;
-	tooltip-position: bottom;
-	transition-property: background-color;
-	transition-duration: .15s;
-	transition-timing-function: ease-in;
+    vertical-align: center;
+    flow-children: none;
+    margin: 0px 8px;
+    border-radius: 3px;
+    width: 32px;
+    height: 32px;
+    overflow: noclip;
+    tooltip-position: bottom;
+    transition-property: background-color;
+    transition-duration: .15s;
+    transition-timing-function: ease-in;
 }
-
 
 .mainmenu-top-navbar__radio-iconbtn:hover
 {
@@ -1455,6 +1505,7 @@ RadioButton.content-navbar__tabs__btn--small Label
     opacity: 0;
     visibility: collapse;
     pre-transform-scale2d: .8, .8;
+	overflow: noclip;
     transition-property: opacity, pre-transform-scale2d, background-color, brightness, wash-color;
     transition-duration: .25s;
     transition-timing-function: ease-in-out;
@@ -1511,6 +1562,7 @@ RadioButton.content-navbar__tabs__btn--small Label
     border-radius: 3px;
     visibility: collapse;
     pre-transform-scale2d: .8, .8;
+	overflow: noclip;
     transition-property: opacity, pre-transform-scale2d;
     transition-duration: .25s;
     transition-timing-function: ease-in-out;
@@ -1701,4 +1753,23 @@ RadioButton.content-navbar__tabs__btn--small Label
     vertical-align: top;
     margin-top: 50px;
     text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+}
+.content-navbar__tabs__btn Label.new
+{
+    font-size: 10px;
+    margin: 0px;
+    padding: 1px 3px;
+    border-radius: 3px;
+    text-align: center;
+    horizontal-align: center;
+    margin-left: 2px;
+    transform: translateX(4px);
+    background-color: new-item-gradient;
+    color: white;
+    font-weight: medium;
+    box-shadow: shadowOffset;
+}
+.mainmenu-vanity ItemPreviewDebug
+{
+    margin-top: 64px;
 }

@@ -376,30 +376,42 @@ var InspectActionBar = ( function (){
 		$.GetContextPanel().FindChildTraverse( 'InspectCharModelsControls' ).SetHasClass( 'hidden', type !== 'InspectModelChar' );
 	};
 
-	var _InspectPlayMusic = function ( type )
-	{
-		                                                        
-		if ( !m_previewingMusic )
-			return;
+var _InspectPlayMusic = function(type) {
+    if (!m_previewingMusic)
+        return;
 
-		if ( type === 'mvp' )
-		{
-			if ( m_schfnMusicMvpPreviewEnd )
-				return;	                                                                    
+    var itemId = m_itemId;
+    var musicId = InventoryAPI.GetItemAttributeValue(itemId, 'music id');
+    var musicName = InventoryAPI.GetMusicNameFromMusicID(musicId);
+    musicName = musicName.replace(/^#musickit_/, '');
 
-			InventoryAPI.StopItemPreviewMusic();
-			InventoryAPI.PlayItemPreviewMusic( m_itemId, 'roundmvpanthem_01.mp3' );
+    if (type === 'mvp') {
+        if (m_schfnMusicMvpPreviewEnd)
+            return;
 
-			                                                                                         
-			m_schfnMusicMvpPreviewEnd = $.Schedule( 6.8, InspectActionBar.InspectPlayMusic.bind( null, 'schfn' ) );
-		}
-		else if ( type === 'schfn' )
-		{
-			m_schfnMusicMvpPreviewEnd = null;
-			InventoryAPI.StopItemPreviewMusic();
-			InventoryAPI.PlayItemPreviewMusic( m_itemId );
-		}
-	}
+        InventoryAPI.StopItemPreviewMusic();
+
+        $.Schedule(0.01, function() {
+            $.DispatchEvent('PlaySoundEffect', 'Music.MVPAnthem.' + musicName, 'MOUSE');
+        });
+
+
+        m_schfnMusicMvpPreviewEnd = $.Schedule(6.8, function() {
+            m_schfnMusicMvpPreviewEnd = null;
+            InventoryAPI.StopItemPreviewMusic();
+            InventoryAPI.PlayItemPreviewMusic(itemId);
+        });
+
+    } else if (type === 'schfn') {
+        if (m_schfnMusicMvpPreviewEnd) {
+            $.CancelScheduled(m_schfnMusicMvpPreviewEnd);
+            m_schfnMusicMvpPreviewEnd = null;
+        }
+
+        InventoryAPI.StopItemPreviewMusic();
+        InventoryAPI.PlayItemPreviewMusic(itemId);
+    }
+};
 
 	var _ShowContextMenu = function ()
 	{

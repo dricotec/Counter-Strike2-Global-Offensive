@@ -37,6 +37,9 @@
                 <RadioButton class="content-navbar__tabs__btn" onactivate="SettingsMenuShared.ScrollToId(&apos;SettingsCrosshair&apos;)" group="SettingsGame">
                     <Label text="#settings_crosshair" />
 				</RadioButton>
+                <RadioButton class="content-navbar__tabs__btn" onactivate="SettingsMenuShared.ScrollToId(&apos;SettingsSnipersXhair&apos;)" group="SettingsGame">
+                    <Label text="#settings_snipers_xhair" />
+				</RadioButton>
                 <RadioButton class="content-navbar__tabs__btn" onactivate="SettingsMenuShared.ScrollToId(&apos;SettingsViewmodel&apos;)" group="SettingsGame">
                     <Label text="VIEWMODEL" />
 				</RadioButton>
@@ -451,20 +454,17 @@
 							<Label text="#GameUI_Yes" value="1" id ="switchweaponpickup0"/>
 							<Label text="#GameUI_No" value="0" id ="switchweaponpickup1"/>
 						</CSGOSettingsEnumDropDown>
-					</Panel>
-					<Panel class="horizontal-separator"/>
-
-					                                    
-					<Panel class="SettingsMenuDropdownContainer">
-						<Label text="#Cstrike_Delay_Unzoom_Sniper" class="half-width"/>
-						<CSGOSettingsEnumDropDown class="PopupButton" convar="cl_sniper_delay_unscope">
-							<Label text="#GameUI_Yes" value="1" id ="delayunzoomsniper0"/>
-							<Label text="#GameUI_No" value="0" id ="delayunzoomsniper1"/>
-						</CSGOSettingsEnumDropDown>
 						
 					</Panel>
 					<Panel class="horizontal-separator"/>
-
+                    <TooltipPanel id="FirstPersonTracers" class="SettingsMenuDropdownContainer" tooltip="#Cstrike_FirstPersonTracers_Desc">
+                        <Label text="#Cstrike_FirstPersonTracers" class="half-width" />
+                        <CSGOSettingsEnumDropDown class="PopupButton White" convar="r_drawtracers_firstperson">
+                            <Label text="#SFUI_Settings_Enabled" value="1" id="firstpersontracers1" />
+                            <Label text="#SFUI_Settings_Disabled" value="0" id="firstpersontracers0" />
+                        </CSGOSettingsEnumDropDown>
+					</TooltipPanel>
+					<Panel class="horizontal-separator"/>
 					                              
 					<Panel class="SettingsMenuDropdownContainer">
 						<Label text="#SFUI_Settings_Always_Show_Inventory" class="half-width"/>
@@ -723,12 +723,23 @@
 						</CSGOSettingsEnumDropDown>
 					</Panel>
 					</TooltipPanel>
-
-
-					   
-				</Panel>
-				
-				
+                </Panel>
+            </Panel>
+            <Panel id="SettingsSnipersXhair" class="SettingsBackground">
+                <Panel class="SettingsSectionTitleContianer">
+                    <Label class="SettingsSectionTitleLabel" text="#settings_snipers_xhair" />
+                </Panel>
+                <Panel class="top-bottom-flow full-width">
+                    <Panel class="SettingsMenuDropdownContainer">
+                        <Label text="#Cstrike_Delay_Unzoom_Sniper" class="half-width" />
+                        <CSGOSettingsEnumDropDown class="PopupButton White" convar="cl_sniper_delay_unscope">
+                            <Label text="#GameUI_Yes" value="1" id="delayunzoomsniper0" />
+                            <Label text="#GameUI_No" value="0" id="delayunzoomsniper1" />
+                        </CSGOSettingsEnumDropDown>
+                    </Panel>
+                    <Panel class="horizontal-separator" />
+                    <CSGOSettingsSlider id="XhairSniperThickness" text="#GameUI_SniperCrosshairThickness" displayprecision="0" max="6" min="1" convar="cl_crosshair_sniper_width" />
+                </Panel>
 			</Panel> 
 			
 			

@@ -188,16 +188,13 @@ var SettingsMenuShared = ( function () {
 		$.DispatchEvent( "CSGOApplyVideoSettings" );
 		_VideoSettingsResetUserInput();
 	}
-    var _PanoramaBlurToggleChanged = function ()
-    {
-       //  $.Msg("Panorama Blur Toggle Changed called");  // debug log 
-	     var dropdown = $.GetContextPanel().FindChildInLayoutFile("PanoramaBlurToggle");
-	     if ( dropdown )
-	     {
-		 var value = dropdown.GetSelected().GetAttributeString("value", "0");
-		 GameInterfaceAPI.ConsoleCommand("mirv_cvar_hack @panorama_disable_blur " + value + "\n");
-	    }
-    };
+    //var _PanoramaBlurToggleChanged = function () {
+    //var dropdown = $.GetContextPanel().FindChildInLayoutFile("PanoramaBlurToggle");
+    //if (dropdown) {
+    //    var value = dropdown.GetSelected().GetAttributeString("value", "0");
+    //    GameInterfaceAPI.SetSettingString("@panorama_disable_blur", value);
+    //   }
+    //};
 	var _NewTabOpened = function ( newTab )
 	{
 		                                            
@@ -253,7 +250,7 @@ var SettingsMenuShared = ( function () {
         ResetSteamInputDefaults	        : _ResetSteamInputDefaults,
 		ResetAudioSettings	            : _ResetAudioSettings,
 		ResetVideoSettings	            : _ResetVideoSettings,
-		OnPanoramaBlurToggleChanged: _PanoramaBlurToggleChanged,
+		//OnPanoramaBlurToggleChanged: _PanoramaBlurToggleChanged,
 		ScrollToId                      : _ScrollToId,
 		ShowConfirmReset                : _ShowConfirmReset,
 		ShowConfirmDiscard				: _ShowConfirmDiscard,

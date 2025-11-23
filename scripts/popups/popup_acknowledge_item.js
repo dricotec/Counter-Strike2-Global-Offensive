@@ -44,9 +44,11 @@ var AcknowledgeItems = ( function()
 	{
 		var isOperationReward = item.pickuptype === 'quest_reward';
 		var elItemTile = $.CreatePanel( 'Panel', elParent, item.id );
+		
 		elItemTile.BLoadLayoutSnippet( 'Item' );
 
 		_ShowModelOrItem( elItemTile, item.id, item.type );
+		
 
 		var elLabel = elItemTile.FindChildInLayoutFile( 'AcknowledgeItemLabel' );
 		elLabel.text = ItemInfo.GetName( item.id );
@@ -91,6 +93,7 @@ var AcknowledgeItems = ( function()
 		_ShowGiftPanel( elItemTile, item.id );
 		_ShowSetPanel( elItemTile, item.id );
 		_ItemCount( elItemTile, index, numItems );
+		ResizeForVerticalItem(elItemTile, item.id);
 
 		                 
 		                                                                               
@@ -103,6 +106,12 @@ var AcknowledgeItems = ( function()
 	{
 		elMovie.style.washColor = rarityColor;
 	};
+	function ResizeForVerticalItem(elItemTile, id) {
+        if (ItemInfo.IsCharacter(id)) {
+            let elPanel = elItemTile.FindChildInLayoutFile('AcknowledgeItemModel');
+            elPanel.AddClass('popup-acknowledge__item__model--vertical');
+        }
+    }
 
 	var _ShowModelOrItem = function( elItemTile, id, type = "" )
 	{
@@ -154,9 +163,9 @@ var AcknowledgeItems = ( function()
 	
 				CharacterAnims.PlayAnimsOnPanel( settings );
 	
-				elModel.SetSceneIntroFOV( 1., 50000 );
-				elModel.SetCameraPosition( 305.60, -7.43, 85.19 );
-				elModel.SetCameraAngles( 4.81, 178.85, 0.00 );
+				elModel.SetSceneIntroFOV( 1., 45000 );
+                elModel.SetCameraPosition( 199, -14.43, 60.19 );
+                elModel.SetCameraAngles( 4.81, 180.8, 0.00 );
 
 				elModel.SetFlashlightColor( 4.16, 4.06, 5.20 );
 				elModel.SetFlashlightFOV( 60 );

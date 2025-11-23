@@ -5,7 +5,6 @@
 	</styles>
     <scripts>
 		<include src="file://{resources}/scripts/mock_adapter.js" />
-		<include src="file://{resources}/scripts/hud/hudversus.js" />
     	<include src="file://{resources}/scripts/hud/hudcolor.js" />
   	</scripts>
 

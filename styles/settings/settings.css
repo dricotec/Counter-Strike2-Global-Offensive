@@ -425,3 +425,67 @@ CSGOSettingsSlider#DatacenterPingThresholdSlider
     border-radius: 3px;
 }
 
+.CreditsTitle
+{
+	font-size: 40px;
+	font-family: Stratum2;
+	font-weight: bold;
+}
+.CreditsSubTitle
+{
+	font-size: 14px;
+	text-align: center;
+	color: white;
+}
+.CreditsHeaderTitleContainer
+{
+	horizontal-align: center;
+	flow-children: down;
+	margin-top: 24px;
+	margin-bottom: 14px;
+}
+.CreditsHeaderTitle
+{
+	font-size: 27px;
+	font-family: Stratum2;
+	font-weight: bold;
+}
+.CreditContainer
+{ 
+	flow-children: right;
+	vertical-align: middle;
+	width: 100%;
+}
+.Credit-Name
+{
+	color: white;
+	font-family: Stratum2;
+	font-weight: medium;
+	padding-left: 8px;
+	font-weight: bold;
+    width: 40%;
+}
+.Credit-Desc
+{
+	color: white;
+	font-family: Stratum2;
+	font-weight: medium;
+	padding-right: 4px;
+	text-align: right;
+    width: 65%;
+}                                                                 
+.Credit-Avatar 
+{
+	vertical-align: middle;
+	width: 32px;
+	height: 32px;
+}
+.Credit-Separator
+{
+	horizontal-align: center;
+	width: 100%;
+	height: 1px;
+	opacity: .08;
+	background-color: white;
+	margin-bottom: 4px;
+}

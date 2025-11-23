@@ -130,7 +130,7 @@
 				<Panel class ="top-bottom-flow full-width">
 
 					                         
-				<CSGOSettingsSlider text="#SFUI_Settings_Menu_Music_Volume" eventname="MatchStart" max="0.3" min="0" percentage="true" convar="snd_menumusic_volume" constrainrange="true" />
+				<CSGOSettingsSlider text="#SFUI_Settings_Menu_Music_Volume" eventname="MatchStart" max="1.0" min="0" percentage="true" convar="snd_menumusic_volume" constrainrange="true" />
 					<Panel class="horizontal-separator"/>
 
 					                           

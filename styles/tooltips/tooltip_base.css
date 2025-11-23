@@ -1,45 +1,28 @@
-  
-                               
-
-                                                                           
-                                                            
-  
-
 #Contents
 {
-    background-color: rgba(15, 15, 15, 0.99);
+    background-color: #252b30;
     padding: 16px;
-	border-radius: 5px;
-	box-shadow: #000000BB -4px -4px 8px 8px;
+    border: 2px solid black;
+    margin: 0px;
+    box-shadow: #00000066 0px 0px 8px 0px ;
 }
 
-#LeftArrow, #RightArrow, #TopArrow, #BottomArrow
+#LeftArrow,#RightArrow,#TopArrow,#BottomArrow
 {
     background-repeat: no-repeat;
     background-position: 0px 0px;
-    
-                                                                      
-                                                                   
-                                     
-    z-index: 1;
-    
-                                
-    visibility: collapse;
-	
     background-size: contain;
+    z-index: 1;
+    visibility: collapse;
 }
 
-#LeftArrow, #RightArrow
+#LeftArrow,#RightArrow
 {
-                                                                      
-                                                               
     width: 24px;
     height: 24px;
-
-                                               
     margin-top: 4px;
     margin-bottom: 4px;
-	margin-right: 4px;
+    margin-right: 4px;
 }
 #LeftArrow
 {
@@ -140,11 +123,10 @@
 .TooltipContainer
 {
     flow-children: down;
-
     opacity: 0.0;
-
     transition-property: opacity, pre-transform-scale2d;
     transition-duration: 0.175s, 0.25s;
+    padding-bottom: 20px;
 }
 
 .TooltipContainer.TooltipVisible

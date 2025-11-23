@@ -26,16 +26,18 @@
 
  .loading-screen-screenshot-title{
 
-     color: white;
-  font-size: 50px;
-     text-overflow: shrink;
-     horizontal-align: left;
-     text-align: left;
-     white-space: nowrap;
-  vertical-align: bottom;
-  horizontal-align:left;
-  margin-bottom: 50px;
-  margin-left:50px;
+    color: white;
+    font-size: 40px;
+	font-family: Stratum2;
+	font-weight: medium;
+    text-overflow: shrink;
+    horizontal-align: left;
+    text-align: left;
+    white-space: nowrap;
+    vertical-align: bottom;
+    horizontal-align:left;
+    margin-bottom: 50px;
+    margin-left:50px;
  }
  
 .loading-root--show {
@@ -132,16 +134,19 @@
 
   background-color: rgba(0,0,0,0.5) 
 
-  opacity: 1
-  ;flow-children: down;
+  opacity: 1;
+  flow-children: down;
 
-  transition-property: height, opacity;
+  transition-property: opacity;
   transition-duration: .5s;
   transition-timing-function: ease-in-out;
  }
  .hidden_no_info
 {
 	opacity: 0;
+	transition-property: opacity;
+	transition-duration: 0.5s;
+    transition-timing-function: ease-in-out;
 }
 
  .loading-screen-contents-bottom{
@@ -161,50 +166,10 @@
 
 
 
-  transition-property: height, opacity;
+  transition-property: opacity;
   transition-duration: .5s;
   transition-timing-function: ease-in-out;
  }
-
- .loading-screen-content__overview--background{
-
-  horizontal-align: left;
-  height: 820px;
-  width: 820px;
-
-  border: 2px solid rgba(255, 255, 255, 0.233);
-  box-shadow: #000000 0px 0px 6px 0px ;
-
-  background-image: url( "file://{images}/overheadmaps/default.png");
-  background-position: 50% 50%;
-  background-size: 100% 100%;
-
-  flow-children: none;
-
-  visibility: collapse;
- }
-
- .loading-screen-content__overview--map{
-
-  horizontal-align: center;
-  height: 70%;
-  width: 100%;
-  brightness: 1;
-  border: 1px solid rgba(255, 255, 255, 0.233);
-  box-shadow: #000000 0px 0px 6px 0px ;
-  margin: 1px;
-  opacity: 1;
-
-
-
-
-
-
-
-  visibility: collapse;
- }
-
-
 
  .loading-screen-content__info__bg{
   width: 100%;
@@ -247,10 +212,9 @@
 	img-shadow: 0px 0px 6px 4.0 #000000;
 
 	opacity: 1;
-	visibility: collapse;
 
 	transition-property: opacity;
-	transition-duration: .25s;
+	transition-duration: .5s;
 	transition-timing-function: ease-in-out;
 }
 
@@ -265,16 +229,6 @@
     white-space: nowrap;
     margin-top: 10px;
    }
-
-
-
-
-
-
-
-
-
-
 
    .loading-screen-content__info .loading-screen-content__titles .loading-screen-content__info__gamemode{
 
@@ -341,9 +295,9 @@
 
   width: 100%;
   height: 2px;
-     vertical-align: top;
-     horizontal-align: center;
-     background-color: white;
+  vertical-align: top;
+  horizontal-align: center;
+  background-color: white;
   margin: info-margin;
   margin-top: 0px;
   margin-bottom: 0px;
@@ -505,7 +459,7 @@
 
   width: 100%;
   height: 100%;
-     background-color: gradient(radial, 50% 50%, 0px 0px, 100% 100%, from( #00000000 ), color-stop( 0.4, #00000000), color-stop( 0.65, #000000DD), to( #000000FF ) );
+  background-color: gradient(radial, 50% 50%, 0px 0px, 100% 100%, from( #00000000 ), color-stop( 0.4, #00000000), color-stop( 0.65, #000000DD), to( #000000FF ) );
  }
 
 
@@ -513,7 +467,7 @@
 
   width: 100%;
   height: 100%;
-     background-color: gradient(radial, 50% 50%, 0px 0px, 100% 100%, from( #00000099 ), color-stop( 0.4, #000000DD), color-stop( 0.65, #000000FF), to( #000000FF ) );
+  background-color: gradient(radial, 50% 50%, 0px 0px, 100% 100%, from( #00000099 ), color-stop( 0.4, #000000DD), color-stop( 0.65, #000000FF), to( #000000FF ) );
  }
 
  .loading-screen-model{

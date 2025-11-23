@@ -4,32 +4,153 @@ var LoadingScreen = ( function() {
 
 	var cvars = [ 'mp_roundtime', 'mp_fraglimit', 'mp_maxrounds' ];
 	var cvalues = [ '0', '0', '0' ];
+	const MAX_SLIDES = 10;
+    const SLIDE_DURATION = 4;
+    let m_slideShowJob = null;
+	let m_mapName = null;
+	let m_numImageLoading = 0;
 
 	var _Init = function ()
 	{
 		$('#ProgressBar').value = 0;
 
-		var elOverview = $('#LoadingScreenOverview');
-		elOverview.RemoveAndDeleteChildren();
-		//$('#LoadingScreenContents').AddClass("hidden_no_info");      
-        //$('#ProgressBar').AddClass("hidden_no_info");		
+        $('#LoadingScreenGameMode').AddClass("hidden_no_info");
+		$('#LoadingScreenInfo').AddClass("hidden_no_info");
+		$('#LoadingScreenGameModeIcon').AddClass("hidden_no_info");
+		$('#BlaBlaTrucSeperator').AddClass("hidden_no_info");
+		
 
 		$('#LoadingScreenMapName').text = "";
-		$( '#LoadingScreenGameMode' ).SetLocalizationString( "Loading..." );
+		$('#LoadingScreenGameMode' ).SetLocalizationString( "" );
 		$('#LoadingScreenModeDesc').text = "";
 		$('#LoadingScreenGameModeIcon').SetImage("");
 
 		var elBackgroundImage = $.GetContextPanel().FindChildInLayoutFile('BackgroundMapImage');
 		elBackgroundImage.SetImage("file://{images}/map_icons/screenshots/1080p/background.png");
-
+        const elSlideShow = $.GetContextPanel().FindChildTraverse('LoadingScreenSlideShow');
+        elSlideShow.RemoveAndDeleteChildren();
 	    $('#LoadingScreenIcon').visible = false;
 		
 		LDNScreenMusicS2('loading');
+		//_CheckForMatchStart(); unused because it kills the loading screen slideshows way too early..
+		m_numImageLoading = 0;
+		if (m_slideShowJob) {
+            $.CancelScheduled(m_slideShowJob);
+            m_slideShowJob = null;
+        }
+        m_mapName = null;
 	}
+
+	function _CreateSlide(n) {
+        const suffix = n == 0 ? '' : '_' + n;
+        const imagePath = 'file://{images}/map_icons/screenshots/1080p/' + m_mapName + suffix + '.png';
+        const elSlideShow = $.GetContextPanel().FindChildTraverse('LoadingScreenSlideShow');
+        const elSlide = $.CreatePanel('Image', elSlideShow, 'slide_' + n);
+        elSlide.BLoadLayoutSnippet('snippet-loadingscreen-slide');
+        elSlide.SetImage(imagePath);
+        elSlide.Data().imagePath = imagePath;
+        elSlide.SwitchClass('viz', 'hide');
+        const titleToken = '#loadingscreen_title_' + m_mapName + suffix;
+        let title = $.Localize(titleToken);
+        if (title == titleToken)
+            title = '';
+        elSlide.SetDialogVariable('screenshot-title', title);
+        m_numImageLoading++;
+        $.RegisterEventHandler('ImageLoaded', elSlide, () => {
+            m_numImageLoading--;
+            if (m_numImageLoading <= 0)
+                _StartSlideShow();
+        });
+        $.RegisterEventHandler('ImageFailedLoad', elSlide, () => {
+            elSlide.DeleteAsync(0.0);
+            m_numImageLoading--;
+            if (m_numImageLoading <= 0)
+                _StartSlideShow();
+        });
+        return true;
+    }
+
+    function _InitSlideShow() {
+        if (m_slideShowJob)
+            return;
+
+        if (!m_mapName || m_mapName === "") {
+            m_mapName = GameStateAPI.GetMapName() || '';
+        }
+
+        for (let n = 0; n < MAX_SLIDES; n++) {
+            _CreateSlide(n);
+        }
+    }
+
+    function _StartSlideShow() {
+        const elSlideShow = $.GetContextPanel().FindChildTraverse('LoadingScreenSlideShow');
+        const arrSlides = elSlideShow.Children();
+        const randomOffset = Math.floor(Math.random() * arrSlides.length);
+        _NextSlide(randomOffset, true);
+    }
+
+    function _NextSlide(n, bFirst = false) {
+        m_slideShowJob = null;
+        const elSlideShow = $.GetContextPanel().FindChildTraverse('LoadingScreenSlideShow');
+        const arrSlides = elSlideShow.Children();
+        if (arrSlides.length <= 1)
+            return;
+        if (n >= arrSlides.length)
+            n = n - arrSlides.length;
+        let m = n - 1;
+        if (m < 0)
+            m = arrSlides.length - 1;
+        if (arrSlides[n]) {
+            if (bFirst)
+                arrSlides[n].SwitchClass('viz', 'show-first');
+            else
+                arrSlides[n].SwitchClass('viz', 'show');
+        }
+        const slide = arrSlides[m];
+        if (slide)
+            $.Schedule(0.25, () => {
+                if (slide && slide.IsValid())
+                    slide.SwitchClass('viz', 'hide');
+            });
+        m_slideShowJob = $.Schedule(SLIDE_DURATION, () => _NextSlide(n + 1));
+    }
+
+function _EndSlideShow()
+{
+    if ( m_slideShowJob )
+    {
+        $.CancelScheduled( m_slideShowJob );
+        m_slideShowJob = null;
+    }
+
+    const elSlideShow = $.GetContextPanel().FindChildTraverse('LoadingScreenSlideShow');
+    if ( elSlideShow )
+    {
+        elSlideShow.RemoveAndDeleteChildren();
+    }
+}
+	function _CheckForMatchStart()
+{
+    if ( GameStateAPI.IsLocalPlayerPlayingMatch() )
+    {
+        // End slideshow once we detect player is ingame
+        _EndSlideShow();
+    }
+    else
+    {
+        // Keep checking until match starts
+        $.Schedule( 0.1, _CheckForMatchStart );
+    }
+}
+
+
+    function _OnMapLoadFinished() {
+        _EndSlideShow();
+    }
 
 	var _UpdateLoadingScreenInfo = function (mapName, prettyMapName, prettyGameModeName, gameType, gameMode, descriptionText)
 	{
-		                                                                                        
 		for ( var j = 0; j < cvars.length; ++ j )
 		{
 			var val = GameInterfaceAPI.GetSettingString( cvars[j] );
@@ -38,7 +159,7 @@ var LoadingScreen = ( function() {
 				cvalues[j] = val;
 			}
 		}
-		                                              
+
 		for ( var j = 0; j < cvars.length; ++ j )
 		{
 			const regex = new RegExp( '\\${d:'+cvars[j]+'}', 'gi' );
@@ -46,12 +167,13 @@ var LoadingScreen = ( function() {
 			$.GetContextPanel().SetDialogVariable( cvars[j], cvalues[j] );
 		}
 
-		if( mapName )
+		if (mapName)
 		{
-			var elBackgroundImage = $.GetContextPanel().FindChildInLayoutFile( 'BackgroundMapImage' );		
-			elBackgroundImage.SetImage( 'file://{images}/map_icons/screenshots/1080p/' + mapName +'.png' );
+			m_mapName = mapName || GameStateAPI.GetMapName();
 
-                          
+			var elBackgroundImage = $.GetContextPanel().FindChildInLayoutFile('BackgroundMapImage');		
+			elBackgroundImage.SetImage("file://{images}/map_icons/screenshots/1080p/background.png");
+
 			var mapIconFailedToLoad = function () {
 			    $('#LoadingScreenMapName').RemoveClass("loading-screen-content__info__text-title-short");
 			    $('#LoadingScreenMapName').AddClass("loading-screen-content__info__text-title-long");
@@ -62,74 +184,56 @@ var LoadingScreen = ( function() {
 			$.RegisterEventHandler('ImageFailedLoad', $('#LoadingScreenIcon'), mapIconFailedToLoad.bind(undefined));
 			$('#LoadingScreenMapName').RemoveClass("loading-screen-content__info__text-title-long");
 			$('#LoadingScreenMapName').AddClass("loading-screen-content__info__text-title-short");
-			$('#LoadingScreenIcon').SetImage('file://{images}/map_icons/map_icon_' + mapName + '.svg');
-			
-			//$('#LoadingScreenContents').RemoveClass("hidden_no_info");
-			//$('#ProgressBar').RemoveClass("hidden_no_info");
-			
-		                  
-			var mapOverviewLoaded = function () {
-			    $('#LoadingScreenOverview').visible = true;
-			}
-			$.RegisterEventHandler('ImageLoaded', $('#LoadingScreenOverview'), mapOverviewLoaded.bind(undefined));
-			var mapOverviewFailed = function () {
-			    $('#LoadingScreenOverview').visible = false;
-			}
-			$.RegisterEventHandler('ImageFailedLoad', $('#LoadingScreenOverview'), mapOverviewFailed.bind(undefined));
-
-			var elOverview = $( '#LoadingScreenOverview' );
-			
-			if( mapName === "lobby_mapveto" )
-			{
-				elOverview.SetImage('file://{images}/overheadmaps/' + mapName +'.png');
-			}
-			else
-			{
-				elOverview.SetImage('file://{images_overviews}/' + mapName + '_radar.dds');
-			}
+			$('#LoadingScreenIcon').SetImage('file://{images}/map_icons/map_icon_' + m_mapName + '.svg');
 
 			$( '#LoadingScreenIcon' ).AddClass('show');
-			elBackgroundImage.AddClass('show');
+			elBackgroundImage.RemoveClass('show');
 
-			if ( prettyMapName != "" )
-			    $( '#LoadingScreenMapName' ).SetProceduralTextThatIPromiseIsLocalizedAndEscaped( prettyMapName, false );
+			if (prettyMapName != "")
+			    $( '#LoadingScreenMapName' ).SetProceduralTextThatIPromiseIsLocalizedAndEscaped(prettyMapName, false);
 			else
-			    $( '#LoadingScreenMapName' ).SetLocalizationString( GameStateAPI.GetMapDisplayNameToken( mapName ) );
+			    $( '#LoadingScreenMapName' ).SetLocalizationString(GameStateAPI.GetMapDisplayNameToken(m_mapName));
 		}
 
-		var elInfoBlock = $('#LoadingScreenInfo' );
+		var elInfoBlock = $('#LoadingScreenInfo');
 
-		if( gameMode )
+		if (gameMode)
 		{
 		    elInfoBlock.RemoveClass('hidden');
-		    if ( prettyGameModeName != "" )
-		        $( '#LoadingScreenGameMode' ).SetProceduralTextThatIPromiseIsLocalizedAndEscaped( prettyGameModeName, false );
+		    if (prettyGameModeName != "")
+		        $( '#LoadingScreenGameMode' ).SetProceduralTextThatIPromiseIsLocalizedAndEscaped(prettyGameModeName, false);
 		    else
-		        $( '#LoadingScreenGameMode' ).SetLocalizationString( '#sfui_gamemode_' + gameMode );
+		        $( '#LoadingScreenGameMode' ).SetLocalizationString('#sfui_gamemode_' + gameMode);
 			
-			if ( GameStateAPI.IsQueuedMatchmakingMode_Team() || mapName === 'lobby_mapveto' )
-				$('#LoadingScreenGameModeIcon').SetImage( "file://{images}/icons/ui/competitive_teams.svg" );
+			if (GameStateAPI.IsQueuedMatchmakingMode_Team() || m_mapName === 'lobby_mapveto')
+				$('#LoadingScreenGameModeIcon').SetImage("file://{images}/icons/ui/competitive_teams.svg");
 			else
 				$('#LoadingScreenGameModeIcon').SetImage('file://{images}/icons/ui/' + gameMode + '.svg');
 
-			if ( descriptionText != "" )
-			    $( '#LoadingScreenModeDesc' ).SetProceduralTextThatIPromiseIsLocalizedAndEscaped( descriptionText, false );
+			if (descriptionText != "")
+			    $( '#LoadingScreenModeDesc' ).SetProceduralTextThatIPromiseIsLocalizedAndEscaped(descriptionText, false);
 			else
-			    $( '#LoadingScreenModeDesc' ).SetLocalizationString( "" );                                                 
+			    $( '#LoadingScreenModeDesc' ).SetLocalizationString("");                                                 
 		}
 		else
-			elInfoBlock.AddClass( 'hidden' );
+			elInfoBlock.AddClass('hidden');
+
+		_InitSlideShow();
+        $('#LoadingScreenGameMode').RemoveClass("hidden_no_info");
+        $('#LoadingScreenInfo').RemoveClass("hidden_no_info");	
+		$('#LoadingScreenGameModeIcon').RemoveClass("hidden_no_info");
+		$('#BlaBlaTrucSeperator').RemoveClass("hidden_no_info"); 
 	}
 	
 	var LDNScreenMusicS2 = function ( type )
 	{
-		var itemId = LoadoutAPI.GetItemID( 'noteam', 'musickit' );
-		var musicId = InventoryAPI.GetItemAttributeValue( itemId, 'music id' );
+		var itemId = LoadoutAPI.GetItemID('noteam', 'musickit');
+		var musicId = InventoryAPI.GetItemAttributeValue(itemId, 'music id');
 		var musicName = InventoryAPI.GetMusicNameFromMusicID(musicId);
 		musicName = musicName.replace(/^#musickit_/, '');
 
 		if (type == 'loading' && GameStateAPI.GetCSGOGameUIStateName() == 'CSGO_GAME_UI_STATE_LOADINGSCREEN') {
-			InventoryAPI.PlayItemPreviewMusic( itemId, 'startround_01.mp3' );
+			InventoryAPI.PlayItemPreviewMusic(itemId, 'startround_01.mp3');
 			InventoryAPI.StopItemPreviewMusic();
 	
 			var randomAction = Math.random() < 0.5 ? "Music.StartAction_01." : "Music.StartAction_02.";
@@ -140,93 +244,17 @@ var LoadingScreen = ( function() {
 
 	var _SetCharacterAnim = function ( elPanel, settings )
 	{
-          
-		                                
-		                                         
-		
-		                                                              
-
-		                                                  
-		                                                              
-
-		                                
-		                      
-          
 	}
 
-	                                                                                
-	function CreateMapIcon( overviewKV, elParent, name )
-	{
-	    var X = overviewKV[ name+'_x' ];
-	    var Y = overviewKV[ name+'_y' ];
-	    if (X != null && Y != null && parseFloat(X) && parseFloat(Y))
-		{
-			var elIcon = $.CreatePanel( "Image", elParent, name );
-			elIcon.style.position = Math.floor( X * 100 ).toString() + "% " + Math.floor( Y * 100 ).toString() + "% 0px;";
-			return elIcon;
-		}
-	}
-
-	var _OnMapConfigLoaded = function ( overviewKV )
-	{
-		                                                         
-		var elMapOverview = $( '#LoadingScreenOverview' );
-		if( elMapOverview )
-		{
-			var elImage;
-			if ( elImage = CreateMapIcon( overviewKV, elMapOverview, "CTSpawn" ) )
-			{
-			    elImage.SetImage("file://{images}/hud/radar/RadarCTLogo.svg");
-				elImage.AddClass("ct-spawn");
-
-			                                                                                        
-			}
-
-			if ( elImage = CreateMapIcon( overviewKV, elMapOverview, "TSpawn" ) )
-			{
-			    elImage.SetImage("file://{images}/hud/radar/RadarTLogo.svg");
-				elImage.AddClass( "t-spawn" );
-			}
-
-			if ( elImage = CreateMapIcon( overviewKV, elMapOverview, "bombA" ) )
-			{
-			    elImage.SetImage( "file://{images}/hud/radar/icon-bomb-zone-a.png" );
-				elImage.AddClass("bomb-zone");
-			}
-
-			if ( elImage = CreateMapIcon( overviewKV, elMapOverview, "bombB" ) )
-			{
-			    elImage.SetImage( "file://{images}/hud/radar/icon-bomb-zone-b.png" );
-				elImage.AddClass( "bomb-zone" );
-			}
-
-			for ( var i = 1; i <= 6; i++ )
-			{
-				if ( elImage = CreateMapIcon( overviewKV, elMapOverview, "Hostage"+i ) )
-				{
-				    elImage.SetImage("file://{images}/icons/ui/hostage_alive.svg");
-					elImage.AddClass( "hostage-alive" );
-				}
-			}	
-
-		}
-	}	
-
-	
 	return {
 		Init					: _Init,
 		UpdateLoadingScreenInfo	: _UpdateLoadingScreenInfo,
-		OnMapConfigLoaded		: _OnMapConfigLoaded
 	}
 })();
 
 
 ( function() {
-	$.RegisterForUnhandledEvent( 'PopulateLoadingScreen', LoadingScreen.UpdateLoadingScreenInfo );
-	$.RegisterForUnhandledEvent( 'QueueConnectToServer', LoadingScreen.Init );
-	$.RegisterForUnhandledEvent( 'OnMapConfigLoaded', LoadingScreen.OnMapConfigLoaded );
-	$.RegisterForUnhandledEvent( 'UnloadLoadingScreenAndReinit', LoadingScreen.Init );
-		
-	              
-	                                                                                            
+	$.RegisterForUnhandledEvent('PopulateLoadingScreen', LoadingScreen.UpdateLoadingScreenInfo);
+	$.RegisterForUnhandledEvent('QueueConnectToServer', LoadingScreen.Init);
+	$.RegisterForUnhandledEvent('UnloadLoadingScreenAndReinit', LoadingScreen.Init);
 })();

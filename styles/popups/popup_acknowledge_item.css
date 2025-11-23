@@ -188,6 +188,11 @@ DelayLoadPanel.Offscreen
 	transition-duration: .25s;
 	transition-timing-function: ease-in-out;
 }
+.Focused .popup-acknowledge__item__model.popup-acknowledge__item__model--vertical
+{
+    height: 940px;
+    width: 700px;
+}
 
 .PreviouslyLeft:not(.Focused) .popup-acknowledge__item
 {

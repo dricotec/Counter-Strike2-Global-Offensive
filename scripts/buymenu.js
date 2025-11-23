@@ -28,6 +28,30 @@ var BuyMenu;
             settings.modelOverride = MockAdapter.GetPlayerModel(MockAdapter.GetLocalPlayerXuid());
         }
         CharacterAnims.PlayAnimsOnPanel(settings);
+		
+        elPreviewPanel.SetFlashlightAmount( 2.1 );
+        elPreviewPanel.SetFlashlightFOV( 55 );
+        elPreviewPanel.SetFlashlightColor( 2.35, 2.2, 2.0 ); 
+
+
+        elPreviewPanel.SetAmbientLightColor( 0.5, 0.45, 0.4 );
+
+
+        elPreviewPanel.SetDirectionalLightModify( 0 );
+        elPreviewPanel.SetDirectionalLightColor( 1.05, 1.0, 0.9 );
+        elPreviewPanel.SetDirectionalLightDirection( -0.2, 0.92, -0.35 );
+
+
+        elPreviewPanel.SetDirectionalLightModify( 1 );
+        elPreviewPanel.SetDirectionalLightColor( 0.35, 0.3, 0.25 );
+        elPreviewPanel.SetDirectionalLightDirection( 0.1, -0.5, 0.6 );
+
+
+        elPreviewPanel.SetDirectionalLightModify( 2 );
+        elPreviewPanel.SetDirectionalLightColor( 0.2, 0.18, 0.15 );
+        elPreviewPanel.SetDirectionalLightDirection( 0.5, 0.4, -0.6 );
+		
+		
         m_oldWeaponItemId = weaponItemId;
     };
     $.RegisterForUnhandledEvent("BuyMenu_UpdateCharacter", _UpdateCharacter);

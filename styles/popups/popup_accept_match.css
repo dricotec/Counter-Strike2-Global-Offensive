@@ -183,7 +183,7 @@
 
 .accept-match__data__time.hidden
 {
-    visibility: visible;
+    visibility: collapse;
 }
 
 .accept-match__data__gameserver

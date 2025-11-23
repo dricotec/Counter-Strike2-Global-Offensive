@@ -1,14 +1,13 @@
 .mainmenu-right-column
 {
-    padding: 64px 80px -5px 16px;
+    padding: 64px 80px 16px 16px;
     height: fit-children;
     vertical-align: bottom;
     horizontal-align: right;
     width: 620px;
     flow-children: left;
     visibility: visible;
-	transform: translateY(0);
-    transition-property: transform, opacity;
+    transition-property: opacity;
     transition-duration: .25s;
     transition-timing-function: ease-in-out;
 }
@@ -16,7 +15,6 @@
 .mainmenu-right-column.hidden
 {
     opacity: 0;
-	transform: translateY(100px);
 }
 
 .mainmenu-right-column .mainmenu-right-column__thin

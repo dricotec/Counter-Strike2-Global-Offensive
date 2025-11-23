@@ -774,7 +774,7 @@ var InventoryPanel = ( function (){
 	{
 		_RunEveryTimeInventoryIsShown();
 		_UpdateActiveInventoryList();
-		 _UpdateLoadoutButtonState();
+		_UpdateLoadoutButtonState();
 
 		if ( !_m_elInventoryMain.updatePlayerEquipSlotChangedHandler )
 		{
@@ -794,25 +794,25 @@ var InventoryPanel = ( function (){
 		}
 	};
 
-    var _InventoryUpdated = function()
-    {
-        _ShowHideXrayBtn();
-        
-                                                   
-        if( $.GetContextPanel().BHasClass( _m_HiddenContentClassname ) || _m_isCapabliltyPopupOpen )
-            return;
-    
-        _OnShowAcknowledgePanel();
+	var _InventoryUpdated = function()
+	{
+		_ShowHideXrayBtn();
+		
+		                                           
+		if( $.GetContextPanel().BHasClass( _m_HiddenContentClassname ) || _m_isCapabliltyPopupOpen )
+			return;
+	
+		_OnShowAcknowledgePanel();
 
-        if ( !_m_elInventorySearch.BHasClass( _m_HiddenContentClassname ) )
-        {
-            InventorySearch.UpdateItemList();
-        }
-        else if ( _m_activeCategory )
-        {
-            _UpdateActiveInventoryList();
-        }
-    };
+		if ( !_m_elInventorySearch.BHasClass( _m_HiddenContentClassname ) )
+		{
+			InventorySearch.UpdateItemList();
+		}
+		else if ( _m_activeCategory )
+		{
+			_UpdateActiveInventoryList();
+		}
+	};
 
     var _OnShowAcknowledgePanel = function()
     {
@@ -1173,30 +1173,19 @@ var InventoryPanel = ( function (){
 			function() { }
 		);
 	};
-
-	                                                                                                    
-	                                           
-	                                                                                                    
-	var _LoadEquipNotification = function()
-	{
-		var elParent = $.GetContextPanel().FindChildInLayoutFile( 'InventoryMainContainer' );
-		
-		var elNotification = $.CreatePanel( 'Panel', elParent, 'InvNotificationEquip' );
-		elNotification.BLoadLayout( 'file://{resources}/layout/notification/notification_equip.xml', false, false );
-	};
-
-	var _ShowNotification = function( slotInt, slotString, prevEquippedItemId, newEquippedItemId )
-	{
-		                                                                                                                                                             
-		
-		if ( _m_isCapabliltyPopupOpen )
-		{
-			return;
-		}	
-		
-		var elNotification = $.GetContextPanel().FindChildInLayoutFile( 'InvNotificationEquip' );
-		EquipNotification.ShowEquipNotification( elNotification, slotString, newEquippedItemId );
-	};
+                                                                                              
+    function _LoadEquipNotification() {
+        let elParent = $.GetContextPanel().FindChildInLayoutFile('InventoryMainContainer');
+        let elNotification = $.CreatePanel('Panel', elParent, 'InvNotificationEquip');
+        elNotification.BLoadLayout('file://{resources}/layout/notification/notification_equip.xml', false, false);
+    }
+    function _ShowNotification(team, slot, oldItemId, newItemId, bNew) {
+        if (!bNew || _m_isCapabliltyPopupOpen || $.GetContextPanel().BHasClass(_m_HiddenContentClassname)) {
+            return;
+        }
+        let elNotification = $.GetContextPanel().FindChildInLayoutFile('InvNotificationEquip');
+        EquipNotification.ShowEquipNotification(elNotification, slot, newItemId);
+    }
 
 	return {
 		Init: _Init,

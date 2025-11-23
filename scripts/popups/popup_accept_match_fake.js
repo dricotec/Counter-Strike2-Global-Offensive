@@ -1,131 +1,124 @@
 'use strict';
 
-var PopupAcceptMatch = ( function(){ // script was modified by d3gk, primarily used for debugging accept match popup styles.. although there are some neat tricks you can do with it
+var PopupAcceptMatch = (function() {
 
-	var m_hasPressedAccept = false;
-	var m_numPlayersReady = 1;
-	var m_numTotalClientsInReservation = 10;
-	var m_numSecondsRemaining = 20;
-	var m_isReconnect = false;
-	var m_isNqmmAnnouncementOnly = false;
-	var m_lobbySettings;
-	let m_gsLocation = '';
-	let m_gsPing = 0;
-	var m_elTimer = $.GetContextPanel().FindChildInLayoutFile ( 'AcceptMatchCountdown' );
-	var m_jsTimerUpdateHandle = false;
-	var bShowPlayerSlots = false;
-	          
-	var AcceptMatchMusic = function ( type )
-	{
-		var itemId = LoadoutAPI.GetItemID( 'noteam', 'musickit' );
-		var musicId = InventoryAPI.GetItemAttributeValue( itemId, 'music id' );
-		var musicName = InventoryAPI.GetMusicNameFromMusicID(musicId);
-		musicName = musicName.replace(/^#musickit_/, '');
+    var m_hasPressedAccept = false;
+    var m_numPlayersReady = 1;
+    var m_numTotalClientsInReservation = 0; // bullshit basically.
+    var m_numSecondsRemaining = 20;
+    var m_isReconnect = false;
+    var m_isNqmmAnnouncementOnly = false;
+    var m_lobbySettings;
+    let m_gsLocation = '';
+    let m_gsPing = 0;
+    var m_elTimer = $.GetContextPanel().FindChildInLayoutFile('AcceptMatchCountdown');
+    var m_jsTimerUpdateHandle = false;
+    var bShowPlayerSlots = false;
 
-		if(type == 'loading' && GameStateAPI.GetCSGOGameUIStateName() == 'CSGO_GAME_UI_STATE_MAINMENU') {
-			$.DispatchEvent('PlayMainMenuMusic', false, false );
-			InventoryAPI.PlayItemPreviewMusic( itemId, 'startround_01.mp3' );
-			InventoryAPI.StopItemPreviewMusic();
-			$.Schedule(0.01, function(){
-				$.DispatchEvent('PlaySoundEffect', 'Music.StartRound.' + musicName, 'MOUSE');
-			});
-		}
-	}
-	          
-	
-	var _Init = function ()
-	{
-		     
-		 m_lobbySettings = LobbyAPI.GetSessionSettings();
-		 
-		m_gsLocation = $.GetContextPanel().GetAttributeString('location', 'Europe, Serbia');
-		m_gsPing = parseInt($.GetContextPanel().GetAttributeString('ping', '69420'));
-		$.GetContextPanel().SetDialogVariable('region', m_gsLocation);
-		$.GetContextPanel().SetDialogVariableInt('ping', m_gsPing);
+    var AcceptMatchMusic = function(type) {
+        var itemId = LoadoutAPI.GetItemID('noteam', 'musickit');
+        var musicId = InventoryAPI.GetItemAttributeValue(itemId, 'music id');
+        var musicName = InventoryAPI.GetMusicNameFromMusicID(musicId);
+        musicName = musicName.replace(/^#musickit_/, '');
+
+        if (type === 'loading' && GameStateAPI.GetCSGOGameUIStateName() === 'CSGO_GAME_UI_STATE_MAINMENU') {
+            $.DispatchEvent('PlayMainMenuMusic', false, true); // when money talks and bullshit walks. all it does is try to reset the mainmenu music, however the first value stops it entirely, while the second doesn't even restart the mainmenu music..
+            InventoryAPI.PlayItemPreviewMusic(itemId, 'startround_01.mp3');
+            InventoryAPI.StopItemPreviewMusic();
+            $.Schedule(0.01, function() {
+                $.DispatchEvent('PlaySoundEffect', 'Music.StartRound.' + musicName, 'MOUSE');
+            });
+        }
+    };
+	// reason why it doesn't want to restart the music is.. because i removed the panoramic effect by forcing it through mainmenu.js in _OnShowMainMenu function. please give me mdma so that i can OD on it.
+
+    var _Init = function() {
+        m_lobbySettings = LobbyAPI.GetSessionSettings() || { game: {} };
+        var mode = m_lobbySettings.game.mode || 'unknown';
+
+        // game server location/ping. only works in cs2 since they did some hardcoded bs, here i set it up to force eu serbia with very nice ping.
+        m_gsLocation = $.GetContextPanel().GetAttributeString('location', 'EU, Serbia');
+        m_gsPing = parseInt($.GetContextPanel().GetAttributeString('ping', '69420'));
+        $.GetContextPanel().SetDialogVariable('region', m_gsLocation);
+        $.GetContextPanel().SetDialogVariableInt('ping', m_gsPing);
+
+        // forces the max amount of players that can accept depending on the mode.
+        m_numTotalClientsInReservation = 10;
+        switch (mode) {
+            case 'competitive':
+            case 'skirmish':
+            case 'scrimcomp5v5':
+                m_numTotalClientsInReservation = 10;
+                break;
+            case 'scrimcomp2v2':
+            case 'competitive_wingman':
+                m_numTotalClientsInReservation = 4;
+                break;
+            case 'survival':
+                m_numTotalClientsInReservation = 18;
+                break;
+            case 'deathmatch':
+            case 'casual':
+            case 'skirmish':
+                m_numTotalClientsInReservation = 2;
+                break;
+        }
+
+        // self explanatory, deletes the player slots once the panel closes itself.
+        var elPlayerSlots = $.GetContextPanel().FindChildInLayoutFile('AcceptMatchSlots');
+        elPlayerSlots.RemoveAndDeleteChildren();
+
+        // map and reconnect.. reconnect shit is literally pointless lmao. as there is no server for that.
+        var mapgroup = m_lobbySettings.game || {};
+        var mapsList = (mapgroup.mapgroupname || '').split(',');
+        var map = mapsList[0] ? mapsList[0].replace(/mg_/g, '') : 'de_dust2';
+
+        // NQMM detection (casual/DM/skirmish or @ map)
+        if (map.charAt(0) === '@' || mode === 'casual' || mode === 'deathmatch' || mode === 'skirmish') {
+            m_isNqmmAnnouncementOnly = true;
+            m_hasPressedAccept = true;
+            if (map.charAt(0) === '@') map = map.substr(1);
+        }
+
+        m_isReconnect = false;
+
+        if (!m_isReconnect && m_lobbySettings && m_lobbySettings.game) {
+            var elAgreement = $.GetContextPanel().FindChildInLayoutFile('Agreement');
+            elAgreement.visible = true;
+
+            var elAgreementComp = $.GetContextPanel().FindChildInLayoutFile('AcceptMatchAgreementCompetitive');
+            elAgreementComp.visible = (mode === 'competitive');
+        }
+
+        // sends the event to show the match ready panel.. pretty sure this is how valve gave us the match accept panel, rarely would you ever encounter the bug where it just never sends it on your client. still happens in cs2.
+        $.DispatchEvent('ShowReadyUpPanel', '');
+
+        // NQMM logic
+        if (m_isNqmmAnnouncementOnly) {
+            $('#AcceptMatchSlots').visible = false;
+            $('#AcceptMatchDataContainer').SetHasClass('auto', true);
+            _UpdateUiState();
+            m_jsTimerUpdateHandle = $.Schedule(1.9, _OnNqmmAutoReadyUp);
+        } else {
+            _SetMatchData(map);
+            _PopulatePlayerList();
+            _UpdateUiState();
+            m_jsTimerUpdateHandle = $.Schedule(1.0, _OnTimerUpdate);
+        }
+
+        _UpdateGameServerUi();
 		AcceptMatchMusic('loading');
+    };
 
-		          
-		              
-		if ( m_lobbySettings.game.mode == 'competitive' || m_lobbySettings.game.mode == 'skirmish' || m_lobbySettings.game.mode == 'scrimcomp5v5' ) {
-			var m_numTotalClientsInReservation = 10;
-		}
-		 
-		if ( m_lobbySettings.game.mode == 'scrimcomp2v2' ) {
-			var m_numTotalClientsInReservation = 4;
-		}
-			                                 
-		if ( m_lobbySettings.game.mode == 'survival' ) {
-			var m_numTotalClientsInReservation = 18;
-		}
+    var _UpdateGameServerUi = function() {
+        var elGameServer = $.GetContextPanel().FindChildInLayoutFile('AcceptMatchGameServer');
+        if (!elGameServer) return;
 
-		if ( m_lobbySettings.game.mode == 'deathmatch' || m_lobbySettings.game.mode == 'casual' ) {
-			var m_numTotalClientsInReservation = 2;
-		}
-			 
-			 
-		var elPlayerSlots = $.GetContextPanel().FindChildInLayoutFile( 'AcceptMatchSlots' );
-		elPlayerSlots.RemoveAndDeleteChildren();
-		
-		var settings = $.GetContextPanel().GetAttributeString( 'map_and_isreconnect', '' );
-
-		                                           
-		var settingsList = settings.split( ',' );
-
-		// var map = settingsList[ 0 ];
-		var mapgroupaaa = LobbyAPI.GetSessionSettings().game;
-		var mapsList = mapgroupaaa.mapgroupname.split(',');
-		var map = mapsList[0].replace(/mg_/g, "");
-		if ( map.charAt( 0 ) === '@' )
-		{
-			m_isNqmmAnnouncementOnly = true;
-			m_hasPressedAccept = true;
-			map = map.substr( 1 );
-		}
-		
-		                                                             
-		// m_isReconnect = settingsList[ 1 ] === 'true' ? true : false;
-		m_isReconnect = false;
-		
-			                                 
-			                          
-			                      
-		 
-		          
-
-		if ( !m_isReconnect && m_lobbySettings && m_lobbySettings.game  )
-		{
-			                         
-			var elAgreement = $.GetContextPanel().FindChildInLayoutFile( 'Agreement' );
-			elAgreement.visible = true;
-
-			var elAgreementComp = $.GetContextPanel().FindChildInLayoutFile( 'AcceptMatchAgreementCompetitive' );
-			elAgreementComp.visible = ( m_lobbySettings.game.mode === "competitive" );
-		}
-
-		$.DispatchEvent( "ShowReadyUpPanel", "" );
-
-		_SetMatchData( map );
-
-		if ( m_isNqmmAnnouncementOnly )
-		{
-			$( '#AcceptMatchDataContainer' ).SetHasClass( 'auto', true );
-			_UpdateUiState();
-			m_jsTimerUpdateHandle = $.Schedule( 1.9, _OnNqmmAutoReadyUp );
-		}
-		else
-{
-	_UpdateUiState(); // Ensure UI is drawn before timer starts
-	m_jsTimerUpdateHandle = $.Schedule( 1.0, _OnTimerUpdate );
-}
-
-		_PopulatePlayerList();
-	}
-		function _UpdateGameServerUi() {
-        const elGameServer = $.GetContextPanel().FindChildInLayoutFile('AcceptMatchGameServer');
-        elGameServer.SetHasClass('hidden', m_hasPressedAccept || m_isReconnect || m_isNqmmAnnouncementOnly ||
-            !(m_gsLocation && m_gsPing));
-    }
-
+        elGameServer.SetHasClass(
+            'hidden',
+            m_hasPressedAccept || m_isReconnect || m_isNqmmAnnouncementOnly || !(m_gsLocation && m_gsPing)
+        );
+    };
 	function _PopulatePlayerList()
 	{
 		                                         
@@ -232,7 +225,7 @@ var PopupAcceptMatch = ( function(){ // script was modified by d3gk, primarily u
 		elAvatar.SetDialogVariable( 'teammate_name', strName );
 	}
 
-	var _AddOpenPlayerCardAction = function ( elAvatar, xuid ) {
+	var _AddOpenPlayerCardAction = function ( elAvatar, xuid ) { // used for premier private queue so that you can press on others avatars and get their ingame profile. yes this was a thing. still is in cs2. however originally it was supposed to be in the regular match accept too.
 		var openCard = function ( xuid )
 		{
 			                                                                                             
@@ -320,7 +313,7 @@ var _OnTimerUpdate = function()
 	}
 	else
 	{
-		// Delay everything by 1 second
+		// delays the message that is under this.
 		$.Schedule( 1.0, function()
 		{
 			$.DispatchEvent( "CloseAcceptPopup" );
@@ -341,7 +334,7 @@ var _OnTimerUpdate = function()
 	}
 };
 
-	var _FriendsListNameChanged = function ( xuid )
+	var _FriendsListNameChanged = function ( xuid ) // no clue why this is even a thing.. why on earth would someone want to get the new friend name..??? valve moment.
 	{
 		                                            
 		if ( !xuid ) return;
@@ -475,16 +468,27 @@ var _OnTimerUpdate = function()
 		imgMap.style.backgroundImage = 'url("file://{images}/map_icons/screenshots/360p/' + map + '.png")';
 	}
 
-	var _OnNqmmAutoReadyUp = function ()
-	{
-		m_jsTimerUpdateHandle = false;
-		//$.DispatchEvent( 'PlaySoundEffect', 'popup_accept_match_confirmed', 'MOUSE' );
-		// LobbyAPI.SetLocalPlayerReady( 'deferred' );
-		$.DispatchEvent( "CloseAcceptPopup" );
-		LobbyAPI.StopMatchmaking();
-		$.DispatchEvent( 'UIPopupButtonClicked', '' );
-	}
+var _OnNqmmAutoReadyUp = function () {
+    m_jsTimerUpdateHandle = false;
 
+    $.DispatchEvent('PlaySoundEffect', 'popup_accept_match_confirmed', 'MOUSE');
+
+    // Close accept popup
+    $.DispatchEvent("CloseAcceptPopup");
+    $.DispatchEvent('UIPopupButtonClicked', '');
+
+    // Stop matchmaking once the accept popup closes..
+    LobbyAPI.StopMatchmaking();
+
+    // Load the first map from the mapgroup (so engine doesn't freak out) edit: doesn't work sadly.. have to do advanced scripting for mapgroups to work on gamemodes that are no queue management..
+    var gameSettings = LobbyAPI.GetSessionSettings().game || {};
+    var mapsList = (gameSettings.mapgroupname || '').split(',');
+    var map = mapsList[0] ? mapsList[0].replace(/mg_/g, '') : 'de_dust2'; // fallback
+
+    GameInterfaceAPI.ConsoleCommand(
+        "mp_force_pick_time 0; game_mode 1; game_type 0; map " + map
+    );
+}
 
 	//Accept Press
 	var _OnAcceptMatchPressed = async function ()
@@ -511,95 +515,81 @@ var _OnTimerUpdate = function()
 }
 
 function acceptLoop() {
-    // $.Msg('Start');
     var IsLetsRoll = true;
-	
-	
-    function loop() {
-        const randomDelay = Math.random() * 2; // Random delay between 0 and 2 seconds
-        // $.Msg(`Waiting for ${randomDelay.toFixed(2)} seconds`);
-		if ( m_numPlayersReady < 10 ) {
-			m_numPlayersReady++;
-			if (m_numPlayersReady == 10 ) {
-				$.DispatchEvent( 'PlaySoundEffect', 'popup_accept_match_confirmed', 'MOUSE' );
-			} else {
-				$.DispatchEvent( 'PlaySoundEffect', 'popup_accept_match_person', 'MOUSE' );
-			}
-			
-			_UpdateUiState();
-		}
-		//asd
 
-        delay(randomDelay * 1000, () => {
-            // $.Msg('End after delay');`
-            
-if (m_numPlayersReady == 10) {
-	if (IsLetsRoll) {
-		//$.DispatchEvent('PlaySoundEffect', 'popup_accept_match_confirmed', 'MOUSE');
-		
-		$.Schedule(1.5, function () {
-			var mapgroupaaa = LobbyAPI.GetSessionSettings().game;
-			var mapsList = mapgroupaaa.mapgroupname.split(',');
-			var map = mapsList[0].replace(/mg_/g, "");
-			GameInterfaceAPI.ConsoleCommand("mp_force_pick_time 0; game_mode 1; game_type 0; map " + map);
-			LobbyAPI.StopMatchmaking();
-		});
-	}
-	IsLetsRoll = true;
+    function loop() {
+        // Random delay between 0 and 2 seconds
+        const randomDelay = Math.random() * 2;
+
+        // Increment players ready up to total clients
+        if (m_numPlayersReady < m_numTotalClientsInReservation) {
+            m_numPlayersReady++;
+
+            // Play sound depending on whether last player accepted
+            if (m_numPlayersReady === m_numTotalClientsInReservation) {
+                $.DispatchEvent('PlaySoundEffect', 'popup_accept_match_confirmed', 'MOUSE');
+            } else {
+                $.DispatchEvent('PlaySoundEffect', 'popup_accept_match_person', 'MOUSE');
+            }
+
+            _UpdateUiState();
+        }
+
+        // Schedule next loop iteration
+        $.Schedule(randomDelay, function() {
+            // Trigger match start when all players are ready
+            if (m_numPlayersReady === m_numTotalClientsInReservation) {
+                if (IsLetsRoll) {
+                    $.Schedule(1.5, function() {
+                        var mapgroupaaa = LobbyAPI.GetSessionSettings().game;
+                        var mapsList = mapgroupaaa.mapgroupname.split(',');
+                        var map = mapsList[0].replace(/mg_/g, "");
+                        GameInterfaceAPI.ConsoleCommand(
+                            "mp_force_pick_time 0; game_mode 1; game_type 0; map " + map
+                        );
+                        LobbyAPI.StopMatchmaking();
+                    });
+                }
+                IsLetsRoll = false; // prevent multiple triggers
+                return; // stop looping after match start
+            }
+
+            loop(); // continue the loop
+        });
+    }
+
+    loop(); // start the first iteration
 }
+function waitRandomInWhileLoop() {
+    function loop() {
+        if (m_numPlayersReady >= m_numTotalClientsInReservation) {
+            // All players ready, stop looping
+            return;
+        }
+
+        // Random delay between 0 and 2 seconds
+        const randomDelay = Math.random() * 2;
+
+        $.Schedule(randomDelay, function() {
+            m_numPlayersReady++;
+
+            // Update UI and play sounds
+            if (m_numPlayersReady === m_numTotalClientsInReservation) {
+                $.DispatchEvent('PlaySoundEffect', 'popup_accept_match_confirmed', 'MOUSE');
+            } else {
+                $.DispatchEvent('PlaySoundEffect', 'popup_accept_match_person', 'MOUSE');
+            }
+
+            _UpdateUiState();
+
+            // Continue looping
             loop();
         });
     }
 
-    loop();
+    loop(); // Start the loop
 }
-		
-		function sleep(ms) {
-			return new Promise(resolve => $.Schedule(ms / 1000, resolve));
-		}
 
-		/*(async function() {
-			$.Msg('Start');
-			await sleep(2000); // Sleep for 2 seconds
-			$.Msg('End after 2 seconds');
-		})();*/
-		
-		
-		// LobbyAPI.SetLocalPlayerReady( 'deferred' );
-		$.DispatchEvent( "CloseAcceptPopup" );
-		$.DispatchEvent( 'UIPopupButtonClicked', '' );
-		
-		/// StartSearch();
-		
-// =======================================
-		function waitRandomInWhileLoop() {
-			let shouldContinue = (m_numPlayersReady < 10); // Your condition for the while loop
-
-			function loop() {
-				if (!shouldContinue) {
-					return;
-				}
-
-				// Generate a random delay between 0 and 2 seconds (2000 milliseconds)
-				const randomDelay = Math.random() * 2000;
-		
-				// Wait for the random delay using setTimeout
-				setTimeout(() => {
-					
-					
-					m_numPlayersReady++;
-					_UpdateUiState();
-					
-
-					// Call the loop function again
-					loop();
-				}, randomDelay);
-			}
-
-			// Start the loop
-			loop();
-		}
-// =======================================
 
 		
 		
@@ -642,3 +632,5 @@ if (m_numPlayersReady == 10) {
 	  
 	
 })();
+
+// this script file is for show. doesn't make you play actual matchmaking. just an example of what you can do with it. it was made by d3gk, half rewritten by deformedsas(me)

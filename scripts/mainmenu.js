@@ -1,14 +1,16 @@
 "use strict";
+
+// GOOD LUCK MAINTAINING THIS
+
 var MainMenu = ( function() {
 	var _m_bPerfectWorld = ( MyPersonaAPI.GetLauncherType() === "perfectworld" ); // china number 1!! this detects if you're launching the game in perfectworld mode.
 	var _m_activeTab;
 	var _m_sideBarElementContextMenuActive = false;
 	var _m_elContentPanel = $( '#JsMainMenuContent' );
 	var _m_playedInitalFadeUp = false; 
-	const g_bModIsBeta = true;
 	let g_bModVersionOutdated = false;
     let g_sRemoteModVersion = "";
-    const CURRENT_MOD_VERSION = "1.9.0"; // update this when releasing a new version
+    const CURRENT_MOD_VERSION = "1.9.0.discontinued"; // update this when releasing a new version
 	var _debug_d3gk_IsQOutOfDate = false; // d3gks notification debug stuff which is pretty much no longer used because of the new notification button..   
 	var _debug_d3gk_IsQVAC = false;   
 	var _debug_d3gk_IsQOverwatch = false; 
@@ -144,7 +146,7 @@ var _SetBackgroundMovie = function() {
     });
 };
 
-// when disconnecting, the vanity should be invisible and not randomly appear during pitch black transition.
+// when disconnecting, the vanity should be invisible and not randomly appear during pitch black transition. this code is unused
 function HideVanity() {
     var vanityPanel = $('#JsMainmenu_Vanity');
     if (vanityPanel && vanityPanel.IsValid()) {
@@ -159,8 +161,7 @@ var _OnShowMainMenu = function() {
     $('#MainMenuNavBarHome').checked = true;
 
     GameInterfaceAPI.SetSettingString('panorama_play_movie_ambient_sound', '1');
-    GameInterfaceAPI.ConsoleCommand("cvar_unhide_all");
-    GameInterfaceAPI.ConsoleCommand('@panorama_ECO_mode 0');
+	GameInterfaceAPI.SetSettingString('@panorama_ECO_mode', '0');
     GameInterfaceAPI.ConsoleCommand('sv_allowupload 1');
     GameInterfaceAPI.SetSettingString('dsp_room', '0');
     GameInterfaceAPI.SetSettingString('snd_soundmixer', 'MainMenu_Mix');
@@ -226,18 +227,13 @@ function CheckModVersionAsync() {
                     g_bModVersionOutdated = true;
                     g_sRemoteModVersion = data.version;
 
-                    $.Msg(`Outdated version, please update: local=${CURRENT_MOD_VERSION}, remote=${data.version}`);
-
                     $.DispatchEvent('PlaySoundEffect', 'PanoramaUI.Lobby.Error', 'MOUSE');
                 } else {
-                    $.Msg("You are up to date.");
                 }
             } catch (e) {
-                $.Msg("Unable to check for updates:", e);
             }
         },
         error: function(e) {
-            $.Msg("[Mod Version Check] Request failed:", e);
         }
     });
 }
@@ -273,7 +269,7 @@ function CheckModVersionAsync() {
 			}
 			else if ( strFatalError === "UnsupportedClientLogon" )
 			{
-				UiToolkitAPI.ShowGenericPopupOneOptionBgStyle( "#CS2_GO_INF_ERROR_TITLE", "#CS2_GO_INF_ERRROR_MESSAGE", "#CS2_GO_GLHF_MSG",
+				UiToolkitAPI.ShowGenericPopupOneOptionBgStyle( "???", "???", "???",
 					"#GameUI_Quit", function () { GameInterfaceAPI.ConsoleCommand( "quit" ); },
 					"blur" );
 			}
@@ -381,10 +377,12 @@ function CheckModVersionAsync() {
 	}
 
 function _OnHideMainMenu() { // stops all mainmenu stuff that are listed here
-    const vanityPanel = $('#JsMainmenu_Vanity');
+for (let i = 0; i < 5; i++) {
+    const vanityPanel = $('#JsMainmenu_Vanity' + i);
     if (vanityPanel) {
         CharacterAnims.CancelScheduledAnim(vanityPanel);
     }
+}
     _m_elContentPanel.RemoveClass('mainmenu-content--animate');
     _m_elContentPanel.AddClass('mainmenu-content--offscreen');
     _CancelNotificationSchedule();
@@ -434,7 +432,7 @@ function _OnHideMainMenu() { // stops all mainmenu stuff that are listed here
 		                                                                  
 		OnHomeButtonPressed();
 	};
-const _CreatUpdateVanityInfo = function (oSettings) {
+const _CreatUpdateVanityInfo = function (oSettings) { // cs2 vanity info stuff.. not used, probably won't be used at all as the vanity info panel itself doesn't display anything..
     $.Schedule(0.1, () => {
         if (typeof VanityPlayerInfo === 'undefined') {
             $.Schedule(0.1, () => _CreatUpdateVanityInfo(oSettings));
@@ -499,7 +497,6 @@ const _CreatUpdateVanityInfo = function (oSettings) {
 			return;	                                                                               
 		}
 		$.DispatchEvent('PlayMainMenuMusic', true, false );                               
-		GameInterfaceAPI.SetSettingString( 'panorama_play_movie_ambient_sound', '1' );
                     
 		if( !$.GetContextPanel().FindChildInLayoutFile( tab ) )
 		{
@@ -873,66 +870,9 @@ function _OnHideContentPanel() { // hides the content panel, shows left and righ
             elNewsContainer.RemoveClass('mainmenu-news-container-stream-active');
         }
     }
-var _ForceRestartVanity = function ()
-{
-    _m_bVanityAnimationAlreadyStarted = false;
 
-    var myXuid = MyPersonaAPI.GetXuid();
-    var numPlayers = PartyListAPI.GetCount();
 
-    for (let i = 0; i < numPlayers; i++) {
-        const xuid = PartyListAPI.GetXuidByIndex(i);
-        const vanityPanel = $('#JsMainmenu_Vanity_' + i);
 
-        if (!xuid || !vanityPanel) continue;
-
-        let oSettings;
-
-        if (xuid === myXuid) {
-            oSettings = ItemInfo.GetOrUpdateVanityCharacterSettings();
-            _ApplyVanitySettingsToLobbyMetadata(oSettings);
-        } else {
-            const vanityData = PartyListAPI.GetPartyMemberVanity(xuid);
-            if (!vanityData) continue;
-
-            const info = vanityData.split(',');
-            oSettings = {
-                team: info[0],
-                charItemId: info[1],
-                glovesItemId: info[2],
-                loadoutSlot: info[3],
-                weaponItemId: info[4],
-                activity: 'ACT_CSGO_UIPLAYER_WALKUP',
-                arrModifiers: ['vanity']
-            };
-        }
-
-        oSettings.activity = 'ACT_CSGO_UIPLAYER_WALKUP';
-        oSettings.arrModifiers.push('vanity');
-        oSettings.panel = vanityPanel;
-
-        vanityPanel.RemoveClass('hidden');
-        vanityPanel.m_xuid = xuid;
-        vanityPanel.m_agentId = oSettings.charItemId || '';
-        vanityPanel.SetSceneAngles(0, 0, 0, true);
-        vanityPanel.hittest = false;
-
-        if (xuid === myXuid) {
-            CharacterAnims.PlayAnimsOnPanel(oSettings);
-        }
-
-        _SetVanityLightingBasedOnBackgroundMovie(vanityPanel);
-        _RigVanityHover(vanityPanel);
-
-        $.Schedule(0.0, function () {
-            if (vanityPanel && vanityPanel.IsValid()) {
-                vanityPanel.hittest = true;
-            }
-        });
-
-        $.Msg('[Vanity] ForceRestart | xuid: ' + xuid + ' | local: ' + (xuid === myXuid));
-    }
-};
 	function _RigVanityHover ( vanityPanel )
 	{
 		if ( !vanityPanel || !vanityPanel.IsValid() )
@@ -974,51 +914,324 @@ var _ForceRestartVanity = function ()
         _CreatUpdateVanityInfo(oSettings);
     };
 	
+var _m_bVanityAnimationAlreadyStarted = false;
+var _m_bLocalVanityJustInitialized = false;
 
-var _InitVanity = function(id, isLocalPlayer, settings)
-{
+var _safeVanitySplit = function(vanityData) {
+    if (!vanityData || vanityData.length === 0) return ['', '', '', '', ''];
+    const parts = vanityData.split(',');
+    while (parts.length < 5) parts.push('');
+    return parts;
+};
+
+var _ForceRestartVanity = function () {
+    _m_bVanityAnimationAlreadyStarted = false;
+
+    const myXuid = MyPersonaAPI.GetXuid();
+    const numPlayers = PartyListAPI.GetCount();
+
+    for (let i = 0; i < numPlayers; i++) {
+        const xuid = PartyListAPI.GetXuidByIndex(i);
+        const vanityPanel = $('#JsMainmenu_Vanity_' + i);
+
+        if (!xuid || !vanityPanel || !vanityPanel.IsValid()) continue;
+
+        let oSettings = null;
+
+        if (xuid === myXuid) {
+            oSettings = ItemInfo.GetOrUpdateVanityCharacterSettings();
+            if (oSettings) _ApplyVanitySettingsToLobbyMetadata(oSettings);
+
+            const localVanityData = [
+                oSettings.team,
+                oSettings.charItemId,
+                oSettings.glovesItemId,
+                oSettings.loadoutSlot,
+                oSettings.weaponItemId
+            ].join(',');
+
+            const alreadyApplied =
+                (localVanityData === _m_sLastLocalVanityData) &&
+                (oSettings.weaponItemId === _m_sLastLocalWeaponId);
+
+            const panelNeedsAnim =
+                (!vanityPanel.m_agentId) || (vanityPanel.BHasClass('hidden')) || (vanityPanel.m_xuid !== xuid);
+
+            if (!(_m_bLocalVanityJustInitialized || (alreadyApplied && !panelNeedsAnim))) {
+                oSettings.panel = vanityPanel;
+                oSettings.activity = 'ACT_CSGO_UIPLAYER_WALKUP';
+                oSettings.arrModifiers = ['vanity'];
+
+                $.Schedule(0.0, function () {
+                    if (vanityPanel && vanityPanel.IsValid()) {
+                        CharacterAnims.PlayAnimsOnPanel(oSettings);
+                    }
+                });
+
+                _m_sLastLocalVanityData = localVanityData;
+                _m_sLastLocalWeaponId = oSettings.weaponItemId;
+                _m_mapLastVanityDataByXuid[xuid] = localVanityData;
+                _m_setInitializedXuids[xuid] = true;
+            }
+        } else {
+            const vanityData = PartyListAPI.GetPartyMemberVanity(xuid);
+            if (!vanityData) continue;
+
+            const lastVanityData = _m_mapLastVanityDataByXuid[xuid];
+            const hasBeenInitialized = _m_setInitializedXuids[xuid] === true;
+
+            const panelNeedsReset =
+                !vanityPanel.IsValid() ||
+                vanityPanel.BHasClass('hidden') ||
+                vanityPanel.m_agentId === '' ||
+                vanityPanel.m_xuid !== xuid;
+
+            if (vanityData !== lastVanityData || !hasBeenInitialized || panelNeedsReset) {
+                const info = _safeVanitySplit(vanityData);
+                oSettings = {
+                    team: info[0],
+                    charItemId: info[1],
+                    glovesItemId: info[2],
+                    loadoutSlot: info[3],
+                    weaponItemId: info[4],
+                    activity: 'ACT_CSGO_UIPLAYER_WALKUP',
+                    arrModifiers: ['vanity'],
+                    panel: vanityPanel
+                };
+
+                $.Schedule(0.0, function () {
+                    if (vanityPanel && vanityPanel.IsValid()) {
+                        CharacterAnims.PlayAnimsOnPanel(oSettings);
+                    }
+                });
+
+                _m_mapLastVanityDataByXuid[xuid] = vanityData;
+                _m_setInitializedXuids[xuid] = true;
+            }
+        }
+
+        vanityPanel.RemoveClass('hidden');
+        vanityPanel.SetSceneAngles(0, 0, 0, true);
+        vanityPanel.hittest = false;
+
+        _SetVanityLightingBasedOnBackgroundMovie(vanityPanel);
+        _RigVanityHover(vanityPanel);
+
+        $.Schedule(0.0, function () {
+            if (vanityPanel && vanityPanel.IsValid()) vanityPanel.hittest = false;
+        });
+
+        if (oSettings) {
+            vanityPanel.m_xuid = xuid;
+            vanityPanel.m_agentId = oSettings.charItemId || '';
+        }
+    }
+
+    _m_bLocalVanityJustInitialized = false;
+};
+
+
+var _m_sLastLocalVanityData = '';
+var _m_sLastLocalWeaponId = '';
+var _m_aCurrentLobbyVanityData = [];
+var _m_mapLastVanityDataByXuid = {};
+var _m_setInitializedXuids = {};
+var _m_mapLastAnimTimeByXuid = {};
+
+
+var _InitVanity = function(id, isLocalPlayer, settings) {
     var vanityPanel = $('#JsMainmenu_Vanity_' + id);
-    if (!vanityPanel) return;
+    if (!vanityPanel || !vanityPanel.IsValid()) {
+        //$.Msg('[PanoramaScript] Init skipped — invalid panel at index ' + id);
+        return;
+    }
 
-    var oSettings = ItemInfo.GetOrUpdateVanityCharacterSettings();
+    var oSettings;
+    const xuid = settings.xuid;
 
     if (isLocalPlayer) {
         oSettings = ItemInfo.GetOrUpdateVanityCharacterSettings();
+        if (!oSettings) return;
+
+        _m_bLocalVanityJustInitialized = true;
+
+        const localVanityData = [
+            oSettings.team,
+            oSettings.charItemId,
+            oSettings.glovesItemId,
+            oSettings.loadoutSlot,
+            oSettings.weaponItemId
+        ].join(',');
+
+        _m_sLastLocalVanityData = localVanityData;
+        _m_sLastLocalWeaponId = oSettings.weaponItemId;
+        _m_mapLastVanityDataByXuid[xuid] = localVanityData;
     } else {
-        var info = settings.vanity_data.split(',');
+        const vanityData = settings.vanity_data || '';
+        const info = _safeVanitySplit(vanityData);
+
         oSettings = {
             team: info[0],
             charItemId: info[1],
             glovesItemId: info[2],
             loadoutSlot: info[3],
-            weaponItemId: info[4],
-            activity: 'ACT_CSGO_UIPLAYER_WALKUP',
-            arrModifiers: [ 'vanity' ]
+            weaponItemId: info[4]
         };
+
+        _m_mapLastVanityDataByXuid[xuid] = info.join(',');
     }
 
+    if (!oSettings.arrModifiers) oSettings.arrModifiers = [];
+    if (!oSettings.arrModifiers.includes('vanity')) oSettings.arrModifiers.push('vanity');
+
     oSettings.activity = 'ACT_CSGO_UIPLAYER_WALKUP';
-    oSettings.arrModifiers.push('vanity');
-    _ApplyVanitySettingsToLobbyMetadata(oSettings);
-
     oSettings.panel = vanityPanel;
+
     vanityPanel.RemoveClass('hidden');
-
-    vanityPanel.m_xuid = settings.xuid;
-
+    vanityPanel.m_xuid = xuid;
+    vanityPanel.m_agentId = oSettings.charItemId || '';
     vanityPanel.SetSceneAngles(0, 0, 0, true);
     vanityPanel.hittest = false;
-    _m_bVanityAnimationAlreadyStarted = true;
 
-    CharacterAnims.PlayAnimsOnPanel(oSettings);
+    $.Schedule(0.0, function () {
+        if (vanityPanel && vanityPanel.IsValid()) {
+            CharacterAnims.PlayAnimsOnPanel(oSettings);
+        }
+    });
 
     _SetVanityLightingBasedOnBackgroundMovie(vanityPanel);
     _RigVanityHover(vanityPanel);
 
     $.Schedule(3.0, function () {
-        if (vanityPanel && vanityPanel.IsValid()) vanityPanel.hittest = true;
+        if (vanityPanel && vanityPanel.IsValid()) {
+            vanityPanel.hittest = true;
+        }
+    });
+
+    //$.Msg('[PanoramaScript] Init complete for xuid ' + xuid + ' | local: ' + isLocalPlayer);
+};
+
+var _ApplyVanitySettingsToLobbyMetadata = function( oSettings ) // applies vanity settings to your steam config file. if possible that is, if not connected then it will locally save it or won't save it depending on steam.
+	{                                           
+		PartyListAPI.SetLocalPlayerVanityPresence( oSettings.team,
+			oSettings.charItemId, oSettings.glovesItemId,
+			oSettings.loadoutSlot, oSettings.weaponItemId );
+	};
+
+
+var _LobbyPlayerUpdated = function() {
+    var numPlayers = PartyListAPI.GetCount();
+    var aCurrentLobbyVanityData = [];
+
+    // d3gk: const for a good measure
+    const localXuid = MyPersonaAPI.GetXuid();
+
+    // d3gk: check data to prevent future cancer. Ugly but it will work
+    // d3gk: also some optimizations for no reason ig
+    let k = 0;
+    let localPlayerData = null;
+    for (;k < numPlayers;) {
+        if (k >= numPlayers) {
+            break;
+        }
+        var xuid = PartyListAPI.GetXuidByIndex(k);
+        const _vanity_data = PartyListAPI.GetPartyMemberVanity(xuid);
+        if (xuid && _vanity_data) {
+            aCurrentLobbyVanityData.push({
+                xuid: xuid,
+                isLocalPlayer: xuid === localXuid,
+                playeridx: k,
+                vanity_data: _vanity_data
+            });
+            if(xuid === localXuid) {
+                localPlayerData = aCurrentLobbyVanityData[k];
+            }
+            k++;
+        }
+    }
+    
+    // d3gk: I think bug is here
+    // If newVanityData is empty string '', newVanityData.split(',')[4] makes no sense and will throw or I am stupid
+    // Check my solution, idk what newWeaponId is suposed to be
+    /*
+    var newVanityData = localPlayerData && localPlayerData.vanity_data ? localPlayerData.vanity_data : '';
+    var newWeaponId = newVanityData.split(',')[4];
+    */
+    var newVanityData = localPlayerData && localPlayerData.vanity_data ? localPlayerData.vanity_data : '';
+    var newWeaponId = (newVanityData === '') ? '' : newVanityData.split(',')[4];
+    
+    
+    // d3gk: this also makes no sense for me. I won't modify it bc i have no clue what it does.
+    if (newVanityData !== _m_sLastLocalVanityData || newWeaponId !== _m_sLastLocalWeaponId) {
+        _m_sLastLocalVanityData = '';
+        _m_sLastLocalWeaponId = '';
+    }
+
+    var oSettings = ItemInfo.GetOrUpdateVanityCharacterSettings();
+    
+    
+    // d3gk: just for good measure #2
+    if (oSettings) {
+        _ApplyVanitySettingsToLobbyMetadata(oSettings);
+    }
+    
+    _UpdateLobbyVanity(aCurrentLobbyVanityData);
+
+    $.Schedule(0.1, function () {
+        _ForceRestartVanity();
     });
 };
+
+
+var _UpdateLobbyVanity = function(players)
+{
+    const localXuid = MyPersonaAPI.GetXuid();
+
+    for (let i = 0; i < 5; i++) {
+        let vanityPanel = $('#JsMainmenu_Vanity_' + i);
+
+        if (!players[i]) {
+            if (vanityPanel && !vanityPanel.BHasClass('hidden')) {
+                vanityPanel.AddClass('hidden');
+            }
+            continue;
+        }
+
+        const newData = players[i];
+        const xuid = newData.xuid;
+		
+        const isLocalPlayer = (xuid === localXuid);
+        const newVanityData = newData.vanity_data;
+        const newWeaponId = newVanityData.split(',')[4];
+        const lastVanityData = _m_mapLastVanityDataByXuid[xuid];
+
+        const panelInitialized =
+            vanityPanel &&
+            vanityPanel.IsValid() &&
+            !vanityPanel.BHasClass('hidden') &&
+            vanityPanel.m_agentId !== '';
+
+        if (newVanityData === lastVanityData && panelInitialized) {
+            //$.Msg('Skipping vanity update for xuid ' + xuid + ' — already initialized.');
+            continue;
+        }
+
+        if (isLocalPlayer &&
+            newVanityData === _m_sLastLocalVanityData &&
+            newWeaponId === _m_sLastLocalWeaponId) {
+            //$.Msg('Skipping vanity update for local player — no weapon change.');
+            continue;
+        }
+
+        _m_mapLastVanityDataByXuid[xuid] = newVanityData;
+
+        _InitVanity(newData.playeridx, isLocalPlayer, newData);
+        _m_setInitializedXuids[xuid] = true;
+    }
+
+    _m_aCurrentLobbyVanityData = players;
+};
+
 	var _InitVanityNoGC = function() // all this does is show the vanity while not connected to GC to fix the giant idle ct agent in the ui.. only removed the inventory api thing.
 	{                          
 		if ( _m_bVanityAnimationAlreadyStarted ) {                                                                         
@@ -1046,67 +1259,20 @@ var _InitVanity = function(id, isLocalPlayer, settings)
 		}
 
 		_RigVanityHover( vanityPanel );                                                                  
-		$.Schedule( 3.0, function() {if (vanityPanel && vanityPanel.IsValid() ) vanityPanel.hittest = true;} );
+		$.Schedule( 3.0, function() {if (vanityPanel && vanityPanel.IsValid() ) vanityPanel.hittest = false;} );
 	};
 	
-	var _ApplyVanitySettingsToLobbyMetadata = function( oSettings ) // applies vanity settings to your steam config file. if possible that is, if not connected then it will locally save it or won't save it depending on steam.
-	{                                           
-		PartyListAPI.SetLocalPlayerVanityPresence( oSettings.team,
-			oSettings.charItemId, oSettings.glovesItemId,
-			oSettings.loadoutSlot, oSettings.weaponItemId );
-	};
-
-var _m_aCurrentLobbyVanityData = []; // cache for diffing
-
-var _LobbyPlayerUpdated = function() {
-    var numPlayers = PartyListAPI.GetCount();
-    var aCurrentLobbyVanityData = [];
-
-    for (let k = 0; k < numPlayers; k++) {
-        var xuid = PartyListAPI.GetXuidByIndex(k);
-        aCurrentLobbyVanityData.push({
-            xuid: xuid,
-            isLocalPlayer: xuid === MyPersonaAPI.GetXuid(),
-            playeridx: k,
-            vanity_data: PartyListAPI.GetPartyMemberVanity(xuid)
-        });
-    }
-
-    _UpdateLobbyVanity(aCurrentLobbyVanityData);
-};
-
-var _UpdateLobbyVanity = function(players)
+var _SetVanityLightingBasedOnBackgroundMovie = function( vanityPanel ) // background lighting, scene angles will be used for each background in the future.
 {
-    for (let i = 0; i < 5; i++) {
-        let vanityPanel = $('#JsMainmenu_Vanity_' + i);
+    var backgroundMap = 'anubis'; // fallback to fix js error while in game? 
 
-        if (!players[i]) {
-            if (vanityPanel && !vanityPanel.BHasClass('hidden')) {
-                vanityPanel.AddClass('hidden');
-            }
-            continue;
-        }
-
-        const newData = players[i];
-        const oldData = _m_aCurrentLobbyVanityData[i];
-
-        if (oldData &&
-            oldData.xuid === newData.xuid &&
-            oldData.vanity_data === newData.vanity_data) {
-            continue;
-        }
-
-        _InitVanity(newData.playeridx, newData.isLocalPlayer, newData);
+    var elMovie = $.GetContextPanel().FindChildInLayoutFile('MainMenuMovie');
+    if (elMovie)
+    {
+        backgroundMap = elMovie.GetAttributeString('data-type', 'anubis');
     }
 
-    _m_aCurrentLobbyVanityData = players;
-};
-
-	var _SetVanityLightingBasedOnBackgroundMovie = function( vanityPanel ) // background lighting, scene angles will be used for each background in the future.
-	{
-		var backgroundMap = $.GetContextPanel().FindChildInLayoutFile( 'MainMenuMovie' ).GetAttributeString( 'data-type', 'dust2' );
-                                                                                            
-		vanityPanel.RestoreLightingState();
+    vanityPanel.RestoreLightingState();
 
 		if ( backgroundMap === 'overpass' )
 		{
@@ -1255,20 +1421,20 @@ else if ( backgroundMap === 'nuke' )
 {
     vanityPanel.SetFlashlightAmount( 2.6 ); 
     vanityPanel.SetFlashlightFOV( 52 );
-    vanityPanel.SetFlashlightColor( 2.1, 2.0, 1.75 ); // warmer flashlight, soft golden white
+    vanityPanel.SetFlashlightColor( 2.1, 2.0, 1.75 ); 
 
-    vanityPanel.SetAmbientLightColor( 0.38, 0.34, 0.3 ); // warmer ambient with a bit of yellow-brown
+    vanityPanel.SetAmbientLightColor( 0.38, 0.34, 0.3 ); 
 
     vanityPanel.SetDirectionalLightModify( 0 );
-    vanityPanel.SetDirectionalLightColor( 1.0, 0.9, 0.75 ); // overhead lights with a warm tint
+    vanityPanel.SetDirectionalLightColor( 1.0, 0.9, 0.75 ); 
     vanityPanel.SetDirectionalLightDirection( 0.0, -1.0, 0.0 );
 
     vanityPanel.SetDirectionalLightModify( 1 );
-    vanityPanel.SetDirectionalLightColor( 0.45, 0.35, 0.22 ); // strong warm bounce from railings
+    vanityPanel.SetDirectionalLightColor( 0.45, 0.35, 0.22 ); 
     vanityPanel.SetDirectionalLightDirection( 0.6, 0.1, -0.5 );
 
     vanityPanel.SetDirectionalLightModify( 2 );
-    vanityPanel.SetDirectionalLightColor( 0.22, 0.2, 0.18 ); // softer warm fill instead of cold fill
+    vanityPanel.SetDirectionalLightColor( 0.22, 0.2, 0.18 ); 
     vanityPanel.SetDirectionalLightDirection( -0.4, 0.5, -0.6 );
 
     //vanityPanel.SetSceneAngles( 0, 0, 0, true );
@@ -1564,8 +1730,6 @@ else if ( backgroundMap === 'vertigo' )
 
 			var elPlayButton = $( '#MainMenuNavBarPlay' );
 			if( elPlayButton && !elPlayButton.BHasClass( 'mainmenu-navbar__btn-small--hidden' ) ) {
-
-				GameInterfaceAPI.SetSettingString('panorama_play_movie_ambient_sound', '1');
 			}
 		}
 	};
@@ -1894,7 +2058,7 @@ function _GetNotificationBarData() { // rest in peace 32px line at the top of th
 
             if (strType == "global") {
                 notification.title = $.Localize("#SFUI_MainMenu_Global_Ban_Title");
-                notification.color_class = "red-alert"; // it was yellow before even though global bans should be red!
+                notification.color_class = "red-alert"; // it was yellow before even though global bans should be red!      d3gk agrees
                 notification.icon = "ban_competitive";
             } else if (strType == "green") {
                 notification.title = $.Localize("#SFUI_MainMenu_Temporary_Ban_Title");
@@ -1921,26 +2085,9 @@ function _GetNotificationBarData() { // rest in peace 32px line at the top of th
     const notification = {
         color_class: "yellow-alert",
         icon: "client_update",
-        title: $.Localize("#SFUI_MainMenu_Outofdate_Title"),
+        title: $.Localize("#SFUI_MainMenu_Discontinued_Title"),
         tooltip:
-            "In order to get the most recent update, please download the latest release and restart.\n\n" +
-            " Installed version: " + CURRENT_MOD_VERSION + "\n" +
-            " Latest version: " + g_sRemoteModVersion,
-        link: "https://github.com/DeformedSAS/Counter-Strike2-Global-Offensive/releases"
-    };
-    aAlerts.push(notification);
-    }
-    if (g_bModIsBeta) {
-    const notification = {
-        color_class: "green-alert",
-        icon: "ban_competitive",
-        title: "Beta Version Running",
-        tooltip:
-            "You are currently running a **beta build** of the mod.\n\n" +
-            " Expect bugs, crashes, and unfinished features.\n" +
-            " Please report any issues to the developers. \n\n" +
-			" Also join the Discord server where all the fun happens. ",
-        link: "https://discord.com/invite/4AeURZa2p2" 
+            "#SFUI_MainMenu_Discontinued_Body"
     };
     aAlerts.push(notification);
     }
@@ -2300,6 +2447,7 @@ var _ShowDevContextMenu = function() {
 
         { label: 'Operation', style: 'TopSeparator' },
         { label: 'OperationMain', jsCallback: showOperation.bind(undefined) },
+		{ label: 'Enable Vanity Debug', jsCallback: function() {$('#JsMainmenu_Vanity_0').Children()[0].style.visibility = 'visible'}.bind() },
 		{ label: 'OperationStore', jsCallback: OperationUtil.OpenPopupCustomLayoutOperationStore.bind(undefined) }
     ];
 
@@ -2315,7 +2463,7 @@ var _OpStore = function()
     UiToolkitAPI.ShowCustomLayoutPopupParameters( '', 'file://{resources}/layout/operation/operation_store.xml', '', 'none' );
 };
 
-	var _ShowOperationLaunchPopup = function() // when is a new operation coming valve? in cs2 it seems to be never sadly, armory is the permanent operation that you get in cs2 now and is never going away unless they change their mind.
+	var _ShowOperationLaunchPopup = function() // when is a new operation coming valve? in cs2 it seems to be never sadly, armory is the permanent operation that you get in cs2 now and is never going away unless they change their mind. d3gk: valve found infinite money glitch. armory has decent outcome and requires something about no work to carry out.
 	{
 		if ( _m_hOnEngineSoundSystemsRunningRegisterHandle )
 		{
@@ -2506,7 +2654,7 @@ var _UnPauseMainMenuCharacter = function() {
 		alert.SetHasClass( 'hidden', bHide );
 	}
 
-	function _SwitchVanity ( team ) // switches your vanity to your desired team. pretty cool ain't it? ooo
+	function _SwitchVanity ( team ) // switches your vanity to your desired team. pretty cool ain't it? ooo    d3gk: yes, it is
 	{
 		$.DispatchEvent( 'PlaySoundEffect', 'UIPanorama.generic_button_press', 'MOUSE' );
 		GameInterfaceAPI.SetSettingString( 'ui_vanitysetting_team', team );	
@@ -2550,7 +2698,7 @@ var _UnPauseMainMenuCharacter = function() {
 	}
 
 
-	return { // return functions, this is primarily used when making new scripts that get executed when OnShowMainMenu function loads. also these information tooltips in the script probably made the script twice as large.. sorry but i had to for dev purposes.
+	return { // return functions, this is primarily used when making new scripts that get executed when OnShowMainMenu function loads. also these information tooltips in the script probably made the script twice as large.. sorry but i had to for dev purposes. - god forgives.
 		OnInitFadeUp						: _OnInitFadeUp,
 		OnShowMainMenu						: _OnShowMainMenu,
 		OnHideMainMenu	 					: _OnHideMainMenu,
@@ -2624,7 +2772,8 @@ var _UnPauseMainMenuCharacter = function() {
 
                                                                                                     
                                            
-                                                                                                    
+// d3gk: putting this in a self-executing function seems to make no sense.
+//       won't remove it tho, bc maybe it has some hidden meaning in volvo's world, where stuff is everything but obvious.
 (function()
 {
 	$.RegisterForUnhandledEvent( 'HideContentPanel', MainMenu.OnHideContentPanel );
@@ -2686,3 +2835,7 @@ var _UnPauseMainMenuCharacter = function() {
 	$.RegisterEventHandler( "Cancelled", $.GetContextPanel(), MainMenu.OnEscapeKeyPressed );
 
 })();
+
+// btw, valves code is junk. the ui blur for example is so fucking badly implemented lmao.. not even properly tested.. if it ain't broke, don't fix it moment.
+
+// d3gk: Yeah, good code looks nothing like this. All things should be checked at every point is that serious of a game as CS is. This excludes the vast majority of bugs!

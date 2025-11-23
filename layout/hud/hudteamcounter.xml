@@ -2,34 +2,28 @@
 	<styles>
 		<include src="file://{resources}/styles/csgostyles.css" />
 		<include src="file://{resources}/styles/hud/hudteamcounter.css" />
-		<include src="file://{resources}/styles/hud/hudteamcounter_equipinfo.css" />
+        <include src="file://{resources}/styles/hud/hudteamcounter-postrounddamagereport.css" />
+        <include src="file://{resources}/styles/hud/hudteamcounter-equipmentinfo.css" />
     	<include src="file://{resources}/styles/hud/hudvoicestatus.css" />
 	</styles>
 
 	<scripts>
+	<include src="file://{resources}/scripts/hud/hudteamcounter.js" />
 	</scripts>
-
-	<snippets>
-
-		<snippet name="AvatarLargeSnippet">
-			<Panel acceptsinput="false">
-
-				                                             
-				<Panel id="Visible" class="AvatarL">
-
-					<Panel id="AvatarL__ImageBG" class="avatarl__imagebg">
-						<CSGOAvatarImage id="AvatarImage" class="Avatar__CommonMargin AvatarL__Internal"/>
-					</Panel>
-				</Panel>
+    <snippets>
+        <snippet name="AvatarLargeSnippet">
+            <Panel acceptsinput="false" class="AvatarLargeSnippet">
+                <Frame id="PostRoundDamageReport" snippet="snippet-post-round-damage-report" />
+                <Panel id="Visible" class="AavatarVisibleContainer">
+                    <Panel id="AvatarL__ImageBG" class="avatarl__imagebg">
+                        <CSGOAvatarImage id="AvatarImage" class="Avatar__CommonMargin AvatarL__Internal" />
+                    </Panel>
+                </Panel>
                 <Panel id="HealthBarContainer" class="healthbar-container">
                     <Panel class="healthbar__bg" />
                     <CSGOAvatarHealthBar id="HealthBar" class="Avatar__HealthMargin AvatarL__HealthBar" />
-                    <Panel class="healthbar__health-number equipinfo__row--health">
-                        <Label class="equipinfo__health stratum-bold" text="{s:health}" />
-                    </Panel>
-				</Panel>                 
-
-				                                                                                            
+                    <CSGOAvatarHealthBar id="HealthBarDelayed" class="Avatar__HealthMargin AvatarL__HealthBar--delayed" />
+                </Panel>
 				<Panel id="ArsenalProgress">
 					<Panel id="ArsenalProgressTextBG" class="AvatarL__GGTextBG">
 						<Label id="ArsenalProgressText" class="AvatarL__GGText"/>
@@ -37,31 +31,41 @@
 					<Panel id="ArsenalProgressWeapon" class="AvatarL__GGIconBG">
 						<Image id="ArsenalProgressWeaponIcon" class="AvatarL__GGIcon" textureheight="20px" scaling="none"/>
 					</Panel>
-				</Panel>
-
-				                                                                       
-				<Panel id="Invisible" class="preserveSize">
-
+                </Panel>
+                <Panel class="HTC__kills">
+                    <Panel class="left-right-flow horizontal-center">
+                        <Image class="HTC__kill-flag HTC__kill-flag1" src="file://{images}/icons/ui/kill.svg" texturewidth="10px" scaling="stretch-to-fit-preserve-aspect" />
+                        <Image class="HTC__kill-flag HTC__kill-flag2" src="file://{images}/icons/ui/kill.svg" texturewidth="10px" scaling="stretch-to-fit-preserve-aspect" />
+                        <Image class="HTC__kill-flag HTC__kill-flag3" src="file://{images}/icons/ui/kill.svg" texturewidth="10px" scaling="stretch-to-fit-preserve-aspect" />
+                        <Image class="HTC__kill-flag HTC__kill-flag4" src="file://{images}/icons/ui/kill.svg" texturewidth="10px" scaling="stretch-to-fit-preserve-aspect" />
+                        <Image class="HTC__kill-flag HTC__kill-flag5" src="file://{images}/icons/ui/kill.svg" texturewidth="10px" scaling="stretch-to-fit-preserve-aspect" />
+                    </Panel>
+                    <Panel class="horizontal-center left-right-flow">
+                        <Image class="HTC__kill-flag HTC__kill-flagmore" src="file://{images}/icons/ui/kill.svg" texturewidth="32px" scaling="stretch-to-fit-preserve-aspect" />
+                        <Label class="HTC__kills__count stratum-regular" text="x{d:HTC-kill-count}" />
+                    </Panel>
+                </Panel>
+                <Frame id="EquipmentInfo" snippet="snippet-equipment-info" />
+                <Panel id="Invisible" class="preserveSize">
 					<Image id="Skull" class="AvatarL__Skull" src="file://{images}/icons/ui/elimination.svg"/>
 					<Image id="Bot" class="AvatarL__Bot" src="file://{images}/hud/teamcounter/teamcounter_botavatar.svg"/>
 					<Image id="Dominated" class="AvatarL__Dominated" src="file://{images}/hud/teamcounter/teamcounter_dominated.svg"/>
 					<Image id="Nemesis" class="AvatarL__Nemesis" src="file://{images}/icons/ui/nemesis.svg"/>
-					<Image id="PlayerColor" class="avatar-team-color colorize-teammate-color" />
-					<Label id="PlayerLetter" class="AvatarL__PlayerLetter"/>
-
-          <Panel id="Sound" class="avatar-speaking">
-            <Panel class="SoundAnim Looping">
-              <Panel class="SpeakerIcon" />
-              <Panel class="SoundIcon1"/>
-              <Panel class="SoundIcon2"/>
-              <Panel class="SoundIcon3"/>
+                    <Image id="PlayerColor" class="avatar-team-color colorize-teammate-color" />
+                    <Label id="PlayerLetter" class="AvatarL__PlayerLetter stratum-regular" />
+                    <Label id="PlayerNumber" class="AvatarL__PlayerNumber stratum-regular" text="0" />
+                    <Image id="C4" class="AvatarL__C4" src="file://{images}/icons/equipment/c4.svg" scaling="stretch-to-fit-preserve-aspect" />
+                    <Panel id="Sound" class="avatar-speaking">
+                        <Panel class="SoundAnim Looping">
+                            <Panel class="SpeakerIcon" />
+                            <Panel class="SoundIcon1" />
+                            <Panel class="SoundIcon2" />
+                            <Panel class="SoundIcon3" />
+                        </Panel>
+                    </Panel>
+                </Panel>
             </Panel>
-          </Panel>
-          
-				</Panel>                   
-
-			</Panel>
-		</snippet>
+        </snippet>
 
 		<snippet name="AvatarSmallSnippet">
 			<Panel acceptsinput="false">
@@ -126,39 +130,41 @@
 					
 
 					                                                      
-					<Panel id="AliveBackgroundCT" class="TeamCounter__AliveCT">
-						<Label id="AliveCountCT" class="TeamCounter__AliveCount"/>
-						<Image id="AliveSkullCT" class="TeamCounter__AliveSkull" src="file://{images}/hud/teamcounter/teamcounter_aliveskull.png" />
-						<Label id="AliveTextCT" class="TeamCounter__AliveText" text="#SFUI_PlayerCount_Alive"/>
-					</Panel>
+					 <Panel id="AliveBackgroundCT" class="TeamCounter__AliveCT">
+                        <Label id="AliveCountCT" class="TeamCounter__AliveCount" />
+                        <Image id="AliveSkullCT" class="TeamCounter__AliveSkull" src="file://{images}/hud/teamcounter/teamcounter_aliveskull.png" />
+                        <Label id="AliveTextCT" class="TeamCounter__AliveText" text="#SFUI_PlayerCount_Alive" />
+                    </Panel>
 
-				</Panel>
-
-				                                        
-				<Panel id="ScoreAndTimeAndBomb">
-					<Panel id="ScoreAndTime">
-						<Panel id="GameTime">
-							<Panel id="Timer">
-								<Label id="TimerText" class="teamcounter_timer" text="0:00"/>
-							</Panel>
-						</Panel>
-
-						<Panel id="GameScore">
-							<Panel class="GameScore__BGL">
-								<Label id="ScoreCT" class="TeamScoreL TeamScore" text="0"/>
-							</Panel>
-							<Panel class="GameScore__BGR">
-								<Label id="ScoreT" class="TeamScoreR TeamScore" text="0"/>
-							</Panel>
-						</Panel>
-					</Panel>
-
-					<Panel id="BombStatus">
-						<Image id="BombPlanted" class="bomb_planted" src="file://{images}/hud/teamcounter/teamcounter_bomb-planted.svg"
-						texturewidth="256" textureheight="-1" />
-						<Image id="BombPlantedLines" class="bomb_planted bomb_line" src="file://{images}/hud/teamcounter/teamcounter_bomb-planted-lines.svg" texturewidth="256" textureheight="-1"/>
-						<Image id="BombDefused" class="bomb_defused" src="file://{images}/hud/teamcounter/teamcounter_bomb-planted-defused.svg" texturewidth="256" textureheight="-1" />
-					</Panel>
+               </Panel>
+                <Panel id="ScoreAndTimeAndBomb">
+                    <Panel id="ScoreAndTimeAndBombBG" class="equipinfo__bg-container">
+                        <Panel class="equipinfo__blurbg" />
+                        <Panel class="equipinfo__bg" />
+                    </Panel>
+                    <Panel id="ScoreAndTime">
+                        <Panel id="GameTime">
+                            <Panel id="Timer">
+                                <Label id="TimerText" class="teamcounter_timer additive stratum-bold" text="0:00" />
+                            </Panel>
+                        </Panel>
+                        <Panel id="GameScore">
+                            <Panel class="GameScore__BGL">
+                                <Label id="ScoreCT" class="TeamScoreL TeamScore additive stratum-bold" text="0" />
+                            </Panel>
+                            <Panel class="GameScore__BGR">
+                                <Label id="ScoreT" class="TeamScoreR TeamScore additive stratum-bold" text="0" />
+                            </Panel>
+                        </Panel>
+                    </Panel>
+                    <Panel id="BombStatus">
+                        <Image id="BombPlanted" class="bomb_planted" src="file://{images}/hud/teamcounter/teamcounter_bomb-planted.svg" scaling="stretch-to-fit-preserve-aspect" />
+                        <Image id="BombPlantedLines" class="bomb_planted bomb_line" src="file://{images}/hud/teamcounter/teamcounter_bomb-planted-lines.svg" scaling="stretch-to-fit-preserve-aspect" />
+                        <Image id="BombDefused" class="bomb_defused" src="file://{images}/hud/teamcounter/teamcounter_bomb-planted-defused.svg" scaling="stretch-to-fit-preserve-aspect" />
+                    </Panel>
+                    <Panel id="PlayerCount">
+                        <Label id="PlayerCountLabel" class="stratum-bold" text="#miniscoreboard_playercount FUCK THIS PIECE OF SHIT! IT DOES NOT WORK! NOT EVEN WITH JAVASCRIPTING OR USING SEPERATE PANELS. FUCK THIS PIECE OF SHIT" />
+                    </Panel>
 				</Panel>
 
 				                                                    

@@ -119,14 +119,6 @@ var g_PromotedSettings = [
 		end_date: new Date( 'August 7, 2025' )
 	},
 	{
-		id: "PanoramaBlurToggle",
-		loc_name: "Panorama Blur",
-		loc_desc: "Allows you to enable or disable the Panorama UI blur, executed via JS. Uses mirv_cvar_hack",
-		section: "VideoSettings",
-		start_date: new Date( 'July 7, 2025' ), 
-		end_date: new Date( 'August 7, 2025' )
-	},
-	{
 		id: "PanoramaFPS",
 		loc_name: "Show Panorama FPS",
 		loc_desc: "Displays panorama's built in FPS counter.",
@@ -165,6 +157,30 @@ var g_PromotedSettings = [
 		section: "GameSettings",
 		start_date: new Date( 'July 7, 2025' ), 
 		end_date: new Date( 'August 7, 2025' )
+	},
+	{
+		id: "SettingsVideoFramePacing",
+		loc_name: "Frame Pacing",
+		loc_desc: "You can now control the framerate that you want via the video settings under the frame pacing section.",
+		section: "VideoSettings",
+		start_date: new Date( 'October 28, 2025' ), 
+		end_date: new Date( 'November 28, 2025' )
+	},
+	{
+		id: "SettingsSnipersXhair",
+		loc_name: "Sniper sights",
+		loc_desc: "You can adjust the width of the sniper scope under the Sniper sights section in the Game tab",
+		section: "GameSettings",
+		start_date: new Date( 'October 28, 2025' ), 
+		end_date: new Date( 'November 28, 2025' )
+	},
+	{
+		id: "FirstPersonTracers",
+		loc_name: "First person tracers",
+		loc_desc: "Option to enable or disable first person tracers",
+		section: "GameSettings",
+		start_date: new Date( 'October 28, 2025' ), 
+		end_date: new Date( 'November 28, 2025' )
 	},
 ];
 

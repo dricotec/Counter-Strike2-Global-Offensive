@@ -476,6 +476,11 @@ CSGOHudWeaponPanel Label
     text-shadow: 0px 0px 3px 0.0 #000000DD;
 }
 
+.Ammo__Clip--Red
+{
+	color: red;
+}
+
 .Ammo__Total
 {
 	x: 60px;

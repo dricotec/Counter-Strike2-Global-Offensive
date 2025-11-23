@@ -253,27 +253,6 @@ function UpdateDynamicLister(elList, typeKey) {
     // Refresh the list to immediately show the updated items
     elList.SetHasClass('Active', true);
 }
-function activateHomeButton() {
-    // Directly navigate to the home tab and reload the content
-    MainMenuStore.NavigateToTab('id-store-page-home');
-    
-    // Get the parent container of the store pages
-    const storePanel = $.GetContextPanel().FindChildInLayoutFile('id-store-pages');
-    
-    // Temporarily hide the entire store panel to reset it
-    storePanel.SetHasClass('hidden', true);
-    
-    // Use $.Schedule to delay re-showing the panel to ensure content is cleared and reloaded
-    $.Schedule(0.1, function() {
-        storePanel.SetHasClass('hidden', false);  // Show again to trigger reload
-        MainMenuStore.NavigateToTab('id-store-page-home');  // Navigate to home again to ensure fresh load
-    });
-}
-
-// Trigger the home button press and reload action
-$.Schedule(0.1, function() {
-    activateHomeButton();
-});
 
     function UpdateItem(elPanel, typeKey, idx) {
         let oItemData = StoreItems.GetStoreItemData(typeKey, idx);
@@ -310,3 +289,4 @@ $.Schedule(0.1, function() {
         $.RegisterForUnhandledEvent('PanoramaComponent_Store_PriceSheetChanged', ReadyForDisplay);
     }
 })(MainMenuStore || (MainMenuStore = {}));
+// the comments you see in this script are from chatgpt.. i will leave them for fun because i really pulled my hair while fixing this. i guess chatgpt is good for some stuff when you have no clue how to fix..

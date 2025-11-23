@@ -6,6 +6,7 @@
 	</styles>
 	<scripts>
 		<include src="file://{resources}/scripts/mainmenu_tests.js" />
+		<include src="file://{resources}/scripts/endofmatch.js" />
 	</scripts>
 
 	<Panel class="mainmenu-content__container" hittest="false">
@@ -36,7 +37,7 @@
 					<Label allowrawtext="true" text="Anim"/>
 				</RadioButton>
 
-				<RadioButton selected="false" class="content-navbar__tabs__btn" group="tests" onactivate="LayoutTab('CSGOEndOfMatch', 'file://{resources}/layout/endofmatch.xml'); $.DispatchEvent( 'StartTestShow' )" >
+				<RadioButton selected="false" class="content-navbar__tabs__btn" group="tests" onactivate="LayoutTab('CSGOEndOfMatch', 'file://{resources}/layout/endofmatch.xml'); $.DispatchEvent('EndOfMatch_Show')">
 					<Label text="EndOfMatch"/>
 				</RadioButton>
 
