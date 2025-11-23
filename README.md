@@ -7,6 +7,8 @@ This is an unofficial fork of the original CS2:GO mod by [DeformedSAS](https://g
 
 This fork aims to continue development, fix bugs, and add improvements while maintaining compatibility with the original mod's core functionality.
 
+
+DeformedSAS's cs2go discord:
 [![Discord](https://img.shields.io/discord/000000000000000000?label=Discord&logo=discord&logoColor=white&color=5865F2)](https://discord.gg/4AeURZa2p2)
 # MainMenu
 - All of the core UI changes.
