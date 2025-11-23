@@ -1,5 +1,12 @@
 
-# CS2:GO, A mod that adds some CS2 features and content to CS:GO.
+# CS2:GO - Unofficial Fork
+
+**Unofficial Fork maintained by dricotec**
+
+This is an unofficial fork of the original CS2:GO mod by [DeformedSAS](https://github.com/DeformedSAS/Counter-Strike2-Global-Offensive). The original project backports Counter-Strike 2 (CS2) UI features and content to Counter-Strike: Global Offensive (CS:GO), creating a modernized interface experience.
+
+This fork aims to continue development, fix bugs, and add improvements while maintaining compatibility with the original mod's core functionality.
+
 [![Discord](https://img.shields.io/discord/000000000000000000?label=Discord&logo=discord&logoColor=white&color=5865F2)](https://discord.gg/4AeURZa2p2)
 # MainMenu
 - All of the core UI changes.
@@ -22,13 +29,26 @@
 
 ![image](https://github.com/user-attachments/assets/091ee25e-17fd-4e1b-b33a-db5a0b0cf874)
 
+# Changes in This Fork
+
+This unofficial fork includes the following improvements and changes:
+
+- **Removed Discontinued Warning**: Eliminated the outdated mod warning that appeared in the main menu.
+- **Version Update**: Updated mod version to 1.9.1 to reflect active maintenance.
+- **Code Cleanup**: Improved code quality, removed unnecessary debug code, and added better comments.
+- **Bug Fixes**: Fixed various UI issues and improved stability.
+- **Enhanced Documentation**: Updated README with detailed information about the fork.
+- **Expanded Aspect Ratio Options**: Added more aspect ratio presets (32:9, 32:10, 2.35:1, 2:1, 1.85:1, 3:2) to the video settings for better customization without changing actual resolution.
+- **Plain Text Settings Labels**: Replaced all localization strings (#SFUI_* and #settings_*) with clear, readable English text throughout the entire mod for better user experience.
+
 # Credits
-- crazymodder and others who worked on porting CS2 weapons to CS:GO. And for giving me permission to use the kukri knife, taser and c4 models in this addon!
-- d3gk for helping me resolve some issues.
-- roblogez for suggestions for hud and improving general code optimisation.
-- Valve, CS2 Developer Team for making the awesome clean ui.
-- And me DeformedSAS for basically backporting the entire UI..
-- ZooL for giving me permission to use his reworked molotov. All he said was do whatever when i asked him so.. I guess it's a yes?
+- **Original Creator**: [DeformedSAS](https://github.com/DeformedSAS/Counter-Strike2-Global-Offensive) - For creating the original CS2:GO mod and backporting the entire CS2 UI to CS:GO.
+- **Fork Maintainer**: dricolamborghini - Maintaining and improving this unofficial fork.
+- crazymodder and others who worked on porting CS2 weapons to CS:GO. And for giving permission to use the kukri knife, taser and c4 models in this addon!
+- d3gk for helping resolve some issues.
+- roblogez for suggestions for HUD and improving general code optimization.
+- Valve, CS2 Developer Team for making the awesome clean UI.
+- ZooL for giving permission to use his reworked molotov. All he said was do whatever when asked, so... I guess it's a yes?
 - Aluminum Lodide, PROm and ZaihnY for the Scar17 model and textures.
 
 # How to install?
@@ -57,5 +77,16 @@
 -  When did this project start? - Around october 2023 after CS2's release and has gotten under 2 full rewrites since.
 
 -  Will you add this bug fix that i made? - Yes, any help is very appreciated, just make a pull request with the modified code that you provide and I'll check it out.
+
+### Contributing to This Fork
+
+If you'd like to contribute improvements, bug fixes, or new features to this unofficial fork:
+
+1. Fork this repository
+2. Create a feature branch
+3. Make your changes
+4. Submit a pull request with a detailed description
+
+All contributions are welcome to help maintain and improve the CS2:GO mod experience!
 
 ### If you have any questions, ask me and i'll provide information for them.

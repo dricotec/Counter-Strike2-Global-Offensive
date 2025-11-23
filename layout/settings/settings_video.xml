@@ -15,11 +15,11 @@
 		<Panel class="content-navbar content-navbar__tabs--noflow content-navbar__tabs ">
 			<Panel id="GameModeSelectionRadios" class="content-navbar__tabs__center-container   content-navbar__tabs--small">
 				<RadioButton class="content-navbar__tabs__btn" onactivate="SettingsMenuShared.ScrollToId('SettingsVideo')" group="SettingsVideo">
-					<Label class="" text="#settings_video_section"/>
+					<Label class="" text="Video"/>
 				</RadioButton>
 				
 				<RadioButton class="content-navbar__tabs__btn" onactivate="SettingsMenuShared.ScrollToId('SettingsVideoFramePacing')" group="SettingsVideo">
-				<Label class="" text="#settings_video_frame_pacing"/>
+				<Label class="" text="Frame Pacing"/>
 				</RadioButton>
 
 				<RadioButton class="content-navbar__tabs__btn" onactivate="SettingsMenuShared.ScrollToId('SettingsVideoAdvanced')" group="SettingsVideo">
@@ -30,7 +30,7 @@
 <CSGOVideoSettings class="SettingsMenuTabContent vscroll">
     <Panel id="SettingsVideo" class="SettingsBackground full-width">
         <Panel class="SettingsSectionTitleContainer">
-            <Label class="SettingsSectionTitleLabel" text="#settings_video_section" />
+            <Label class="SettingsSectionTitleLabel" text="Video" />
         </Panel>
         <Panel class="top-bottom-flow full-width">
 
@@ -49,11 +49,11 @@
             <Panel class="horizontal-separator"/>
 
             <Panel class="SettingsMenuDropdownContainer">
-                <Label text="#SFUI_Settings_Aspect_Ratio" class="half-width"/>
+                <Label text="Aspect Ratio" class="half-width"/>
                 <CSGOSettingsEnumDropDown onuserinputsubmit="SettingsMenuShared.VideoSettingsOnUserInputSubmit()" class="PopupButton" id="AspectRatioEnum" oninputsubmit="CSGOAspectRatioSelectionChanged()" >
-                    <Label text="#SFUI_Settings_Normal" value="0" id="aspectratio0" />
-                    <Label text="#SFUI_Settings_Widescreen_16_9" value="1" id="aspectratio1"/>
-                    <Label text="#SFUI_Settings_Widescreen_16_10" value="2" id="aspectratio2"/>
+                    <Label text="Normal" value="0" id="aspectratio0" />
+                    <Label text="Widescreen 16:9" value="1" id="aspectratio1"/>
+                    <Label text="Widescreen 16:10" value="2" id="aspectratio2"/>
                 </CSGOSettingsEnumDropDown>
             </Panel>
             <Panel class="horizontal-separator"/>
@@ -62,18 +62,24 @@
                 <Label text="#SFUI_settings_video_render_aspect_ratio_title" class="half-width"/>
                 <CSGOSettingsEnumDropDown id="RenderAspectRatio" class="PopupButton White" convar="r_aspectratio">
                     <Label text="Disabled" value="0" id="renderaspectratio0" />
-                    <Label text="21:9" value="2.333" id="renderaspectratio1" />
-                    <Label text="16:9" value="1.777" id="renderaspectratio2" />
-                    <Label text="16:10" value="1.6" id="renderaspectratio3" />
-                    <Label text="5:4" value="1.25" id="renderaspectratio4" />
-                    <Label text="4:3" value="1.333" id="renderaspectratio5" />
-                    <Label text="1:1" value="1.0" id="renderaspectratio6" />
+                    <Label text="32:9" value="3.555" id="renderaspectratio1" />
+                    <Label text="32:10" value="3.2" id="renderaspectratio2" />
+                    <Label text="21:9" value="2.333" id="renderaspectratio3" />
+                    <Label text="2.35:1" value="2.35" id="renderaspectratio4" />
+                    <Label text="2:1" value="2.0" id="renderaspectratio5" />
+                    <Label text="1.85:1" value="1.85" id="renderaspectratio6" />
+                    <Label text="16:9" value="1.777" id="renderaspectratio7" />
+                    <Label text="16:10" value="1.6" id="renderaspectratio8" />
+                    <Label text="3:2" value="1.5" id="renderaspectratio9" />
+                    <Label text="5:4" value="1.25" id="renderaspectratio10" />
+                    <Label text="4:3" value="1.333" id="renderaspectratio11" />
+                    <Label text="1:1" value="1.0" id="renderaspectratio12" />
                 </CSGOSettingsEnumDropDown>
             </TooltipPanel>
             <Panel class="horizontal-separator"/>
 
             <Panel class="SettingsMenuDropdownContainer">
-                <Label text="#SFUI_Settings_Resolution" class="half-width"/>
+                <Label text="Resolution" class="half-width"/>
                 <CSGOSettingsEnumDropDown onuserinputsubmit="SettingsMenuShared.VideoSettingsOnUserInputSubmit()" class="PopupButton" id="ResolutionEnum" oninputsubmit="CSGOResolutionSelectionChanged()" >
                     <Label value="0" id="resolution0" />
                 </CSGOSettingsEnumDropDown>
@@ -81,11 +87,11 @@
             <Panel class="horizontal-separator"/>
 
             <Panel class="SettingsMenuDropdownContainer">
-                <Label text="#SFUI_Settings_Display_Mode" class="half-width"/>
+                <Label text="Display Mode" class="half-width"/>
                 <CSGOSettingsEnumDropDown onuserinputsubmit="SettingsMenuShared.VideoSettingsOnUserInputSubmit()" class="PopupButton" id="DisplayModeEnum" oninputsubmit="CSGODisplayModeSelectionChanged()" >
-                    <Label text="#SFUI_Settings_Windowed" value="0" id="displaymode0" />
-                    <Label text="#SFUI_Settings_Fullscreen" value="1" id="displaymode1"/>
-                    <Label text="#SFUI_Settings_Fullscreen_Windowed" value="2" id="displaymode2"/>
+                    <Label text="Windowed" value="0" id="displaymode0" />
+                    <Label text="Fullscreen" value="1" id="displaymode1"/>
+                    <Label text="Fullscreen Windowed" value="2" id="displaymode2"/>
                 </CSGOSettingsEnumDropDown>
             </Panel>
             <Panel class="horizontal-separator"/>
@@ -110,11 +116,11 @@
             </TooltipPanel>
             <Panel class="horizontal-separator"/>
 
-            <TooltipPanel class="SettingsMenuDropdownContainer" tooltip="#SFUI_Settings_PowerSavings_Info">
-                <Label text="#SFUI_Settings_Laptop_Power" class="half-width"/>
+            <TooltipPanel class="SettingsMenuDropdownContainer" tooltip="Power savings mode for laptop users">
+                <Label text="Laptop Power Savings" class="half-width"/>
                 <CSGOSettingsEnumDropDown onuserinputsubmit="SettingsMenuShared.VideoSettingsOnUserInputSubmit()" class="PopupButton White" id="PowerSavingsMode">
-                    <Label text="#SFUI_Settings_Disabled" value="0" id="laptoppower0" />
-                    <Label text="#SFUI_Settings_Enabled" value="1" id="laptoppower1"/>
+                    <Label text="Disabled" value="0" id="laptoppower0" />
+                    <Label text="Enabled" value="1" id="laptoppower1"/>
                 </CSGOSettingsEnumDropDown>
             </TooltipPanel>
         </Panel>
@@ -122,33 +128,33 @@
 	
 <Panel id="SettingsVideoFramePacing" class="SettingsBackground full-width">
     <Panel class="SettingsSectionTitleContainer">
-        <Label class="SettingsSectionTitleLabel" text="#settings_video_frame_pacing" />
+        <Label class="SettingsSectionTitleLabel" text="Frame Pacing" />
     </Panel>
     <Panel class="top-bottom-flow full-width">
-        <TooltipPanel class="SettingsMenuDropdownContainer" tooltip="#SFUI_Settings_WaitForVSync_Info">
-            <Label text="#SFUI_Settings_Vertical_Sync" class="half-width" />
+        <TooltipPanel class="SettingsMenuDropdownContainer" tooltip="Controls vertical synchronization with your monitor's refresh rate">
+            <Label text="Vertical Sync" class="half-width" />
             <CSGOSettingsEnumDropDown class="PopupButton White" id="VSync" onuserinputsubmit="SettingsMenuShared.VideoSettingsOnUserInputSubmit()">
-                <Label text="#SFUI_Settings_Disabled" value="0" id="framepacing0" />
-                <Label text="#SFUI_Settings_Enabled_Double" value="1" id="framepacing1"/>
-                <Label text="#SFUI_Settings_Enabled_Triple" value="2" id="framepacing2"/>
+                <Label text="Disabled" value="0" id="framepacing0" />
+                <Label text="Enabled (Double Buffer)" value="1" id="framepacing1"/>
+                <Label text="Enabled (Triple Buffer)" value="2" id="framepacing2"/>
             </CSGOSettingsEnumDropDown>
         </TooltipPanel>
 
         <Panel class="horizontal-separator" />
-        <TooltipPanel class="SettingsMenuDropdownContainer" tooltip="#SFUI_Settings_FPS_Max_Info">
-            <CSGOSettingsSlider id="FPSMax" text="#SFUI_Settings_FPS_Max" min="64" max="1000" convar="fps_max" />
+        <TooltipPanel class="SettingsMenuDropdownContainer" tooltip="Maximum frames per second the game can render">
+            <CSGOSettingsSlider id="FPSMax" text="Max FPS" min="64" max="1000" convar="fps_max" />
         </TooltipPanel>
 
         <Panel class="horizontal-separator" />
-        <TooltipPanel class="SettingsMenuDropdownContainer" tooltip="#SFUI_Settings_FPS_Max_UI_Info">
-            <CSGOSettingsSlider id="FPSMaxUI" text="#SFUI_Settings_FPS_Max_UI" min="64" max="1000" convar="fps_max_menu" />
+        <TooltipPanel class="SettingsMenuDropdownContainer" tooltip="Maximum frames per second for UI rendering">
+            <CSGOSettingsSlider id="FPSMaxUI" text="Max UI FPS" min="64" max="1000" convar="fps_max_menu" />
         </TooltipPanel>
     </Panel>
 </Panel>
 
 			<Panel id="SettingsVideoAdvanced" class="SettingsBackground">
 				<Panel class="SettingsSectionTitleContianer">
-					<Label class="SettingsSectionTitleLabel" text="#settings_video_advanced_section" />
+					<Label class="SettingsSectionTitleLabel" text="Advanced" />
 				</Panel>
 				<Panel class ="top-bottom-flow full-width">
 
@@ -156,13 +162,13 @@
 
 					            
 					<Panel class="SettingsMenuDropdownContainer">
-						<Label text="#SFUI_Settings_CSM" class="half-width"/>
+						<Label text="Cascaded Shadow Maps" class="half-width"/>
 						<CSGOSettingsEnumDropDown onuserinputsubmit="SettingsMenuShared.VideoSettingsOnUserInputSubmit()" class="PopupButton" id="CSMQualityLevel">
-							<Label text="#SFUI_CSM_Low" value="0" id="csmqualitylevel0" />
-							<Label text="#SFUI_CSM_Med" value="1" id="csmqualitylevel1"/>
-							<Label text="#SFUI_CSM_High" value="2" id="csmqualitylevel2"/>
-							<Label text="#SFUI_CSM_VeryHigh" value="3" id="csmqualitylevel3"/>
-							<Label text="#SFUI_Settings_Choice_Autodetect" value="9999999" id="csmqualitylevel4"/>
+							<Label text="Low" value="0" id="csmqualitylevel0" />
+							<Label text="Medium" value="1" id="csmqualitylevel1"/>
+							<Label text="High" value="2" id="csmqualitylevel2"/>
+							<Label text="Very High" value="3" id="csmqualitylevel3"/>
+							<Label text="Auto-detect" value="9999999" id="csmqualitylevel4"/>
 						</CSGOSettingsEnumDropDown>
 					</Panel>
 					<Panel class="horizontal-separator"/>
@@ -186,124 +192,125 @@
 					<Panel class="horizontal-separator"/>
 
 					                             
-					<TooltipPanel class="SettingsMenuDropdownContainer" tooltip="#SFUI_Settings_ModelDetail_Info">
-						<Label text="#SFUI_Settings_Model_Texture_Detail" class="half-width"/>
+					<TooltipPanel class="SettingsMenuDropdownContainer" tooltip="Controls the detail level of 3D models and textures">
+						<Label text="Model/Texture Detail" class="half-width"/>
 						<CSGOSettingsEnumDropDown onuserinputsubmit="SettingsMenuShared.VideoSettingsOnUserInputSubmit()" class="PopupButton" id="ModelTextureDetail">
-							<Label text="#SFUI_Settings_Low" value="0" id="gpumemlevel0" />
-							<Label text="#SFUI_Settings_Medium" value="1" id="gpumemlevel1"/>
-							<Label text="#SFUI_Settings_High" value="2" id="gpumemlevel2"/>
-							<Label text="#SFUI_Settings_Choice_Autodetect" value="9999999" id="gpumemlevel3"/>
+							<Label text="Low" value="0" id="gpumemlevel0" />
+							<Label text="Medium" value="1" id="gpumemlevel1"/>
+							<Label text="High" value="2" id="gpumemlevel2"/>
+							<Label text="Auto-detect" value="9999999" id="gpumemlevel3"/>
 						</CSGOSettingsEnumDropDown>
 					</TooltipPanel>
 					<Panel class="horizontal-separator"/>
 
 					                          
-					<TooltipPanel class="SettingsMenuDropdownContainer" tooltip="#SFUI_Settings_TextureStreaming_Info">
-						<Label text="#SFUI_Settings_TextureStreaming" class="half-width"/>
+					<TooltipPanel class="SettingsMenuDropdownContainer" tooltip="Dynamically loads and unloads textures to save memory">
+						<Label text="Texture Streaming" class="half-width"/>
 						<CSGOSettingsEnumDropDown onuserinputsubmit="SettingsMenuShared.VideoSettingsOnUserInputSubmit()" class="PopupButton" id="TextureStreaming">
-							<Label text="#SFUI_Settings_Disabled" value="0" id="texturestreaming0" />
-							<Label text="#SFUI_Settings_Enabled" value="1" id="texturestreaming1"/>
+							<Label text="Disabled" value="0" id="texturestreaming0" />
+							<Label text="Enabled" value="1" id="texturestreaming1"/>
 						</CSGOSettingsEnumDropDown>
 					</TooltipPanel>
 					<Panel class="horizontal-separator"/>
 					
 					                      
-					<TooltipPanel class="SettingsMenuDropdownContainer" tooltip="#SFUI_Settings_CPUDetail_Info">
-						<Label text="#SFUI_Settings_Effect_Detail" class="half-width"/>
+					<TooltipPanel class="SettingsMenuDropdownContainer" tooltip="Controls particle effects and environmental details">
+						<Label text="Effect Detail" class="half-width"/>
 						<CSGOSettingsEnumDropDown onuserinputsubmit="SettingsMenuShared.VideoSettingsOnUserInputSubmit()" class="PopupButton" id="EffectDetail">
-							<Label text="#SFUI_Settings_Low" value="0" id="cpulevel0" />
-							<Label text="#SFUI_Settings_Medium" value="1" id="cpulevel1"/>
-							<Label text="#SFUI_Settings_High" value="2" id="cpulevel2"/>
-							<Label text="#SFUI_Settings_Choice_Autodetect" value="9999999" id="cpulevel3"/>
+							<Label text="Low" value="0" id="cpulevel0" />
+							<Label text="Medium" value="1" id="cpulevel1"/>
+							<Label text="High" value="2" id="cpulevel2"/>
+							<Label text="Auto-detect" value="9999999" id="cpulevel3"/>
 						</CSGOSettingsEnumDropDown>
 					</TooltipPanel>
 					<Panel class="horizontal-separator"/>
 			
 					                      
-					<TooltipPanel class="SettingsMenuDropdownContainer" tooltip="#SFUI_Settings_ShaderDetail_Info">
-						<Label text="#SFUI_Settings_Shader_Detail" class="half-width"/>
+					<TooltipPanel class="SettingsMenuDropdownContainer" tooltip="Controls shader quality and visual effects">
+						<Label text="Shader Detail" class="half-width"/>
 						<CSGOSettingsEnumDropDown onuserinputsubmit="SettingsMenuShared.VideoSettingsOnUserInputSubmit()" class="PopupButton" id="ShaderDetail">
-							<Label text="#SFUI_Settings_Low" value="0" id="gpulevel0" />
-							<Label text="#SFUI_Settings_Medium" value="1" id="gpulevel1"/>
-							<Label text="#SFUI_Settings_High" value="2" id="gpulevel2"/>
-							<Label text="#SFUI_Settings_Very_High" value="3" id="gpulevel3"/>
-							<Label text="#SFUI_Settings_Choice_Autodetect" value="9999999" id="gpulevel4"/>
+							<Label text="Low" value="0" id="gpulevel0" />
+							<Label text="Medium" value="1" id="gpulevel1"/>
+							<Label text="High" value="2" id="gpulevel2"/>
+							<Label text="Very High" value="3" id="gpulevel3"/>
+							<Label text="Auto-detect" value="9999999" id="gpulevel4"/>
 						</CSGOSettingsEnumDropDown>
 					</TooltipPanel>
 					<Panel class="horizontal-separator"/>
 
 					                        
-					<TooltipPanel class="SettingsMenuDropdownContainer" tooltip="#SFUI_Settings_PlayerContrast_Info">
-						<Label text="#SFUI_Settings_PlayerContrast" class="half-width"/>
+					<TooltipPanel class="SettingsMenuDropdownContainer" tooltip="Adjusts contrast of player models for better visibility">
+						<Label text="Player Contrast" class="half-width"/>
 						<CSGOSettingsEnumDropDown onuserinputsubmit="SettingsMenuShared.VideoSettingsOnUserInputSubmit()" class="PopupButton" id="PlayerContrast">
-							<Label text="#SFUI_Settings_PlayerConstrast_Disabled" value="0" id="playercontrastlevel0"/>
-							<Label text="#SFUI_Settings_PlayerConstrast_Enabled" value="1" id="playercontrastlevel1" />
+							<Label text="Disabled" value="0" id="playercontrastlevel0"/>
+							<Label text="Enabled" value="1" id="playercontrastlevel1" />
 						</CSGOSettingsEnumDropDown>
 					</TooltipPanel>
 					<Panel class="horizontal-separator"/>
 
 					                            
-					<TooltipPanel class="SettingsMenuDropdownContainer" tooltip="#SFUI_Settings_QueuedMode_Info">
-						<Label text="#SFUI_Settings_Multicore" class="half-width"/>
+					<TooltipPanel class="SettingsMenuDropdownContainer" tooltip="Uses multiple CPU cores for rendering">
+						<Label text="Multicore Rendering" class="half-width"/>
 						<CSGOSettingsEnumDropDown onuserinputsubmit="SettingsMenuShared.VideoSettingsOnUserInputSubmit()" class="PopupButton" id="MatQueueMode">
-							<Label text="#SFUI_Settings_Disabled" value="0" id="multicore0" />
-							<Label text="#SFUI_Settings_Enabled" value="-1" id="multicore1"/>
+							<Label text="Disabled" value="0" id="multicore0" />
+							<Label text="Enabled" value="-1" id="multicore1"/>
 						</CSGOSettingsEnumDropDown>
 					</TooltipPanel>
 					<Panel class="horizontal-separator"/>
 
 					                          
-					<TooltipPanel class="SettingsMenuDropdownContainer" tooltip="#SFUI_Settings_Antialiasing_Info">
-						<Label text="#SFUI_Settings_Antialiasing_Mode" class="half-width"/>
+					<TooltipPanel class="SettingsMenuDropdownContainer" tooltip="Smooths jagged edges in the game world">
+						<Label text="Antialiasing Mode" class="half-width"/>
 						<CSGOSettingsEnumDropDown onuserinputsubmit="SettingsMenuShared.VideoSettingsOnUserInputSubmit()" class="PopupButton" id="AAMode">
-							<Label value="0" id="antialisaing0" />
-							<Label value="1" id="antialiasing1"/>
+							<Label text="None" value="0" id="antialisaing0" />
+							<Label text="MSAA" value="1" id="antialiasing1"/>
 						</CSGOSettingsEnumDropDown>
 					</TooltipPanel>
 					<Panel class="horizontal-separator"/>
 
 					             
-					<TooltipPanel class="SettingsMenuDropdownContainer" tooltip="#SFUI_Settings_FXAA_Info">
-						<Label text="#SFUI_Settings_FXAA" class="half-width"/>
+					<TooltipPanel class="SettingsMenuDropdownContainer" tooltip="Fast Approximate Anti-Aliasing for smoother edges">
+						<Label text="FXAA" class="half-width"/>
 						<CSGOSettingsEnumDropDown onuserinputsubmit="SettingsMenuShared.VideoSettingsOnUserInputSubmit()" class="PopupButton" id="FXAA">
-							<Label text="#SFUI_FXAA_Disabled" value="0" id="fxaa0" />
-							<Label text="#SFUI_FXAA_Enabled" value="1" id="fxaa1"/>
+							<Label text="Disabled" value="0" id="fxaa0" />
+							<Label text="Enabled" value="1" id="fxaa1"/>
 						</CSGOSettingsEnumDropDown>
 					</TooltipPanel>
 					<Panel class="horizontal-separator"/>
 
 					                       
-					<TooltipPanel class="SettingsMenuDropdownContainer" tooltip="#SFUI_Settings_Filtering_Info">
-						<Label text="#SFUI_Settings_Filtering_Mode" class="half-width"/>
+					<TooltipPanel class="SettingsMenuDropdownContainer" tooltip="Controls texture filtering quality">
+						<Label text="Texture Filtering" class="half-width"/>
 						<CSGOSettingsEnumDropDown onuserinputsubmit="SettingsMenuShared.VideoSettingsOnUserInputSubmit()" class="PopupButton" id="FilteringMode">
-							<Label text="#SFUI_Settings_Bilinear" value="0" id="matforceaniso0" />
-							<Label text="#SFUI_Settings_Trilinear" value="1" id="matforceaniso1"/>
-							<Label text="#SFUI_Settings_Anisotropic_2X" value="2" id="matforceaniso2"/>
-							<Label text="#SFUI_Settings_Anisotropic_4X" value="4" id="matforceaniso3"/>
-							<Label text="#SFUI_Settings_Anisotropic_8X" value="8" id="matforceaniso4"/>
-							<Label text="#SFUI_Settings_Anisotropic_16X" value="16" id="matforceaniso5"/>
-							<Label text="#SFUI_Settings_Choice_Autodetect" value="9999999" id="matforceaniso6"/>
+							<Label text="Bilinear" value="0" id="matforceaniso0" />
+							<Label text="Trilinear" value="1" id="matforceaniso1"/>
+							<Label text="Anisotropic 2X" value="2" id="matforceaniso2"/>
+							<Label text="Anisotropic 4X" value="4" id="matforceaniso3"/>
+							<Label text="Anisotropic 8X" value="8" id="matforceaniso4"/>
+							<Label text="Anisotropic 16X" value="16" id="matforceaniso5"/>
+							<Label text="Auto-detect" value="9999999" id="matforceaniso6"/>
 						</CSGOSettingsEnumDropDown>
 					</TooltipPanel>
 					<Panel class="horizontal-separator"/>
 					                    
-					<TooltipPanel class="SettingsMenuDropdownContainer" tooltip="#SFUI_Settings_MotionBlur_Info">
-						<Label text="#SFUI_Settings_MotionBlur" class="half-width DEVModeOnly"/>
+					<TooltipPanel class="SettingsMenuDropdownContainer" tooltip="Blurs the image during movement for cinematic effect">
+						<Label text="Motion Blur" class="half-width DEVModeOnly"/>
 						<CSGOSettingsEnumDropDown onuserinputsubmit="SettingsMenuShared.VideoSettingsOnUserInputSubmit()" class="PopupButton" id ="MotionBlur">
-							<Label text="#SFUI_MotionBlur_Disabled" value="0" id="motionblur0" />
-							<Label text="#SFUI_MotionBlur_Enabled" value="1" id="motionblur1"/>
+							<Label text="Disabled" value="0" id="motionblur0" />
+							<Label text="Enabled" value="1" id="motionblur1"/>
 						</CSGOSettingsEnumDropDown>
 					</TooltipPanel>
 					<Panel class="horizontal-separator DEVModeOnly"/>
+<TooltipPanel class="SettingsMenuDropdownContainer" tooltip="Advanced shader system for better graphics">
+	<Label text="Uber Shader" class="half-width"/>
+	<CSGOSettingsEnumDropDown onuserinputsubmit="SettingsMenuShared.VideoSettingsOnUserInputSubmit()" class="PopupButton" id ="UberShader">
+		<Label text="Disabled" value="0" id="ubershader0" />
+		<Label text="Enabled" value="1" id="ubershader1"/>
+		<Label text="Auto-detect" value="9999999" id="ubershader2"/>
+	</CSGOSettingsEnumDropDown>
 
 
-					<TooltipPanel class="SettingsMenuDropdownContainer" tooltip="#SFUI_Settings_UberShader_Info">
-						<Label text="#SFUI_Settings_UberShader" class="half-width"/>
-						<CSGOSettingsEnumDropDown onuserinputsubmit="SettingsMenuShared.VideoSettingsOnUserInputSubmit()" class="PopupButton" id ="UberShader">
-							<Label text="#SFUI_Settings_Disabled" value="0" id="ubershader0" />
-							<Label text="#SFUI_Settings_Enabled" value="1" id="ubershader1"/>
-							<Label text="#SFUI_Settings_Choice_Autodetect" value="9999999" id="ubershader2"/>
-						</CSGOSettingsEnumDropDown>
+
 						
 						
 
@@ -321,21 +328,21 @@
 						onmouseover="UiToolkitAPI.ShowTextTooltip( 'SettingsRestoreKbMouse', '#tooltip_reset_defaults' );"
 						onmouseout="UiToolkitAPI.HideTextTooltip();" >
 					<Image id="PermissionsSettingsImg" texturewidth="-1" textureheight="28" src="file://{images}/icons/ui/recent.svg" />
-					<Label text="#settings_reset_video" />
+					<Label text="Reset Video Settings" />
 				</Button>
 		
 				<Button id="BtnDiscardVideoSettingChanges"
 						class="PopupButton"
 						disabled="true"
 						onactivate="SettingsMenuShared.ShowConfirmDiscard( SettingsMenuShared.VideoSettingsDiscardChanges );">
-						<Label text="#settings_discard_confirm_title"/>
+						<Label text="Discard Changes"/>
 				</Button>
 				
 				<Button class="PopupButton"
 						id="BtnApplyVideoSettings"
 						disabled="true"
 						onactivate="SettingsMenuShared.VideoSettingsApplyChanges();">
-						<Label text="#settings_apply_video"/> 
+						<Label text="Apply Changes"/>
 				</Button>
 			</Panel>
 		</Panel>
