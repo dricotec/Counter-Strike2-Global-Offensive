@@ -21,6 +21,7 @@
 				</Panel>
 				<Panel class="leaderboard__list__column rating">
 					<Frame id="jsRatingEmblem" src="file://{resources}/layout/rating_emblem.xml" />
+					<Label text="{s:player-rating}" class="stratum-regular leaderboard_cell rating-number" />
 				</Panel>
 				<Panel class="leaderboard__list__column name">
 					<CSGOAvatarImage id="leaderboard-entry-avatar" class="leaderboard__name-entry__avatar" />
@@ -32,12 +33,6 @@
 				</Panel>
 				<Panel class="leaderboard__list__column winrate">
 					<Label text="{s:player-winrate}" class="stratum-regular leaderboard_cell" />
-				</Panel>
-				<Panel class="leaderboard__list__column rankpct">
-					<Label text="{s:player-percentile}" class="stratum-regular leaderboard_cell" />
-				</Panel>
-				<Panel class="leaderboard__list__column region">
-					<Label text="{s:player-region}" html="true" class="leaderboard_cell" />
 				</Panel>
 			</Button>
 		</snippet>
@@ -53,9 +48,6 @@
 					<Panel class="left-right-flow horizontal-align-left">
 						<Button class="nav PopupButton" id="jsGoToTop" menuclass="leaderboard-nav__dropdown__menuclass" onactivate="Leaderboard.GoToTop()">
 							<Label text="#leaderboard_goto_top" />
-						</Button>
-						<Button class="nav PopupButton" id="jsGoToMe" menuclass="leaderboard-nav__dropdown__menuclass" onactivate="Leaderboard.GoToSelf()">
-							<Label text="#leaderboard_goto_self" />
 						</Button>
 					</Panel>
 					<Panel class="left-right-flow horizontal-align-right">
@@ -93,12 +85,6 @@
 					</Panel>
 					<Panel class="leaderboard__list__column winrate">
 						<Label text="#leaderboard_column_winrate" class="stratum-regular-condensed leaderboard_cell faded" />
-					</Panel>
-					<Panel class="leaderboard__list__column rankpct">
-						<Label text="#leaderboard_column_percentile" class="stratum-regular-condensed leaderboard_cell faded" />
-					</Panel>
-					<Panel class="leaderboard__list__column region">
-						<Label text="#leaderboard_column_region" class="leaderboard_cell faded" />
 					</Panel>
 				</Button>
 			</Panel>

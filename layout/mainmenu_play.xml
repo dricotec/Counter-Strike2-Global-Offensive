@@ -314,6 +314,7 @@
                             </DropDown>
                             <Panel id="id-gamemode-flag-competitive" class="top-bottom-flow bottom-padding-large">
                                 <Label text="#play_settings_competitive_dialog_title" class="map-selection__quick-selection-set-title map-selection__quick-selection-set-title--no-margin-top" />
+                                <Frame id="jsCompetitiveRating" src="file://{resources}/layout/rating_emblem.xml" />
                             </Panel>
                             <Panel id="id-gamemode-flag-deathmatch" class="top-bottom-flow bottom-padding-large">
                                 <Label text="#play_settings_deathmatch_dialog_title" class="map-selection__quick-selection-set-title" />

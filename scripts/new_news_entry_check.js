@@ -8,6 +8,16 @@ var NewNewsEntryCheck;
     }
     NewNewsEntryCheck.GetRssFeed = GetRssFeed;
     function _OnRssFeedReceived(feed) {
+        // Add custom news item
+        feed.items.unshift({  
+            title: "Continuing CS2:GO with passion.",
+            description: "Hi im drico and I decided to start maintaining my own version of CS2:GO since DeformedSAS has archived his repository and will cease to do work on it. \n\nI've decided to step in to improve and \n\n make this project finished with any way I can make this closer to CS2 possible.\n\nThank's for reading!\n\nBye.",
+            link: "https://github.com/dricotec/Counter-Strike2-Global-Offensive/",
+            date: "24/11/2025",
+            imageUrl: "file://{images}/store/default-news.png",
+            categories: []
+        });
+
         let foundFirstNewsItem = false;
         let lastReadItem = GameInterfaceAPI.GetSettingString('ui_news_last_read_link');
         feed['items'].forEach(function (item, i) {

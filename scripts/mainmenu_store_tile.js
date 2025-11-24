@@ -69,7 +69,7 @@ var MainMenuStoreTile = ( function()
 			elItem.enabled = false;
 			return;
 		}
-		
+
 		if ( type === "market" )
 		{
 			elItem.SetPanelEvent( 'onactivate', _OpenOverlayToMarket.bind( undefined, id ));
@@ -135,7 +135,7 @@ var MainMenuStoreTile = ( function()
 	var _ShowInpsectPopup = function( id )
 	{
 		var strExtraSettings = elItem.Data().oData.extrapopupfullscreenstyle ? '&extrapopupfullscreenstyle=solidbkgnd' : '';
-		
+
 		                                                            
 		UiToolkitAPI.ShowCustomLayoutPopupParameters(
 			'popup-inspect-'+ id,
@@ -146,8 +146,8 @@ var MainMenuStoreTile = ( function()
 			+ '&' +
 			'asyncworkitemwarning=no'
 			+ '&' +
-			'storeitemid=' + id 
-			+ '&' + 
+			'storeitemid=' + id
+			+ '&' +
 			strExtraSettings,
 			'none'
 		);

@@ -76,7 +76,7 @@ var MatchmakingStatus;
         if (unavailableMatch)
             return;
         _UpdateSearchTime();
-		_TriggerFakeConfirm();
+  _TriggerFakeConfirm();
     };
 
     function _ShowMatchmakingWarnings(lobbySettings) {
@@ -165,6 +165,24 @@ function _TriggerFakeConfirm() {
     elStatusSearching.RemoveClass('hidden');
     elLabel.text = $.Localize("Searching for players and servers...");
 
+    // Force match found immediately for Premier
+    let lobbySettings = LobbyAPI.GetSessionSettings().game;
+    if (lobbySettings && lobbySettings.mode === 'premier') {
+        elLabel.text = $.Localize("Confirming match...");
+        $.DispatchEvent('PlaySoundEffect', 'popup_accept_match_found', 'MOUSE');
+        UiToolkitAPI.ShowCustomLayoutPopupParameters(
+            '',
+            'file://{resources}/layout/popups/popup_accept_match_fake.xml',
+            '',
+            'none'
+        );
+        $.Schedule(5.0, function() {
+            elStatusSearching.AddClass('visible');
+            _fakeConfirmActive = false;
+        });
+        return;
+    }
+
     $.Schedule(10.0, function() {
         elLabel.text = $.Localize("Confirming match...");
 
@@ -185,7 +203,18 @@ function _TriggerFakeConfirm() {
     });
 }
 
+    function TriggerFakeConfirm() {
+        _TriggerFakeConfirm();
+    }
+    MatchmakingStatus.TriggerFakeConfirm = TriggerFakeConfirm;
+    function TriggerFakeConfirm() {
+        _TriggerFakeConfirm();
+    }
+    function TriggerFakeConfirm() {
+        _TriggerFakeConfirm();
+    }
+    MatchmakingStatus.TriggerFakeConfirm = TriggerFakeConfirm;
 })(MatchmakingStatus || (MatchmakingStatus = {}));
 
-// not meant for actual use. it's for debugging and only shows the fake match accept which is also just for show. not real matchmaking here. 
+// not meant for actual use. it's for debugging and only shows the fake match accept which is also just for show. not real matchmaking here.
 // yes this is based off of valves matchmaking_status.vts_c from cs2, don't think i ever updated it once i just copy pasted the code from cs2..

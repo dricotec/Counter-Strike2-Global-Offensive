@@ -102,6 +102,7 @@ var MainMenuStore = ( function()
 			m_itemNewReleases = null;
 		}
 
+
 		                                                                            
 		                                                    
 
@@ -695,88 +696,88 @@ var MainMenuStore = ( function()
 			  
 			  	                                
 			  	 
-			  		                              
-			  	 
-			  	
-			  	                                            
-			   
-			                                                                                          
-			else if ( ( strBannerEntryCustomFormatString = StoreAPI.GetBannerEntryCustomFormatString( i ) ).startsWith( "coupon" ) )
-			{
-				if ( !_BAllowDisplayingItemInStore( FauxItemId ) )
-					continue;
-
-				if ( !itemsByCategory.coupons )
-				{
-					itemsByCategory.coupons = [];
-				}
-
-				                                                      
-				if ( itemsByCategory.coupons.length == 4 )
-				{
-					itemsByCategory.coupons.push( { snippet_name: 'CouponsSearchBarItemSnippet', load_func: function( elItem ) {
-						elItem.SetHasClass( 'store-panel__carousel__coupons_searchitem', true );
-					} } );
-					itemsByCategory.coupons.push( { snippet_name: 'CouponsSearchBarItemDummy', load_func: function( elItem ) {} } );
-					itemsByCategory.coupons.push( { snippet_name: 'CouponsSearchBarItemDummy', load_func: function( elItem ) {} } );
-					itemsByCategory.coupons.push( { snippet_name: 'CouponsSearchBarItemDummy', load_func: function( elItem ) {} } );
-				}
-
-				if ( itemsByCategory.coupons.length > 4 )
-				{
-					if ( bOptionalFullSearchResults ) {
-						                                       
-					} else {
-						continue;                                              
-					}
-				}
-
-				var sLinkedCoupon = StoreAPI.GetBannerEntryLinkedCoupon( i );
-				if ( sLinkedCoupon )
-				{
-					var LinkedItemId = InventoryAPI.GetFauxItemIDFromDefAndPaintIndex( parseInt( sLinkedCoupon ), 0 );
-					                                                                                                                                                                           
-					itemsByCategory.coupons.push( { id:FauxItemId, linkedid: LinkedItemId, isNewRelease: ( strBannerEntryCustomFormatString === "coupon_new" ) } );
-				}
-				else if ( strBannerEntryCustomFormatString === "coupon_new" )
-				{
-					itemsByCategory.coupons.push( { id:FauxItemId, activationType: 'newstore', isNewRelease: true } );
-				}
-				else
-				{
-					itemsByCategory.coupons.push( FauxItemId );
-				}
-			}
-			else
-			{
-				if ( !_BAllowDisplayingItemInStore( FauxItemId ) )
-					continue;
-
-				if ( !itemsByCategory.store )
-				{
-					itemsByCategory.store = [];
-				}
-
-				                            
-				                                                                         
-				   	                 
-				   	                        
-				   	                                                    
-				    
-				   	                                      
-
-					                                                                           
-					                                                                                  
-					                                                                             
-					                                                         
-					    
-					   	                           
-					   	                                      
-					    
-				   
-
-				itemsByCategory.store.push( FauxItemId );
-			}
+			  		                              else if ( ( strBannerEntryCustomFormatString = StoreAPI.GetBannerEntryCustomFormatString( i ) ).startsWith( "coupon" ) )
+			  		                              {
+			  		                              	if ( !_BAllowDisplayingItemInStore( FauxItemId ) )
+			  		                              		continue;
+			  		                           
+			  		                              	if ( !itemsByCategory.coupons )
+			  		                              	{
+			  		                              		itemsByCategory.coupons = [];
+			  		                              	}
+			  		                           
+			  		                              	                                                      
+			  		                              	if ( itemsByCategory.coupons.length == 4 )
+			  		                              	{
+			  		                              		itemsByCategory.coupons.push( { snippet_name: 'CouponsSearchBarItemSnippet', load_func: function( elItem ) {
+			  		                              			elItem.SetHasClass( 'store-panel__carousel__coupons_searchitem', true );
+			  		                              		} } );
+			  		                              		itemsByCategory.coupons.push( { snippet_name: 'CouponsSearchBarItemDummy', load_func: function( elItem ) {} } );
+			  		                              		itemsByCategory.coupons.push( { snippet_name: 'CouponsSearchBarItemDummy', load_func: function( elItem ) {} } );
+			  		                              		itemsByCategory.coupons.push( { snippet_name: 'CouponsSearchBarItemDummy', load_func: function( elItem ) {} } );
+			  		                              	}
+			  		                           
+			  		                              	if ( itemsByCategory.coupons.length > 4 )
+			  		                              	{
+			  		                              		if ( bOptionalFullSearchResults ) {
+			  		                              			                                       
+			  		                              		} else {
+			  		                              			continue;
+			  		                              		}
+			  		                              	}
+			  		                           
+			  		                              	var sLinkedCoupon = StoreAPI.GetBannerEntryLinkedCoupon( i );
+			  		                              	if ( sLinkedCoupon )
+			  		                              	{
+			  		                              		var LinkedItemId = InventoryAPI.GetFauxItemIDFromDefAndPaintIndex( parseInt( sLinkedCoupon ), 0 );
+			  		                              		                                                                                                                                                                           
+			  		                              		itemsByCategory.coupons.push( { id:FauxItemId, linkedid: LinkedItemId, isNewRelease: ( strBannerEntryCustomFormatString === "coupon_new" ) } );
+			  		                              	}
+			  		                              	else if ( strBannerEntryCustomFormatString === "coupon_new" )
+			  		                              	{
+			  		                              		itemsByCategory.coupons.push( { id:FauxItemId, activationType: 'newstore', isNewRelease: true } );
+			  		                              	}
+			  		                              	else
+			  		                              	{
+			  		                              		itemsByCategory.coupons.push( FauxItemId );
+			  		                              	}
+			  		                              }
+			  		                              else
+			  		                              {
+			  		                              	if ( !_BAllowDisplayingItemInStore( FauxItemId ) )
+			  		                              		continue;
+			  		                           
+			  		                              	if ( !itemsByCategory.store )
+			  		                              	{
+			  		                              		itemsByCategory.store = [];
+			  		                              	}
+			  		                           
+			  		                              	                            
+			  		                           
+			  		                              	                                                                         
+			  		                           
+			  		                              	   	                 
+			  		                           
+			  		                              	   	                        
+			  		                              	   	                                                    
+			  		                           
+			  		                              	    
+			  		                           
+			  		                              	   	                                      
+			  		                           
+			  		                              		                                                                           
+			  		                              		                                                                                  
+			  		                              		                                                                             
+			  		                              		                                                        
+			  		                              		    
+			  		                              		   	                           
+			  		                              		   	                                      
+			  		                              		    
+			  		                           
+			  		                              	   
+			  		                           
+			  		                              	itemsByCategory.store.push( FauxItemId );
+			  		                              }
 		}
 
 		return itemsByCategory;
@@ -853,7 +854,7 @@ var MainMenuStore = ( function()
 		m_pendingItemsToPopulateScheduled[prop].m_idx = 0;
 
 		var elParent = m_elStore.FindChildInLayoutFile( 'CarouselContainer-' + prop );
-		
+
 		if( !elParent )
 		{
 			elParent = $.CreatePanel(

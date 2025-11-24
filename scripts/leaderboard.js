@@ -4,16 +4,16 @@
 /// <reference path="common/teamcolor.ts" />
 /// <reference path="honor_icon.ts" />
 
-const regionToRegionName = {
-    'namc': 'NorthAmerica',
-    'samc': 'SouthAmerica',
-    'euro': 'Europe',
-    'favela': 'Favela',
-    'asia': 'Asia',
-    'ausc': 'Australia',
-    'afrc': 'Africa',
-    'cn': 'China',
-};
+
+function getRatingClass(rating) {
+    if (rating >= 30000) return 'gold';
+    if (rating >= 20000) return 'red';
+    if (rating >= 15000) return 'purple';
+    if (rating >= 10000) return 'darkblue';
+    if (rating >= 5000) return 'lightblue';
+    return 'gray';
+}
+
 
 var Leaderboard;
 (function (Leaderboard) {
@@ -253,7 +253,7 @@ var Leaderboard;
         $('#jsNavSeason').visible = false;
         $('#jsNavLocation').visible = false;
         $('#jsGoToTop').visible = m_lbType === 'general';
-        $('#jsGoToMe').visible = m_lbType === 'general';
+        if ($('#jsGoToMe')) $('#jsGoToMe').visible = m_lbType === 'general';
         if (m_lbType === 'party')
             return;
         _InitSeasonDropdown();
@@ -383,9 +383,8 @@ var Leaderboard;
             elEntry.SetDialogVariable('player-wins', oPlayer.hasOwnProperty('matchesWon') ? String(oPlayer.matchesWon) : '-');
 
             let bHasRank = oPlayer.hasOwnProperty('rank') && oPlayer.rank > 0;
-            elEntry.SetDialogVariableInt('player-rank', bHasRank ? oPlayer.rank : 0);
             let jsPlayerRank = elEntry.FindChildTraverse('jsPlayerRank');
-            if (jsPlayerRank) jsPlayerRank.text = bHasRank ? $.Localize('{d:player-rank}', elEntry) : '-';
+            if (jsPlayerRank) jsPlayerRank.text = bHasRank ? '#' + oPlayer.rank : '-';
 
             let canShowWinRate = oPlayer.hasOwnProperty('matchesWon') && oPlayer.hasOwnProperty('matchesTied') && oPlayer.hasOwnProperty('matchesLost');
             if (canShowWinRate) {
@@ -398,8 +397,17 @@ var Leaderboard;
                 elEntry.SetDialogVariable('player-winrate', '-');
             }
 
-            elEntry.SetDialogVariable('player-percentile', (oPlayer.hasOwnProperty('pct') && oPlayer.pct && oPlayer.pct > 0) ? oPlayer.pct.toFixed(0) + '%' : '-');
-            elEntry.SetDialogVariable('player-region', (oPlayer.hasOwnProperty('region')) ? $.Localize('#leaderboard_region_abbr_' + regionToRegionName[oPlayer.region]) : '-');
+            let name = oPlayer.displayName || FriendsListAPI.GetFriendName(oPlayer.XUID);
+            let rankPct = (oPlayer.hasOwnProperty('rank_pct') && oPlayer.rank_pct >= 0) ? oPlayer.rank_pct + '%' : '-';
+            let region = (oPlayer.hasOwnProperty('region')) ? oPlayer.region : '-';
+            elEntry.SetDialogVariable('player-name', name + '   (' + rankPct + ')   [' + region + ']');
+            elEntry.SetDialogVariable('player-rating', oPlayer.score);
+            let ratingClass = getRatingClass(oPlayer.score);
+            elEntry.AddClass('rating-' + ratingClass);
+            let ratingEmblem = elEntry.FindChildTraverse('jsRatingEmblem');
+            if (ratingEmblem) {
+                ratingEmblem.AddClass('rating-' + ratingClass);
+            }
         }
 
         return elEntry;
@@ -447,6 +455,7 @@ var Leaderboard;
                 if (xuid === MyPersonaAPI.GetXuid()) {
                     oPlayer.score = 69420;
                     oPlayer.matchesWon = 25;
+                    oPlayer.rank = 7;
                     oPlayer.rankWindowStats = {};
                     _msg('Local player ' + xuid + ' score=' + oPlayer.score + ' wins=' + oPlayer.matchesWon);
                 } else if (PartyListAPI.GetFriendCompetitiveRankType(xuid) === "Premier") {
@@ -560,16 +569,18 @@ var Leaderboard;
             $.AsyncWebRequest('http://127.0.0.1:8080/', {
                 type: 'GET',
                 success: function (response) {
-                    $.Msg("[leaderboard.js] API response received");
                     try {
                         const leaderboard = typeof response === 'string' ? JSON.parse(response) : response;
                         _PopulateLeaderboard(elList, leaderboard);
                     } catch (e) {
-                        $.Msg("[leaderboard.js] Failed to process API response: " + e);
+                        // Failed to process API response
                     }
                 },
                 error: function () {
-                    $.Msg("[leaderboard.js] Failed to fetch from API");
+                    // Failed to fetch from API
+                    elLeaderboardList.SetHasClass('hidden', true);
+                    elStatus.SetHasClass('hidden', true);
+                    elData.SetHasClass('hidden', false);
                 }
             });
         } else {
@@ -585,16 +596,13 @@ var Leaderboard;
             return;
         }
 
-        $.Msg("[leaderboard.js] Populating leaderboard with " + leaderboard.length + " entries");
         // Clear entries
         elList.RemoveAndDeleteChildren();
 
         leaderboard.forEach((entry, index) => {
-            $.Msg("Creating entry for " + entry.name + " rating " + entry.rating);
-            let matchesWon = Math.floor(Math.random() * 200);
+            let matchesWon = Math.floor(Math.random() * 71) + 10; // Random 10-80
             let matchesLost = Math.floor(Math.random() * 50);
             let winrate = Math.floor((matchesWon / (matchesWon + matchesLost)) * 100);
-            let percentile = Math.floor((entry.rating / 69420) * 100);
             let oPlayer = {
                 XUID: entry.xuid,
                 displayName: entry.name,
@@ -603,8 +611,8 @@ var Leaderboard;
                 matchesWon: matchesWon,
                 matchesTied: 0,
                 matchesLost: matchesLost,
-                pct: percentile,
-                region: 'euro'
+                rank_pct: entry.rank_pct,
+                region: entry.region
             };
 
             let elEntry = $.CreatePanel("Button", elList, String(entry.xuid));
@@ -613,21 +621,24 @@ var Leaderboard;
 
             // Update UI text after layout load (use schedule to ensure the nodes exist)
             $.Schedule(0.0, () => {
-                let elRank = elEntry.FindChildTraverse('leaderboard-entry__rank');
-                if (elRank) elRank.text = '#' + oPlayer.rank;
                 let elName = elEntry.FindChildTraverse('leaderboard-entry__name');
                 if (elName) elName.text = oPlayer.displayName;
                 let elWins = elEntry.FindChildTraverse('leaderboard-entry__wins');
                 if (elWins) elWins.text = String(oPlayer.matchesWon);
                 let elWinrate = elEntry.FindChildTraverse('leaderboard-entry__winrate');
                 if (elWinrate) elWinrate.text = Math.floor((oPlayer.matchesWon / (oPlayer.matchesWon + oPlayer.matchesLost)) * 100) + '%';
-                let elPercentile = elEntry.FindChildTraverse('leaderboard-entry__percentile');
-                if (elPercentile) elPercentile.text = oPlayer.pct + '%';
-                let elRegion = elEntry.FindChildTraverse('leaderboard-entry__region');
-                if (elRegion) elRegion.text = 'EU';
                 elEntry.SetHasClass('local-player', entry.xuid === m_myXuid);
             });
         });
+
+        // Update the highest rating emblem with user's current rating
+        let highestRatingFrame = $.GetContextPanel().FindChildInLayoutFile('js-highest-rating');
+        if (highestRatingFrame) {
+            let userEntry = leaderboard.find(e => e.xuid === m_myXuid);
+            if (userEntry) {
+                RatingEmblem.SetXuid({ root_panel: highestRatingFrame, rating_type: 'Premier', leaderboard_details: { score: userEntry.rating } });
+            }
+        }
     }
 
     function OnLeaderboardStateChange(type) {

@@ -10,8 +10,8 @@ var ContextmenuPlayerCard;
     function _LoadPlayerCard() {
         let xuid = $.GetContextPanel().GetAttributeString("xuid", "(not found)");
         let oldPanel = $.GetContextPanel().FindChildInLayoutFile('JsContextMenuPlayercard');
-        if (oldPanel)
-            oldPanel.DeleteAsync(.0);
+        if (oldPanel) oldPanel.DeleteAsync(.0);
+    
         let newPanel = $.CreatePanel('Panel', $.GetContextPanel().FindChildInLayoutFile('JsContextMenuSections'), 'JsContextMenuPlayercard');
         newPanel.SetAttributeString("xuid", xuid);
         newPanel.BLoadLayout('file://{resources}/layout/playercard.xml', false, false);

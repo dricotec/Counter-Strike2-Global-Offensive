@@ -134,6 +134,7 @@ DropDownMenu Label.of-interest,.leaderboard-header .DropDownChild.of-interest
 {
 	flow-children: down;
 	overflow: clip scroll;
+	padding-right: 20px;
 }
 
 .leaderboard__list__row,.header
@@ -322,6 +323,7 @@ DropDownMenu Label.of-interest,.leaderboard-header .DropDownChild.of-interest
 	height: 24px;
 }
 
+
 #jsHonorIcon
 {
 	width: 16px;
@@ -356,4 +358,34 @@ DropDownMenu Label.of-interest,.leaderboard-header .DropDownChild.of-interest
 {
 	wash-color: white;
 }
+
+.rank-on-name
+{
+	font-size: 12px;
+	color: gold;
+	margin-bottom: 2px;
+}
+
+.rating-number
+{
+	font-size: 12px;
+	text-align: center;
+	margin-top: 2px;
+	font-weight: bolder;
+	margin-left: 15px;
+}
+
+.rating-gray .rating-number { color: #808080; } /* Gray */
+.rating-lightblue .rating-number { color: #add8e6; } /* Light Blue */
+.rating-darkblue .rating-number { color: #4169e1; } /* Royal Blue (lighter) */
+.rating-purple .rating-number { color: #ba55d3; } /* Medium Orchid (lighter) */
+.rating-red .rating-number { color: #ff0000; } /* Red */
+.rating-gold .rating-number { color: #ffd700; } /* Gold */
+
+#jsRatingEmblem.rating-gray { wash-color: #808080; }
+#jsRatingEmblem.rating-lightblue { wash-color: #add8e6; }
+#jsRatingEmblem.rating-darkblue { wash-color: #4169e1; }
+#jsRatingEmblem.rating-purple { wash-color: #ba55d3; }
+#jsRatingEmblem.rating-red { wash-color: #ff0000; }
+#jsRatingEmblem.rating-gold { wash-color: #ffd700; }
 

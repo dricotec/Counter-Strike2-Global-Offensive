@@ -44,6 +44,16 @@ var NewsPanel;
         let elLister = $.GetContextPanel().FindChildInLayoutFile('NewsPanelLister');
         if (!elLister || !feed || !feed.items) return;
 
+        // Add custom news item
+        feed.items.unshift({
+            title: "Continuing CS2:GO with passion.",
+            description: "Hi im drico and I decided to start maintaining my own version of CS2:GO since DeformedSAS has archived his repository and will cease to do work on it. \n\nI've decided to step in to improve \n\nand make this project finished with any way I can make this closer to CS2 possible.\n\nThank's for reading!\n\nBye.",
+            link: "https://github.com/dricotec/Counter-Strike2-Global-Offensive/",
+            date: new Date().toISOString().split('T')[0],
+            imageUrl: "file://{images}/store/default-news.png",
+            categories: []
+        });
+
         elLister.RemoveAndDeleteChildren();
 
         let foundFirstNewsItem = false;

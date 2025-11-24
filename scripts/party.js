@@ -31,7 +31,7 @@ var PartyMenu = ( function()
         var elPartyMembersList = elPartySection.FindChildInLayoutFile( 'PartyMembers' );
         _UpdateNumPlayersInparty();
 
-                                                                                            
+                                                                                             
         var bIsSearching = _IsSearching();
         if ( m_prevMembersInParty >= PartyListAPI.GetPartySessionUiThreshold() || bIsSearching )
         {
@@ -45,11 +45,56 @@ var PartyMenu = ( function()
             elPartyMembersList.RemoveAndDeleteChildren();
         }
 
-                                                                       
-                                                                                                                                       
+                                                                        
+                                                                                                                                        
         elPartySection.GetParent().SetHasClass( 'friendslist-party-searching', bIsSearching && ( m_prevMembersInParty <= 1 ) );
 
         _UpdateLeaveBtn( m_prevMembersInParty );
+        _UpdateLobbyPlayerCards();
+    };
+
+    var _UpdateLobbyPlayerCards = function()
+    {
+        var panel = $.GetContextPanel().FindChildInLayoutFile('JsLobbyPlayerCards');
+        if (!panel) return;
+        panel.RemoveAndDeleteChildren();
+        if (!LobbyAPI.IsSessionActive()) {
+            panel.AddClass('hidden');
+            return;
+        }
+        panel.RemoveClass('hidden');
+        var members = LobbyAPI.GetSessionSettings().members;
+        var numPlayers = members.numPlayers;
+        for (let i = 0; i < numPlayers; i++) {
+            let xuid = members['machine' + i].player0.xuid;
+            let memberPanel = $.CreatePanel('Panel', panel, 'member_' + xuid);
+            memberPanel.BLoadLayoutSnippet('LobbyMember');
+            let avatar = memberPanel.FindChildTraverse('JsMemberAvatar');
+            if (avatar) {
+                avatar.steamid = xuid;
+                avatar.SetPanelEvent('onactivate', () => {
+                    $.DispatchEvent('SidebarContextMenuActive', true);
+                    var contextMenuPanel = UiToolkitAPI.ShowCustomLayoutContextMenuParameters(
+                        '',
+                        '',
+                        'file://{resources}/layout/context_menus/context_menu_playercard.xml',
+                        'xuid=' + xuid,
+                        () => $.DispatchEvent('SidebarContextMenuActive', false)
+                    );
+                    contextMenuPanel.AddClass("ContextMenu_NoArrow");
+                });
+            }
+            let nameLabel = memberPanel.FindChildTraverse('JsMemberName');
+            if (nameLabel) {
+                let name = FriendsListAPI.GetFriendName(xuid);
+                nameLabel.text = name;
+            }
+            let primeIcon = memberPanel.FindChildTraverse('JsMemberPrime');
+            if (primeIcon) {
+                let hasPrime = PartyListAPI.GetFriendPrimeEligible(xuid);
+                primeIcon.visible = hasPrime;
+            }
+        }
     };
 
     var _UpdateNumPlayersInparty = function()
@@ -121,7 +166,7 @@ var PartyMenu = ( function()
         var elParent = $.GetContextPanel().FindChildInLayoutFile( 'PartyMembers' );
         var elPartyMember = $.CreatePanel( "Panel", elParent, panelIdToLoad );
         elPartyMember.BLoadLayoutSnippet( 'PartyMember' );
-        elPartyMember.Data().xuid = xuid; 
+        elPartyMember.Data().xuid = xuid;
         var memberBtn = elPartyMember.FindChildInLayoutFile( 'PartyMemberBtn');
 
         var elAvatar =  $.CreatePanel( "Panel", memberBtn, xuid );
@@ -136,6 +181,11 @@ var PartyMenu = ( function()
             _AddOpenPlayerCardAction( memberBtn, xuid );
         else
             _ClearExisitingOnActivateEvent( memberBtn );
+
+        // Set crown for leader
+        let isLeader = LobbyAPI.GetHostSteamID() === xuid;
+        let crown = elPartyMember.FindChildInLayoutFile('PartyHostCrown');
+        if (crown) crown.visible = isLeader;
 
         return elPartyMember;
     };
@@ -158,19 +208,38 @@ var PartyMenu = ( function()
         var skillGroup = PartyListAPI.GetFriendCompetitiveRank( xuid, skillgroupType );
         var wins = PartyListAPI.GetFriendCompetitiveWins( xuid, skillgroupType );
         var winsNeededForRank = SessionUtil.GetNumWinsNeededForRank( skillgroupType );
-        var elRank = elPartyMember.FindChildInLayoutFile( 'PartyRank' ); 
+        var elRank = elPartyMember.FindChildInLayoutFile( 'PartyRank' );
 
-                                                                                                                                                            
-        
+                                                                                                                                                             
+
         if ( wins < winsNeededForRank || ( wins >= winsNeededForRank && skillGroup < 1 ) || !PartyListAPI.GetFriendPrimeEligible( xuid ) )
         {
             elRank.visible = false;
-            return;
+        }
+        else
+        {
+            var imageName = ( skillgroupType !== 'Competitive' ) ? skillgroupType : 'skillgroup';
+            elRank.SetImage( 'file://{images}/icons/skillgroups/' + imageName + skillGroup + '.svg' );
+            elRank.visible = true;
         }
 
-        var imageName = ( skillgroupType !== 'Competitive' ) ? skillgroupType : 'skillgroup';
-        elRank.SetImage( 'file://{images}/icons/skillgroups/' + imageName + skillGroup + '.svg' );
-        elRank.visible = true;
+        // Set rating
+        let ratingFrame = elPartyMember.FindChildInLayoutFile('PartyRating');
+        if (ratingFrame) {
+            $.AsyncWebRequest('GET', 'http://127.0.0.1:8080/', {}, function(data) {
+                try {
+                    let leaderboard = JSON.parse(data);
+                    let player = leaderboard.find(p => p.xuid === xuid);
+                    if (player) {
+                        RatingEmblem.SetXuid({ root_panel: ratingFrame, rating_type: 'Premier', leaderboard_details: { score: player.rating } });
+                    }
+                } catch (e) {
+                    // Do nothing
+                }
+            }, function() {
+                // Do nothing
+            });
+        }
     };
 
     var _SetPrimeForMember = function( elPartyMember, xuid )

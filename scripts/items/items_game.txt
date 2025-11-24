@@ -1,6 +1,0 @@
-#base "pro.txt"
-#base "cs2go.txt"
-#base "csgo.txt"
-#base "cs2/skins.txt"
-#base "cs2/majors.txt"
-#base "cs2/cs2.txt"

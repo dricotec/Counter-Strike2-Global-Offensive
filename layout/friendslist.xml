@@ -31,10 +31,14 @@
 			<Panel class="friendtile friendtile--party" acceptsfocus="true">
 				<Button id="PartyMemberBtn" class="friendtile-contents">
 					<Panel class="friendtile__status">
-						<Label id="JsFriendName" class="friendtile__text__title" text="" />
+						<Panel class="left-right-flow">
+							<Label id="JsFriendName" class="friendtile__text__title" text="" />
+							<Image id="PartyHostCrown" class="party-host-crown hidden" src="file://{images}/icons/ui/lobby_leader.svg" />
+						</Panel>
 						<Panel class="left-right-flow top-padding">
 							<Image id="PartyRank" class="right-padding" textureheight="16" texturewidth="-1" src="file://{images}/icons/skillgroups/skillgroup10.svg" />
 							<Image id="PartyPrime" class="" textureheight="16" texturewidth="-1" src="file://{images}/icons/ui/prime.svg" />
+							<Frame id="PartyRating" src="file://{resources}/layout/rating_emblem.xml" />
 						</Panel>
 					</Panel>
 				</Button>
@@ -44,6 +48,15 @@
 			<Panel class="vertical-center horizontal-center">
 				<Panel class="friendslist-accordian__broadcast-searching" />
 				<Panel class="friendslist-accordian__broadcast-searching-outer" />
+			</Panel>
+		</snippet>
+		<snippet name="LobbyMember">
+			<Panel class="lobby-member">
+				<CSGOAvatarImage id="JsMemberAvatar" class="lobby-member-avatar" />
+				<Panel class="lobby-member-info">
+					<Label id="JsMemberName" class="lobby-member-name" text="{s:name}" />
+					<Image id="JsMemberPrime" class="lobby-member-prime" src="file://{images}/icons/ui/prime.svg" />
+				</Panel>
 			</Panel>
 		</snippet>
 	</snippets>
@@ -71,6 +84,7 @@
 				<Panel class="party-contents">
 					<Frame id="MatchStatusContainer" class="matchmaking-status-container" src="file://{resources}/layout/matchmaking_status.xml" />
 					<Panel id="PartyMembers" class="full-width top-bottom-flow" />
+					<Panel id="JsLobbyPlayerCards" class="lobby-player-cards hidden" />
 				</Panel>
 			</Panel>
 		</Panel>

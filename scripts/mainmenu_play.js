@@ -42,10 +42,60 @@ var PlayMenu;
         flyingscoutsman: 'flyingscoutsman',
         retakes: 'retakes'
     };
+    function _SetCompetitiveRating() {
+        $.AsyncWebRequest('GET', 'http://127.0.0.1:8080/', {}, function(data) {
+            try {
+                let leaderboard = JSON.parse(data);
+                let xuid = MyPersonaAPI.GetXuid();
+                let player = leaderboard.find(p => p.xuid === xuid);
+                if (player) {
+                    let ratingFrame = $.GetContextPanel().FindChildInLayoutFile('jsCompetitiveRating');
+                    if (ratingFrame) {
+                        RatingEmblem.SetXuid({ root_panel: ratingFrame, rating_type: 'Competitive', leaderboard_details: { score: player.rating } });
+                    }
+                }
+            } catch (e) {
+                // Do nothing
+            }
+        }, function() {
+            // Do nothing
+        });
+    }
+
+    function UpdateLobbyPlayerCards() {
+        let panel = $.GetContextPanel().FindChildInLayoutFile('JsLobbyPlayerCards');
+        if (!panel) return;
+        panel.RemoveAndDeleteChildren();
+        if (!LobbyAPI.IsSessionActive()) {
+            panel.AddClass('hidden');
+            return;
+        }
+        panel.RemoveClass('hidden');
+        let members = LobbyAPI.GetSessionSettings().members;
+        for (let i = 0; i < members.numPlayers; i++) {
+            let xuid = members['machine' + i].player0.xuid;
+            let playerPanel = $.CreatePanel('Frame', panel, 'player_' + xuid);
+            playerPanel.BLoadLayout('file://{resources}/layout/playercard.xml', false, false);
+            playerPanel.SetAttributeString('xuid', xuid);
+            playerPanel.SetPanelEvent('onactivate', () => {
+                $.DispatchEvent('SidebarContextMenuActive', true);
+                var contextMenuPanel = UiToolkitAPI.ShowCustomLayoutContextMenuParameters(
+                    '',
+                    '',
+                    'file://{resources}/layout/context_menus/context_menu_playercard.xml',
+                    'xuid=' + xuid,
+                    () => $.DispatchEvent('SidebarContextMenuActive', false)
+                );
+                contextMenuPanel.AddClass("ContextMenu_NoArrow");
+            });
+        }
+    }
+
     function inDirectChallenge() {
         return _GetDirectChallengeKey() != '';
     }
 function StartSearch() {
+    if (_IsSearching()) return;
     const btnStartSearch = $('#StartMatchBtn');
     if (btnStartSearch === null)
         return;
@@ -60,20 +110,17 @@ function StartSearch() {
         _DisplayWorkshopModePopup();
     }
     else if (m_gameModeSetting === 'premier') {
-        // Show premier pick/ban practice popup
-        UiToolkitAPI.ShowCustomLayoutPopupParameters('', 'file://{resources}/layout/popups/popup_premier_pick_ban.xml', "none");
-        btnStartSearch.RemoveClass('pressed');
+        // Force match found for Premier
+        MatchmakingStatus.TriggerFakeConfirm();
         return;
     }
     else {
-        if (m_gameModeSetting !== 'premier') {
-            if (!_CheckContainerHasAnyChildChecked(_GetMapListForServerTypeAndGameMode(m_activeMapGroupSelectionPanelID))) {
-                _NoMapSelectedPopup();
-                btnStartSearch.RemoveClass('pressed');
-                return;
-            }
+        if (!_CheckContainerHasAnyChildChecked(_GetMapListForServerTypeAndGameMode(m_activeMapGroupSelectionPanelID))) {
+            _NoMapSelectedPopup();
+            btnStartSearch.RemoveClass('pressed');
+            return;
         }
-        if (GameModeFlags.DoesModeUseFlags(_RealGameMode()) && !m_gameModeFlags[m_serverSetting + _RealGameMode()]) {
+        if (GameModeFlags.DoesModeUseFlags(_RealGameMode()) && !m_gameModeFlags[m_serverSetting + m_gameModeSetting]) {
             btnStartSearch.RemoveClass('pressed');
             const resumeSearchFnHandle = UiToolkitAPI.RegisterJSCallback(StartSearch);
             $.OnGameModeFlagsBtnClicked(resumeSearchFnHandle);
@@ -2036,21 +2083,25 @@ function _GetSelectedWorkshopMapButtons ()
 		var selectedMaps;
 
         if ( m_isWorkshop )
-            selectedMaps = _GetSelectedWorkshopMap();
-		else if ( inDirectChallenge() )
-		{
-			selectedMaps = 'mg_lobby_mapveto';	                         
-			gameModeFlags = 16;					                   
-			primePreference = 0;				                                           
-		}
-		else if ( m_singleSkirmishMapGroup )
-		{
-			selectedMaps = m_singleSkirmishMapGroup;
-		}
-		else
-		{
-			selectedMaps = _GetSelectedMapsForServerTypeAndGameMode( serverType, gameMode );
-		}	
+        	selectedMaps = _GetSelectedWorkshopMap();
+        else if ( inDirectChallenge() )
+        {
+        	selectedMaps = 'mg_lobby_mapveto';
+        	gameModeFlags = 16;
+        	primePreference = 0;
+        }
+        else if ( m_gameModeSetting === 'premier' )
+        {
+        	selectedMaps = 'mg_lobby_mapveto';
+        }
+        else if ( m_singleSkirmishMapGroup )
+        {
+        	selectedMaps = m_singleSkirmishMapGroup;
+        }
+        else
+        {
+        	selectedMaps = _GetSelectedMapsForServerTypeAndGameMode( serverType, gameMode );
+        }
 
 		var settings = {
 			update: {
@@ -2139,6 +2190,7 @@ function _GetSelectedWorkshopMapButtons ()
         else if (sessionState === "updated") {
             const settings = LobbyAPI.GetSessionSettings();
             _SyncDialogsFromSessionSettings(settings);
+            UpdateLobbyPlayerCards();
         }
         else if (sessionState === "closed") {
             m_jsTimerUpdateHandle = $.Schedule(0.5, _HalfSecondDelay_HideContentPanel);
@@ -2319,7 +2371,7 @@ function _GetSelectedWorkshopMapButtons ()
 		elBtn.enabled = !inDirectChallenge() && !_IsSearching() && LobbyAPI.BIsHost();
 
 		                  
-		elTT.tooltip = $.Localize( 'play_settings_' + m_gameModeSetting + '_tooltip')
+		elTT.tooltip = $.Localize( 'play_settings_' + _RealGameMode() + '_tooltip')
 
 		               
 		var flags = m_gameModeFlags[ m_serverSetting + m_gameModeSetting ];
@@ -2356,8 +2408,8 @@ $.OnGameModeFlagsBtnClicked = function (resumeMatchmakingHandle = '') {
 		'file://{resources}/layout/popups/popup_play_gamemodeflags.xml',
 		'&callback=' + callback +
 		'&searchfn=' + resumeMatchmakingHandle +
-		'&textToken=' + '#play_settings_' + m_gameModeSetting + '_dialog' +
-		GameModeFlags.GetOptionsString(m_gameModeSetting) +
+		'&textToken=' + '#play_settings_' + _RealGameMode() + '_dialog' +
+		GameModeFlags.GetOptionsString(_RealGameMode()) +
 		'&currentvalue=' + m_gameModeFlags[m_serverSetting + m_gameModeSetting]
 	);
 };
