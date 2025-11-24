@@ -59,6 +59,12 @@ function StartSearch() {
     if (m_isWorkshop) {
         _DisplayWorkshopModePopup();
     }
+    else if (m_gameModeSetting === 'premier') {
+        // Show premier pick/ban practice popup
+        UiToolkitAPI.ShowCustomLayoutPopupParameters('', 'file://{resources}/layout/popups/popup_premier_pick_ban.xml', "none");
+        btnStartSearch.RemoveClass('pressed');
+        return;
+    }
     else {
         if (m_gameModeSetting !== 'premier') {
             if (!_CheckContainerHasAnyChildChecked(_GetMapListForServerTypeAndGameMode(m_activeMapGroupSelectionPanelID))) {

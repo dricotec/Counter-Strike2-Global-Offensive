@@ -96,7 +96,7 @@ var RatingEmblem;
             wins = 0;
         }
         if (isloading) {
-            ratingDesc = $.Localize('#SFUI_LOADING');
+            ratingDesc = 'Loading rating...';
         }
         root_panel.SetDialogVariableInt("wins", wins);
         if (rating_type === 'Wingman' || rating_type === 'Competitive') {
@@ -104,7 +104,13 @@ var RatingEmblem;
             let locTypeModifer = rating_type === 'Competitive' ? '' : rating_type.toLowerCase();
             imagePath = locTypeModifer !== '' ? locTypeModifer : 'skillgroup';
             const elCompWinsNeeded = root_panel.FindChildTraverse('jsRating-CompetitiveWinsNeeded');
-            elCompWinsNeeded.visible = !isloading && bTooFewWins && options.local_player;
+            if (elCompWinsNeeded) {
+                elCompWinsNeeded.visible = !isloading && bTooFewWins && options.local_player;
+                if (elCompWinsNeeded.visible) {
+                    const winsneeded = Math.max(0, winsNeededForRank - wins);
+                    elCompWinsNeeded.text = 'Need ' + winsneeded + ' wins';
+                }
+            }
             if (bTooFewWins || isloading) {
                 elSkillGroupImage.SetImage('file://{images}/icons/skillgroups/' + imagePath + '_none.svg');
                 if (!isloading && options.local_player) {
@@ -112,9 +118,9 @@ var RatingEmblem;
                     elSkillGroupImage.SetDialogVariableInt('wins', wins);
                     elSkillGroupImage.SetDialogVariableInt('wins-needed', winsneeded);
                     if (bFullDetails) {
-                        ratingDesc = $.Localize('#skillgroup_0' + locTypeModifer);
+                        ratingDesc = 'Unranked';
                         root_panel.SetDialogVariableInt("winsneeded", winsneeded);
-                        tooltipText = $.Localize('#tooltip_skill_group_none' + imagePath, root_panel);
+                        tooltipText = 'Play ' + winsneeded + ' more matches to get ranked';
                     }
                 }
             }
@@ -186,26 +192,26 @@ var RatingEmblem;
             else {
                 if (bFullDetails) {
                     if (isloading) {
-                        ratingDesc = $.Localize('#skillgroup_loading');
+                        ratingDesc = 'Loading rating...';
                     }
                     else if (bTooFewWins) {
                         let winsneeded = (winsNeededForRank - wins);
                         root_panel.SetDialogVariableInt("winsneeded", winsneeded);
-                        tooltipText = $.Localize('#tooltip_cs_rating_none', root_panel);
-                        eomDescText = $.Localize('#cs_rating_wins_needed_verbose', root_panel);
-                        introText = $.Localize('#cs_rating_wins_needed_verbose_intro', root_panel);
+                        tooltipText = 'Need more wins to show rating';
+                        eomDescText = 'Need ' + winsneeded + ' more wins to show rating';
+                        introText = 'Play more matches to unlock your rating';
                         if (options.local_player) {
-                            ratingDesc = $.Localize('#cs_rating_wins_needed', root_panel);
+                            ratingDesc = 'Need ' + winsneeded + ' more wins';
                         }
                         else {
-                            ratingDesc = $.Localize('#cs_rating_none');
+                            ratingDesc = 'No rating yet';
                         }
                     }
                     else if (bRatingExpired) {
-                        ratingDesc = $.Localize('#cs_rating_expired');
-                        tooltipText = $.Localize('#tooltip_cs_rating_expired');
-                        eomDescText = $.Localize('#eom-skillgroup-expired-premier', root_panel);
-                        introText = $.Localize('#eom-skillgroup-expired-premier', root_panel);
+                        ratingDesc = 'Rating expired';
+                        tooltipText = 'Your rating has expired';
+                        eomDescText = 'Rating expired';
+                        introText = 'Rating expired';
                     }
                 }
             }
@@ -235,8 +241,13 @@ var RatingEmblem;
     }
     RatingEmblem.SetXuid = SetXuid;
     function GetClampedRating(rating) {
-        let remappedRating = Math.floor(rating / 1000.00 / 5);
-        return Math.max(0, Math.min(remappedRating, 6));
+        if (rating < 5000) return 0; // gray
+        if (rating < 10000) return 1; // light blue
+        if (rating < 15000) return 2; // blue
+        if (rating < 20000) return 3; // darker blue
+        if (rating < 25000) return 4; // purple
+        if (rating < 30000) return 5; // red
+        return 6; // yellow/gold
     }
     RatingEmblem.GetClampedRating = GetClampedRating;
     function _SetPremierBackgroundImage(root_panel, rating) {

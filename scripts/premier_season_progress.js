@@ -10,9 +10,14 @@ var SeasonProgress;
 function SetRating() {
     const elRatingEmblem = $.GetContextPanel().FindChildInLayoutFile('js-highest-rating');
 
-    // Fake rating and wins
-    const rating = Math.floor(Math.random() * 99999);
-    const nWins = Math.floor(Math.random() * 200); // random wins
+    // Mock Premier API with user's data
+    const userXuid = MyPersonaAPI.GetXuid();
+    const userName = MyPersonaAPI.GetName();
+    $.Msg("[Premier Mock API] User XUID: " + userXuid + ", Name: " + userName + ", Rating: 69420");
+
+    // Default rating 69420
+    const rating = 69420;
+    const nWins = 67; // fixed wins for testing
     const nTime = 3600; // 1 hour fake expiration (can set <0 to show expired)
 
     if (elRatingEmblem) {
@@ -41,6 +46,27 @@ function SetRating() {
         const minor = rating % 1000;
         $.Msg("[SeasonProgress] Major: " + major + ", Minor: " + minor);
     }
+
+    // Fetch position from server
+    $.AsyncWebRequest('http://127.0.0.1:8080/position?xuid=' + userXuid, {
+        type: 'GET',
+        success: function(response) {
+            $.Msg("[SeasonProgress] Position response received");
+            try {
+                const data = typeof response === 'string' ? JSON.parse(response) : response;
+                const ordinal = data.place === 1 ? '1st' : data.place === 2 ? '2nd' : data.place === 3 ? '3rd' : data.place + 'th';
+                const elPositionLabel = $.GetContextPanel().FindChildInLayoutFile('jsPositionLabel');
+                if (elPositionLabel) {
+                    elPositionLabel.text = 'Your position: ' + ordinal + ' with rating ' + data.rating;
+                }
+            } catch (e) {
+                $.Msg("[SeasonProgress] Failed to process position response: " + e);
+            }
+        },
+        error: function() {
+            $.Msg("[SeasonProgress] Failed to fetch position");
+        }
+    });
 
     _SetProgressBar(rating, nWins);
     _ShowHideExpirationWarning(nWins, nTime);

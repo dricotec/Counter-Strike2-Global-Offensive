@@ -32,8 +32,9 @@
 		<Panel class="premier-season-progress-block">
 			<Panel class="left-right-flow horizontal-center top-margin-16">
 				<Frame id="js-highest-rating" src="file://{resources}/layout/rating_emblem.xml" />
-				<Label class="premier-season-progress-rank-label stratum-medium" text="#season_progress_high_rank" />
+				<Label class="premier-season-progress-rank-label stratum-medium" text="Highest CS Rating achieved this season" />
 			</Panel>
+			<Label id="jsPositionLabel" class="premier-season-progress-position-label" text="" />
 			<Panel id="id-premier-bar-container" class="premier-season-progress-bar-container">
 				<Panel class="premier-season-pips-label-container">
 					<Panel class="premier-season-pips-labels">

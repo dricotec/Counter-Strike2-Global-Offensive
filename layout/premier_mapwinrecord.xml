@@ -20,7 +20,7 @@
 		</snippet>
 	</snippets>
 	<Panel class="mapwinrecord-root">
-		<Label id="jsMapWinsLabel" html="true" class="leaderboard-title-bar__label" text="#mapwinrecord_graph_title_no_wins" onactivate="PremierMapWinRecord.Draw()" />
+		<Label id="jsMapWinsLabel" html="true" class="leaderboard-title-bar__label" text="Map Win Record" onactivate="PremierMapWinRecord.Draw()" />
 		<SpiderGraph id="jsMapWinsSpiderGraph" class="mapwinrecord__graph" />
 	</Panel>
 </root>

@@ -105,7 +105,7 @@ var PremierMapWinRecord;
                 }
                 if (!playerObj) {
                     //let objLbRow = LeaderboardsAPI.GetEntryDetailsObjectByXuid(lbFallbackName, xuid);
-                    if (objLbRow && objLbRow.XUID && objLbRow.rankWindowStats)
+                    if (playerObj && playerObj.XUID && playerObj.rankWindowStats)
                         playerObj = objLbRow.rankWindowStats;
                 }
                 if (!playerObj)
@@ -114,6 +114,7 @@ var PremierMapWinRecord;
             }
             for (let p = 0; p < nPlayers; p++) {
                 let RankWindowObject = wso[p];
+                const mapList = ['de_dust2', 'de_mirage', 'de_inferno', 'de_nuke', 'de_overpass', 'de_vertigo', 'de_ancient'];
                 let playerWins = mapList.map((mapName) => { return mapName.startsWith('de_') ? Number(RankWindowObject[mapName] | 0) : 0; });
                 totalWins = totalWins + playerWins.reduce((a, b) => a + b, 0);
                 maxWinsInASingleMap = Math.max(maxWinsInASingleMap, Math.max.apply(null, playerWins));
