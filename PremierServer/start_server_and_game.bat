@@ -1,0 +1,6 @@
+@echo off
+echo Starting Premier Leaderboard Server...
+start /B node server.js
+timeout /t 5 /nobreak > nul
+echo Starting CS2...
+start "" "CHANGE THIS PATH TO YOUR CSGO.EXE" -game cs2go/csgo -language cs2go -steam
