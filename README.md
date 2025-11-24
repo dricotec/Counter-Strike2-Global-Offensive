@@ -7,6 +7,10 @@ This is an unofficial fork of the original CS2:GO mod by [DeformedSAS](https://g
 
 This fork aims to continue development, fix bugs, and add improvements while maintaining compatibility with the original mod's core functionality.
 
+# REQUIREMENTS
+![HLAE](https://github.com/advancedfx/advancedfx/releases/tag/v2.187.6)
+![Node.JS Windows Download](https://nodejs.org/dist/v24.11.1/node-v24.11.1-x64.msi)
+
 
 DeformedSAS's cs2go discord:
 -------------------------------
