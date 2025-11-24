@@ -9,6 +9,7 @@ This fork aims to continue development, fix bugs, and add improvements while mai
 
 
 DeformedSAS's cs2go discord:
+-------------------------------
 [![Discord](https://img.shields.io/discord/000000000000000000?label=cs2go&logo=discord&logoColor=white&color=5865F2)](https://discord.gg/4AeURZa2p2)
 # MainMenu
 - All of the core UI changes.
