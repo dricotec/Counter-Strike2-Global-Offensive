@@ -32,6 +32,10 @@ DeformedSAS's cs2go discord:
 
 ![image](https://github.com/user-attachments/assets/091ee25e-17fd-4e1b-b33a-db5a0b0cf874)
 
+# PREMIER
+- Premier Leaderboard Testing
+![204953~1](https://github.com/user-attachments/assets/d4fdeb84-da5a-453b-b459-1872abec796f)
+
 # Changes in This Fork
 
 This unofficial fork includes the following improvements and changes:
