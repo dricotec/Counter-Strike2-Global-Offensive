@@ -3,6 +3,7 @@ const fs = require('fs');
 const querystring = require('querystring');
 
 const LEADERBOARD_FILE = 'leaderboard.json';
+const regions = ['EU', 'NA', 'SA', 'AF', 'AS', 'AU', 'CN'];
 
 function loadLeaderboard() {
     try {
@@ -38,37 +39,48 @@ const server = http.createServer((req, res) => {
                 const user = data.user;
                 const friends = data.friends || [];
 
-                // Add/Update user
+                // Add or update user
                 let userEntry = leaderboardData.find(entry => entry.xuid === user.xuid);
                 if (!userEntry) {
                     userEntry = {
                         name: user.name,
                         rating: user.rating,
-                        xuid: user.xuid
+                        xuid: user.xuid,
+                        region: regions[Math.floor(Math.random() * regions.length)]
                     };
                     leaderboardData.push(userEntry);
                 } else {
                     userEntry.name = user.name;
                     userEntry.rating = user.rating;
+                    if (!userEntry.region) {
+                        userEntry.region = regions[Math.floor(Math.random() * regions.length)];
+                    }
                 }
 
-                // Add friends with random ratings if not like present yk
+                // Add friends with random ratings if not already present
                 friends.forEach(friend => {
                     let friendEntry = leaderboardData.find(entry => entry.xuid === friend.xuid);
                     if (!friendEntry) {
                         friendEntry = {
                             name: friend.name,
                             rating: Math.floor(Math.random() * (30000 - 1000)) + 1000,
-                            xuid: friend.xuid
+                            xuid: friend.xuid,
+                            region: regions[Math.floor(Math.random() * regions.length)]
                         };
                         leaderboardData.push(friendEntry);
+                    } else if (!friendEntry.region) {
+                        friendEntry.region = regions[Math.floor(Math.random() * regions.length)];
                     }
                 });
-              
+
+                // Sort by rating descending
                 leaderboardData.sort((a, b) => b.rating - a.rating);
 
+                // Update places and rank_pct
+                const maxRating = leaderboardData.length > 0 ? leaderboardData[0].rating : 69420;
                 leaderboardData.forEach((entry, index) => {
                     entry.place = index + 1;
+                    entry.rank_pct = Math.floor(((maxRating - entry.rating) / maxRating) * 100);
                 });
 
                 saveLeaderboard(leaderboardData);
@@ -85,22 +97,27 @@ const server = http.createServer((req, res) => {
         const xuid = url.searchParams.get('xuid');
         let leaderboardData = loadLeaderboard();
         leaderboardData.sort((a, b) => b.rating - a.rating);
+        const maxRating = leaderboardData.length > 0 ? leaderboardData[0].rating : 69420;
         leaderboardData.forEach((entry, index) => {
             entry.place = index + 1;
+            entry.rank_pct = Math.floor(((maxRating - entry.rating) / maxRating) * 100);
         });
         const userEntry = leaderboardData.find(entry => entry.xuid === xuid);
         if (userEntry) {
             res.writeHead(200, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify({ place: userEntry.place, rating: userEntry.rating }, null, 2));
+            res.end(JSON.stringify({ place: userEntry.place, rating: userEntry.rating, rank_pct: userEntry.rank_pct }, null, 2));
         } else {
             res.writeHead(404);
             res.end('User not found');
         }
     } else if (req.url === '/' && req.method === 'GET') {
+        // Sort and return current leaderboard
         let leaderboardData = loadLeaderboard();
         leaderboardData.sort((a, b) => b.rating - a.rating);
+        const maxRating = leaderboardData.length > 0 ? leaderboardData[0].rating : 69420;
         leaderboardData.forEach((entry, index) => {
             entry.place = index + 1;
+            entry.rank_pct = Math.floor(((maxRating - entry.rating) / maxRating) * 100);
         });
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify(leaderboardData, null, 2));
