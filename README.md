@@ -37,6 +37,13 @@ DeformedSAS's cs2go discord:
 ![image](https://github.com/user-attachments/assets/091ee25e-17fd-4e1b-b33a-db5a0b0cf874)
 
 # PREMIER
+- Premier Leaderboard V2
+
+<img width="609" height="552" alt="image" src="https://github.com/user-attachments/assets/93fd28a7-3128-4833-a901-b2d40ff308dc" />
+
+
+
+
 - Premier Leaderboard with Ratings and Queing
 ![PremierLol](premier.mp4)
 
