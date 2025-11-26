@@ -4,6 +4,7 @@
 		<include src="file://{resources}/styles/csgostyles.css" />
 		<include src="file://{resources}/styles/mainmenu.css" />
 		<include src="file://{resources}/styles/leaderboard.css" />
+		<include src="file://{resources}/styles/leaderboardtext.css" />
 	</styles>
 	<scripts>
 		<include src="file://{resources}/scripts/common/sessionutil.js" />
@@ -16,22 +17,23 @@
 	<snippets>
 		<snippet name="leaderboard-entry">
 			<Button class="leaderboard__list__row" style="width:716px; height:30px;">
-				<Panel class="leaderboard__list__column rank">
+				<Panel class="leaderboard__list__column rank" style="width:50px;">
 					<Label id="jsPlayerRank" text="" class="stratum-regular leaderboard_cell rank" />
 				</Panel>
-				<Panel class="leaderboard__list__column rating">
-					<Frame id="jsRatingEmblem" src="file://{resources}/layout/rating_emblem.xml" />
-					<Label text="{s:player-rating}" class="stratum-regular leaderboard_cell rating-number" />
+				<Panel class="leaderboard__list__column rating" style="width:80px;">
+					<Frame id="jsRatingEmblem" src="file://{resources}/layout/rating_emblem.xml">
+						<Label id="jsRatingNumber" text="{s:player-rating}" class="stratum-regular leaderboard_cell rating-number" />
+					</Frame>
 				</Panel>
-				<Panel class="leaderboard__list__column name">
+				<Panel class="leaderboard__list__column name" style="width:250px;">
 					<CSGOAvatarImage id="leaderboard-entry-avatar" class="leaderboard__name-entry__avatar" />
 					<Frame id="jsHonorIcon" class="" src="file://{resources}/layout/honor_icon.xml" />
 					<Label text="{s:player-name}" class="stratum-regular leaderboard_cell" />
 				</Panel>
-				<Panel class="leaderboard__list__column wins">
+				<Panel class="leaderboard__list__column wins" style="width:80px;">
 					<Label text="{s:player-wins}" class="stratum-regular leaderboard_cell" />
 				</Panel>
-				<Panel class="leaderboard__list__column winrate">
+				<Panel class="leaderboard__list__column winrate" style="width:80px;">
 					<Label text="{s:player-winrate}" class="stratum-regular leaderboard_cell" />
 				</Panel>
 			</Button>
@@ -70,7 +72,7 @@
 			</Panel>
 			<Panel id="id-leaderboard-list" class="leaderboard__list hidden">
 				<Panel id="id-leaderboard-entries" class="leaderboard__entries-container" style="width: 100%; height: fit-children;" />
-				<Button class="leaderboard__list__row header no-hover">
+				<Button class="leaderboardlistrow header no-hover">
 					<Panel class="leaderboard__list__column rank">
 						<Label text="#leaderboard_column_rank" class="stratum-regular-condensed leaderboard_cell faded" />
 					</Panel>
