@@ -1,132 +1,45 @@
 const http = require('http');
 const fs = require('fs');
-const querystring = require('querystring');
-
-const LEADERBOARD_FILE = 'leaderboard.json';
-const regions = ['EU', 'NA', 'SA', 'AF', 'AS', 'AU', 'CN'];
-
-function loadLeaderboard() {
-    try {
-        if (fs.existsSync(LEADERBOARD_FILE)) {
-            const data = fs.readFileSync(LEADERBOARD_FILE, 'utf8');
-            return JSON.parse(data);
-        }
-    } catch (e) {
-        console.log('Error loading leaderboard:', e);
-    }
-    return [];
-}
-
-function saveLeaderboard(data) {
-    try {
-        fs.writeFileSync(LEADERBOARD_FILE, JSON.stringify(data, null, 2));
-    } catch (e) {
-        console.log('Error saving leaderboard:', e);
-    }
-}
 
 const server = http.createServer((req, res) => {
-    if (req.url === '/' && req.method === 'POST') {
-        let body = '';
-        req.on('data', chunk => {
-            body += chunk.toString();
+  if (req.url === '/' && req.method === 'GET') {
+    fs.readFile('leaderboard.json', 'utf8', (err, data) => {
+      if (err) {
+        res.writeHead(500, { 'Content-Type': 'text/plain' });
+        res.end('Internal Server Error');
+        return;
+      }
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(data);
+    });
+  } else if (req.url === '/update' && req.method === 'POST') {
+    let body = '';
+    req.on('data', chunk => {
+      body += chunk.toString();
+    });
+    req.on('end', () => {
+      try {
+        const data = JSON.parse(body);
+        fs.writeFile('leaderboard.json', JSON.stringify(data, null, 2), 'utf8', (err) => {
+          if (err) {
+            res.writeHead(500, { 'Content-Type': 'text/plain' });
+            res.end('Internal Server Error');
+            return;
+          }
+          res.writeHead(200, { 'Content-Type': 'text/plain' });
+          res.end('OK');
         });
-        req.on('end', () => {
-            try {
-                const params = querystring.parse(body);
-                const data = JSON.parse(params.json);
-                let leaderboardData = loadLeaderboard();
-                const user = data.user;
-                const friends = data.friends || [];
-
-                // Add or update user
-                let userEntry = leaderboardData.find(entry => entry.xuid === user.xuid);
-                if (!userEntry) {
-                    userEntry = {
-                        name: user.name,
-                        rating: user.rating,
-                        xuid: user.xuid,
-                        region: regions[Math.floor(Math.random() * regions.length)]
-                    };
-                    leaderboardData.push(userEntry);
-                } else {
-                    userEntry.name = user.name;
-                    userEntry.rating = user.rating;
-                    if (!userEntry.region) {
-                        userEntry.region = regions[Math.floor(Math.random() * regions.length)];
-                    }
-                }
-
-                // Add friends with random ratings if not already present
-                friends.forEach(friend => {
-                    let friendEntry = leaderboardData.find(entry => entry.xuid === friend.xuid);
-                    if (!friendEntry) {
-                        friendEntry = {
-                            name: friend.name,
-                            rating: Math.floor(Math.random() * (30000 - 1000)) + 1000,
-                            xuid: friend.xuid,
-                            region: regions[Math.floor(Math.random() * regions.length)]
-                        };
-                        leaderboardData.push(friendEntry);
-                    } else if (!friendEntry.region) {
-                        friendEntry.region = regions[Math.floor(Math.random() * regions.length)];
-                    }
-                });
-
-                // Sort by rating descending
-                leaderboardData.sort((a, b) => b.rating - a.rating);
-
-                // Update places and rank_pct
-                const maxRating = leaderboardData.length > 0 ? leaderboardData[0].rating : 69420;
-                leaderboardData.forEach((entry, index) => {
-                    entry.place = index + 1;
-                    entry.rank_pct = Math.floor(((maxRating - entry.rating) / maxRating) * 100);
-                });
-
-                saveLeaderboard(leaderboardData);
-
-                res.writeHead(200, { 'Content-Type': 'application/json' });
-                res.end(JSON.stringify(leaderboardData, null, 2));
-            } catch (e) {
-                res.writeHead(400);
-                res.end('Invalid JSON');
-            }
-        });
-    } else if (req.url.startsWith('/position') && req.method === 'GET') {
-        const url = new URL(req.url, 'http://127.0.0.1:8080');
-        const xuid = url.searchParams.get('xuid');
-        let leaderboardData = loadLeaderboard();
-        leaderboardData.sort((a, b) => b.rating - a.rating);
-        const maxRating = leaderboardData.length > 0 ? leaderboardData[0].rating : 69420;
-        leaderboardData.forEach((entry, index) => {
-            entry.place = index + 1;
-            entry.rank_pct = Math.floor(((maxRating - entry.rating) / maxRating) * 100);
-        });
-        const userEntry = leaderboardData.find(entry => entry.xuid === xuid);
-        if (userEntry) {
-            res.writeHead(200, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify({ place: userEntry.place, rating: userEntry.rating, rank_pct: userEntry.rank_pct }, null, 2));
-        } else {
-            res.writeHead(404);
-            res.end('User not found');
-        }
-    } else if (req.url === '/' && req.method === 'GET') {
-        // Sort and return current leaderboard
-        let leaderboardData = loadLeaderboard();
-        leaderboardData.sort((a, b) => b.rating - a.rating);
-        const maxRating = leaderboardData.length > 0 ? leaderboardData[0].rating : 69420;
-        leaderboardData.forEach((entry, index) => {
-            entry.place = index + 1;
-            entry.rank_pct = Math.floor(((maxRating - entry.rating) / maxRating) * 100);
-        });
-        res.writeHead(200, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify(leaderboardData, null, 2));
-    } else {
-        res.writeHead(404);
-        res.end('Not Found');
-    }
+      } catch (e) {
+        res.writeHead(400, { 'Content-Type': 'text/plain' });
+        res.end('Bad Request');
+      }
+    });
+  } else {
+    res.writeHead(404);
+    res.end('Not Found');
+  }
 });
 
-server.listen(8080, '127.0.0.1', () => {
-    console.log('Leaderboard server running at http://127.0.0.1:8080/');
+server.listen(8080, () => {
+  console.log('Server running at http://127.0.0.1:8080/');
 });
