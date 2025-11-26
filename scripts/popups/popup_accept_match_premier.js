@@ -34,11 +34,13 @@ var PopupAcceptMatch = (function() {
 
     var _Init = function() {
         m_lobbySettings = LobbyAPI.GetSessionSettings() || { game: {} };
-        var mode = m_lobbySettings.game.mode || 'unknown';
+        m_lobbySettings.game.mode = 'premier';
+        m_lobbySettings.game.mapgroupname = 'mg_lobby_mapveto';
+        var mode = 'premier';
 
         // game server location/ping. only works in cs2 since they did some hardcoded bs, here i set it up to force eu serbia with very nice ping.
-        m_gsLocation = $.GetContextPanel().GetAttributeString('location', 'EU, Serbia');
-        m_gsPing = parseInt($.GetContextPanel().GetAttributeString('ping', '69420'));
+        m_gsLocation = $.GetContextPanel().GetAttributeString('location', 'Brazil');
+        m_gsPing = parseInt($.GetContextPanel().GetAttributeString('ping', '67'));
         $.GetContextPanel().SetDialogVariable('region', m_gsLocation);
         $.GetContextPanel().SetDialogVariableInt('ping', m_gsPing);
 
@@ -71,7 +73,7 @@ var PopupAcceptMatch = (function() {
         // map and reconnect.. reconnect shit is literally pointless lmao. as there is no server for that.
         var mapgroup = m_lobbySettings.game || {};
         var mapsList = (mapgroup.mapgroupname || '').split(',');
-        var map = mapsList[0] ? mapsList[0].replace(/mg_/g, '') : 'de_dust2';
+        var map = mapsList[0] ? 'de_' + mapsList[0].replace(/mg_/g, '') : 'de_lobby_mapveto';
 
         // NQMM detection (casual/DM/skirmish or @ map)
         if (map.charAt(0) === '@' || mode === 'casual' || mode === 'deathmatch' || mode === 'skirmish') {
@@ -423,7 +425,7 @@ var _OnTimerUpdate = function()
 
 		                                                                                                                                                      
 		
-		labelData.SetDialogVariable( 'mode', $.Localize( '#SFUI_GameMode_' + m_lobbySettings.game.mode ) );
+		labelData.SetDialogVariable( 'mode', 'Premier' );
 
 		                                    
 		                                                          
@@ -448,7 +450,7 @@ var _OnTimerUpdate = function()
 			$.GetContextPanel().FindChildInLayoutFile( 'AcceptMatchWarning' ).RemoveClass( 'hidden' );
 		}
 
-		labelData.SetDialogVariable ( 'map', $.Localize( '#SFUI_Map_' + map ) );
+		labelData.SetDialogVariable ( 'map', 'Premier' );
 
 		if ( ( m_lobbySettings.game.mode === 'competitive' ) && ( map === 'lobby_mapveto' ) )
 		{
@@ -463,9 +465,10 @@ var _OnTimerUpdate = function()
 		}
 
 		labelData.text = $.Localize( strLocalize, labelData );
-
-		var imgMap = $.GetContextPanel().FindChildInLayoutFile ( 'AcceptMatchMapImage' );		
-		imgMap.style.backgroundImage = 'url("file://{images}/map_icons/screenshots/360p/' + map + '.png")';
+        // set image, yes I know this is a shit way to make it que premier and the old way was better 
+		// but it was skidded af so I had to change it.
+		var imgMap = $.GetContextPanel().FindChildInLayoutFile ( 'AcceptMatchMapImage' );
+		imgMap.style.backgroundImage = 'url("file://{images}/map_icons/screenshots/360p/lobby_mapveto_wingman.png")';
 	}
 
 var _OnNqmmAutoReadyUp = function () {
@@ -483,11 +486,19 @@ var _OnNqmmAutoReadyUp = function () {
     // Load the first map from the mapgroup (so engine doesn't freak out) edit: doesn't work sadly.. have to do advanced scripting for mapgroups to work on gamemodes that are no queue management..
     var gameSettings = LobbyAPI.GetSessionSettings().game || {};
     var mapsList = (gameSettings.mapgroupname || '').split(',');
-    var map = mapsList[0] ? mapsList[0].replace(/mg_/g, '') : 'de_dust2'; // fallback
+    var map = mapsList[0] ? mapsList[0].replace(/mg_/g, '') : 'lobby_mapveto'; // fallback
+    // holy shit ohnepixel
+    // Load the map
+    GameInterfaceAPI.ConsoleCommand("map de_lobby_mapveto");
 
-    GameInterfaceAPI.ConsoleCommand(
-        "exec gamemode_competitive_offline; map lobby_mapveto; bot_add; bot_add; bot_add; bot_add; bot_add; bot_add; bot_add; bot_add; bot_add"
-    );
+    // Schedule the commands after 27 seconds
+    $.Schedule(27, function() {
+        for (let i = 0; i < 4; i++) {
+            $.Schedule(i * 0.1, function() {
+                GameInterfaceAPI.ConsoleCommand("exec gamemode_competitive; exec gamemode_competitive_offline; mp_warmup_end");
+            });
+        }
+    });
 }
 
 	//Accept Press
@@ -545,7 +556,7 @@ function acceptLoop() {
                         var mapsList = mapgroupaaa.mapgroupname.split(',');
                         var map = mapsList[0].replace(/mg_/g, "");
                         GameInterfaceAPI.ConsoleCommand(
-                            "exec gamemode_competitive_offline; map lobby_mapveto; bot_add; bot_add; bot_add; bot_add; bot_add; bot_add; bot_add; bot_add; bot_add"
+                            "exec gamemode_competitive_offline; map lobby_mapveto"
                         );
                         LobbyAPI.StopMatchmaking();
                     });
