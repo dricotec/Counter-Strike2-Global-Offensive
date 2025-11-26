@@ -1,4 +1,4 @@
-<root>
+<Root>
 	<styles>
 		<include src="file://{resources}/styles/csgostyles.css" />
 		<include src="file://{resources}/styles/settings/settings.css" />
@@ -42,6 +42,9 @@
 				</RadioButton>
                 <RadioButton class="content-navbar__tabs__btn" onactivate="SettingsMenuShared.ScrollToId(&apos;SettingsViewmodel&apos;)" group="SettingsGame">
                     <Label text="VIEWMODEL" />
+				</RadioButton>
+                <RadioButton class="content-navbar__tabs__btn" onactivate="SettingsMenuShared.ScrollToId(&apos;SettingsAdvancedStuff&apos;)" group="SettingsGame">
+                    <Label text="ADVANCED STUFF" />
 				</RadioButton>
 				    
 				                                                                                                            
@@ -536,7 +539,6 @@
 					</TooltipPanel>     
           
 			</Panel>
-			</Panel>
 
 			                               
 			<Panel id="SettingsRadarSettings" class="SettingsBackground">
@@ -750,10 +752,6 @@
 					<Label class="SettingsSectionTitleLabel" text="Viewmodel" />
 				</Panel>
 				<Panel class ="top-bottom-flow full-width">
-					                          
-					
-					</Panel>
-					<Panel class="horizontal-separator"/>
 
 					 <TooltipPanel class="SettingsMenuDropdownContainer" tooltip="#SFUI_ToolTip_Settings_DominantHand">                   
 						<Label text="Dominant Hand" class="half-width"/>
@@ -776,7 +774,7 @@
 					</TooltipPanel>
 					<Panel class="horizontal-separator"/>
 
-					<CSGOSettingsSlider id="v_fov" text="#SFUI_Settings_ViewmodelFOV" displayprecision="1" max="68.0" min="54.0" convar="viewmodel_fov"/>
+					<CSGOSettingsSlider id="v_fov" text="#SFUI_Settings_ViewmodelFOV" displayprecision="1" max="145.0" min="54.0" convar="viewmodel_fov"/>
 					<Panel class="horizontal-separator"/>
 
 					<CSGOSettingsSlider id="v_offset_X" text="#SFUI_Settings_ViewmodelX" displayprecision="1" max="2.5" min="-2.0" convar="viewmodel_offset_x"/>
@@ -802,18 +800,32 @@
 					<Panel class="horizontal-separator"/>
 					<CSGOSettingsSlider id="ViewmodelSway" text="#SFUI_Settings_ViewmodelSway" displayprecision="1" min="-1.5" max="2.5" convar="cl_wpn_sway_scale"/><Panel class="horizontal-separator"/>		   
 			</Panel>
- 
-		</Panel>
-		<Panel class="content-controls-actions-bar">
-			<Button id="SettingsRestoreKbMouse"
-					class="PopupButton"
-					onactivate="SettingsMenuShared.ShowConfirmReset( SettingsMenuShared.ResetControls, '#settings_reset_confirm_game_desc' );"
-					onmouseover="UiToolkitAPI.ShowTextTooltip( 'SettingsRestoreKbMouse', '#tooltip_reset_defaults' );"
-					onmouseout="UiToolkitAPI.HideTextTooltip();" >
-				<Image id="PermissionsSettingsImg" texturewidth="-1" textureheight="28" src="file://{images}/icons/ui/recent.svg" />
-				<Label text="#settings_reset" />
-			</Button>
+
+			<Panel id="SettingsAdvancedStuff" class="SettingsBackground">
+				<Panel class="SettingsSectionTitleContianer">
+					<Label class="SettingsSectionTitleLabel" text="Advanced Stuff" />
+				</Panel>
+				<Panel class ="top-bottom-flow full-width">
+					<Panel class="SettingsMenuDropdownContainer">
+						<Label text="Override Cvars: sv_competitive_minspec" class="half-width"/>
+						<CSGOSettingsSlider text="" max="1" min="0" displayprecision="0" convar="sv_competitive_minspec" onchange="SettingsMenuGameSettings.OnMinspecChange()"/>
+					</Panel>
+					<Panel class="horizontal-separator"/>
+				</Panel>
+			</Panel>
+</Panel>
+			<Panel class="content-controls-actions-bar">
+				<Button id="SettingsRestoreKbMouse"
+						class="PopupButton"
+						onactivate="SettingsMenuShared.ShowConfirmReset( SettingsMenuShared.ResetControls, '#settings_reset_confirm_game_desc' );"
+						onmouseover="UiToolkitAPI.ShowTextTooltip( 'SettingsRestoreKbMouse', '#tooltip_reset_defaults' );"
+						onmouseout="UiToolkitAPI.HideTextTooltip();" >
+					<Image id="PermissionsSettingsImg" texturewidth="-1" textureheight="28" src="file://{images}/icons/ui/recent.svg" />
+					<Label text="#settings_reset" />
+				</Button>
+			</Panel>
 		</Panel>
 	</Panel>
-</root>
+  </Panel>`
+</Root>
 
