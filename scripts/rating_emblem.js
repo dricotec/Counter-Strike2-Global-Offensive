@@ -96,7 +96,7 @@ var RatingEmblem;
             wins = 0;
         }
         if (isloading) {
-            ratingDesc = 'Loading rating...';
+            ratingDesc = $.Localize('#SFUI_LOADING');
         }
         root_panel.SetDialogVariableInt("wins", wins);
         if (rating_type === 'Wingman' || rating_type === 'Competitive') {
@@ -104,13 +104,7 @@ var RatingEmblem;
             let locTypeModifer = rating_type === 'Competitive' ? '' : rating_type.toLowerCase();
             imagePath = locTypeModifer !== '' ? locTypeModifer : 'skillgroup';
             const elCompWinsNeeded = root_panel.FindChildTraverse('jsRating-CompetitiveWinsNeeded');
-            if (elCompWinsNeeded) {
-                elCompWinsNeeded.visible = !isloading && bTooFewWins && options.local_player;
-                if (elCompWinsNeeded.visible) {
-                    const winsneeded = Math.max(0, winsNeededForRank - wins);
-                    elCompWinsNeeded.text = 'Need ' + winsneeded + ' wins';
-                }
-            }
+            elCompWinsNeeded.visible = !isloading && bTooFewWins && options.local_player;
             if (bTooFewWins || isloading) {
                 elSkillGroupImage.SetImage('file://{images}/icons/skillgroups/' + imagePath + '_none.svg');
                 if (!isloading && options.local_player) {
@@ -118,9 +112,9 @@ var RatingEmblem;
                     elSkillGroupImage.SetDialogVariableInt('wins', wins);
                     elSkillGroupImage.SetDialogVariableInt('wins-needed', winsneeded);
                     if (bFullDetails) {
-                        ratingDesc = 'Unranked';
+                        ratingDesc = $.Localize('#skillgroup_0' + locTypeModifer);
                         root_panel.SetDialogVariableInt("winsneeded", winsneeded);
-                        tooltipText = 'Play ' + winsneeded + ' more matches to get ranked';
+                        tooltipText = $.Localize('#tooltip_skill_group_none' + imagePath, root_panel);
                     }
                 }
             }
@@ -192,31 +186,36 @@ var RatingEmblem;
             else {
                 if (bFullDetails) {
                     if (isloading) {
-                        ratingDesc = 'Loading rating...';
+                        ratingDesc = $.Localize('#skillgroup_loading');
                     }
                     else if (bTooFewWins) {
                         let winsneeded = (winsNeededForRank - wins);
                         root_panel.SetDialogVariableInt("winsneeded", winsneeded);
-                        tooltipText = 'Need more wins to show rating';
-                        eomDescText = 'Need ' + winsneeded + ' more wins to show rating';
-                        introText = 'Play more matches to unlock your rating';
+                        tooltipText = $.Localize('#tooltip_cs_rating_none', root_panel);
+                        eomDescText = $.Localize('#cs_rating_wins_needed_verbose', root_panel);
+                        introText = $.Localize('#cs_rating_wins_needed_verbose_intro', root_panel);
                         if (options.local_player) {
-                            ratingDesc = 'Need ' + winsneeded + ' more wins';
+                            ratingDesc = $.Localize('#cs_rating_wins_needed', root_panel);
                         }
                         else {
-                            ratingDesc = 'No rating yet';
+                            ratingDesc = $.Localize('#cs_rating_none');
                         }
                     }
                     else if (bRatingExpired) {
-                        ratingDesc = 'Rating expired';
-                        tooltipText = 'Your rating has expired';
-                        eomDescText = 'Rating expired';
-                        introText = 'Rating expired';
+                        ratingDesc = $.Localize('#cs_rating_expired');
+                        tooltipText = $.Localize('#tooltip_cs_rating_expired');
+                        eomDescText = $.Localize('#eom-skillgroup-expired-premier', root_panel);
+                        introText = $.Localize('#eom-skillgroup-expired-premier', root_panel);
                     }
                 }
             }
             _SetEomStyleOverrides(options, root_panel);
             _SetPremierRatingValue(root_panel, majorRating, minorRating, presentation);
+            // Set color based on rating
+            if (rating && rating > 0) {
+                let color = GetRatingColor(rating);
+                root_panel.style.color = color;
+            }
         }
         if (bFullDetails) {
             if (tooltipExtraText !== '') {
@@ -241,15 +240,25 @@ var RatingEmblem;
     }
     RatingEmblem.SetXuid = SetXuid;
     function GetClampedRating(rating) {
-        if (rating < 5000) return 0; // gray
-        if (rating < 10000) return 1; // light blue
-        if (rating < 15000) return 2; // blue
-        if (rating < 20000) return 3; // darker blue
-        if (rating < 25000) return 4; // purple
-        if (rating < 30000) return 5; // red
-        return 6; // yellow/gold
+        if (rating < 5000) return 0;
+        if (rating < 10000) return 1;
+        if (rating < 15000) return 2;
+        if (rating < 20000) return 3;
+        if (rating < 25000) return 4;
+        if (rating < 30000) return 5;
+        return 6;
     }
     RatingEmblem.GetClampedRating = GetClampedRating;
+
+    function GetRatingColor(rating) {
+        if (rating < 5000) return "#8A8F98";
+        if (rating < 10000) return "#4C89C5";
+        if (rating < 15000) return "#9B5AED";
+        if (rating < 20000) return "#DA5DF1";
+        if (rating < 25000) return "#E84747";
+        if (rating < 30000) return "#E7C14B";
+        return "#F0D97D";
+    }
     function _SetPremierBackgroundImage(root_panel, rating) {
         let bgImage = (rating && rating > 0) ? 'premier_rating_bg_large.svg' : 'premier_rating_bg_large_none.svg';
         let elImage = root_panel.FindChildInLayoutFile('jsPremierRatingBg');
@@ -259,21 +268,52 @@ var RatingEmblem;
         root_panel.FindChildInLayoutFile('JsDigitPanels').SwitchClass('emblemstyle', options.eom_digipanel_class_override ? options.eom_digipanel_class_override : '');
     }
     function _SetPremierRatingValue(root_panel, major, minor, premierPresentation) {
-        root_panel.SetDialogVariable('rating-major', major);
-        root_panel.SetDialogVariable('rating-minor', minor);
-        if (premierPresentation === 'digital') {
-            const elMajor = $.GetContextPanel().FindChildTraverse('jsPremierRatingMajor');
-            const elMinor = $.GetContextPanel().FindChildTraverse('jsPremierRatingMinor');
-            let bFastSet = false;
-            if (!$.GetContextPanel().FindChildTraverse('DigitPanel')) {
-                DigitPanelFactory.MakeDigitPanel(elMajor, 2, '', 1, "#digitpanel_digits_premier");
-                DigitPanelFactory.MakeDigitPanel(elMinor, 4, '', 1, "#digitpanel_digits_premier");
-                bFastSet = true;
-            }
-            DigitPanelFactory.SetDigitPanelString(elMajor, major, bFastSet);
-            DigitPanelFactory.SetDigitPanelString(elMinor, minor, bFastSet);
+    root_panel.SetDialogVariable('rating-major', major);
+    root_panel.SetDialogVariable('rating-minor', minor);
+
+    if (premierPresentation === 'digital') {
+        const elMajor = $.GetContextPanel().FindChildTraverse('jsPremierRatingMajor');
+        const elMinor = $.GetContextPanel().FindChildTraverse('jsPremierRatingMinor');
+        let bFastSet = false;
+        if (!$.GetContextPanel().FindChildTraverse('DigitPanel')) {
+            DigitPanelFactory.MakeDigitPanel(elMajor, 2, '', 1, "#digitpanel_digits_premier");
+            DigitPanelFactory.MakeDigitPanel(elMinor, 4, '', 1, "#digitpanel_digits_premier");
+            bFastSet = true;
         }
+        DigitPanelFactory.SetDigitPanelString(elMajor, major, bFastSet);
+        DigitPanelFactory.SetDigitPanelString(elMinor, minor, bFastSet);
+    } else {
+        // For simple presentation, fix alignment and font
+        let rating = parseInt(major + minor.replace(',', ''));
+        let color = GetRatingColor(rating);
+
+        // Use CSS Flexbox to center both major and minor
+        let htmlText = `
+            <div style="
+                display: flex;
+                justify-content: center;
+                align-items: baseline;
+                gap: 2px;
+                color: ${color};
+                font-family: Stratum2, Arial, sans-serif;
+                font-weight: bold;
+                font-size: 24px;
+            ">
+                <span class='major'>${major}</span>
+                <span class='minor'>${minor}</span>
+            </div>
+        `;
+
+        let labels = root_panel.FindChildrenWithClassTraverse('rating__value');
+        if (labels && labels.length > 0) {
+            labels[0].text = htmlText;
+        }
+
+        // Optional: Set background color for the panel
+        root_panel.style.backgroundColor = color;
     }
+}
+
     function SplitRating(rating) {
         let matchType = '0';
         if (rating === 5000 || rating === 10000 || rating === 15000 ||

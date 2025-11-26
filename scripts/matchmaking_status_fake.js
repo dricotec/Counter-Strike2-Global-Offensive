@@ -49,8 +49,9 @@ var MatchmakingStatus;
 
     function _UpdateSearchWaitPanel(lobbySettings) {
         let elStatusWait = _m_elStatusPanel.FindChildInLayoutFile('MatchStatusWait');
+        if (!elStatusWait) return;
         if (!lobbySettings || _IsHost() || _IsSeaching()) {
-            if (elStatusWait) elStatusWait.AddClass('hidden');
+            elStatusWait.AddClass('hidden');
             return;
         }
         elStatusWait.RemoveClass('hidden');
@@ -59,8 +60,9 @@ var MatchmakingStatus;
 
     function _SearchPanelSearching(lobbySettings) {
         let elStatusSearching = _m_elStatusPanel.FindChildInLayoutFile('MatchStatusSearching');
+        if (!elStatusSearching) return;
         if (!lobbySettings || !_IsSeaching()) {
-            if (elStatusSearching) elStatusSearching.AddClass('hidden');
+            elStatusSearching.AddClass('hidden');
             _m_showMatchingMissions = true;
             _CancelSearchTimeUpdate();
             return;
@@ -81,6 +83,7 @@ var MatchmakingStatus;
 
     function _ShowMatchmakingWarnings(lobbySettings) {
         let elStatusWarnings = _m_elStatusPanel.FindChildInLayoutFile('MatchStatusWarning');
+        if (!elStatusWarnings) return;
         if (!lobbySettings || !_IsSeaching()) {
             elStatusWarnings.AddClass('hidden');
             return;

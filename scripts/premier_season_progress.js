@@ -7,71 +7,73 @@ var SeasonProgress;
         SetRating();
     }
 
+function GetRatingColor(rating) {
+    if (rating < 10000) return "#8A8F98";
+    if (rating < 15000) return "#4C89C5";
+    if (rating < 20000) return "#9B5AED";
+    if (rating < 25000) return "#DA5DF1";
+    if (rating < 30000) return "#E84747";
+    if (rating < 9999999999) return "#E7C14B";
+    return "#53555aff";
+}
+
 function SetRating() {
     const elRatingEmblem = $.GetContextPanel().FindChildInLayoutFile('js-highest-rating');
+    if (!elRatingEmblem) return;
 
-    // Mock Premier API with user's data
-    const userXuid = MyPersonaAPI.GetXuid();
-    const userName = MyPersonaAPI.GetName();
-    $.Msg("[Premier Mock API] User XUID: " + userXuid + ", Name: " + userName + ", Rating: 69420");
+    const myXuid = MyPersonaAPI.GetXuid();
 
-    // Default rating 69420
-    const rating = 69420;
-    const nWins = 67; // fixed wins for testing
-    const nTime = 3600; // 1 hour fake expiration (can set <0 to show expired)
-
-    if (elRatingEmblem) {
-        // Show rating emblem if RatingEmblem exists
-        const options = {
-            root_panel: elRatingEmblem,
-            rating_type: 'Premier',
-            leaderboard_details: { score: rating },
-            do_fx: false,
-            full_details: true,
-            local_player: true
-        };
-
-        if (typeof RatingEmblem !== "undefined" && RatingEmblem.SetXuid) {
-            RatingEmblem.SetXuid(options);
-            $.Msg("[SeasonProgress] RatingEmblem displayed with rating: " + rating);
-        } else {
-            $.Msg("[SeasonProgress] RatingEmblem not available, fallback to console output");
-            const major = Math.floor(rating / 1000);
-            const minor = rating % 1000;
-            $.Msg("[SeasonProgress] Major: " + major + ", Minor: " + minor);
-        }
-    } else {
-        $.Msg("[SeasonProgress] js-highest-rating panel not found, fallback to console output");
-        const major = Math.floor(rating / 1000);
-        const minor = rating % 1000;
-        $.Msg("[SeasonProgress] Major: " + major + ", Minor: " + minor);
-    }
-
-    // Fetch position from server
-    $.AsyncWebRequest('http://127.0.0.1:8080/position?xuid=' + userXuid, {
+    $.AsyncWebRequest('http://127.0.0.1:8080/', {
         type: 'GET',
-        success: function(response) {
-            $.Msg("[SeasonProgress] Position response received");
+        success: function(data) {
             try {
-                const data = typeof response === 'string' ? JSON.parse(response) : response;
-                const ordinal = data.place === 1 ? '1st' : data.place === 2 ? '2nd' : data.place === 3 ? '3rd' : data.place + 'th';
-                const elPositionLabel = $.GetContextPanel().FindChildInLayoutFile('jsPositionLabel');
-                if (elPositionLabel) {
-                    elPositionLabel.text = 'Your position: ' + ordinal + ' with rating ' + data.rating;
+                const leaderboard = JSON.parse(data);
+                const player = leaderboard.find(p => p.xuid === myXuid);
+                if (!player) return;
+
+                const rating = player.rating;
+                const wins = player.matchesWon || 0;
+
+                if (typeof RatingEmblem !== "undefined" && RatingEmblem.SetXuid) {
+                    RatingEmblem.SetXuid({
+                        root_panel: elRatingEmblem,
+                        rating_type: 'Premier',
+                        leaderboard_details: { score: rating },
+                        do_fx: true,
+                        full_details: true,
+                        local_player: true
+                    });
                 }
+
+                // Wash color tuff
+                const elImage = elRatingEmblem.FindChildTraverse('jsPremierRatingBg');
+                if (elImage) elImage.style.washColor = GetRatingColor(rating);
+
+                const ratingLabel = elRatingEmblem.FindChildTraverse('jsRatingNumber');
+                if (ratingLabel) {
+                    ratingLabel.style.paddingLeft = '20px';
+                    ratingLabel.style.textAlign = 'left';
+                    ratingLabel.style.fontFamily = 'Stratum2';
+                    ratingLabel.style.fontWeight = 'bold';
+                    ratingLabel.text = rating.toString();
+                }
+
+                _SetProgressBar(rating, wins);
+                _ShowHideExpirationWarning(wins, 3600);
+                _SetInfoIconTooltip(wins, 3600);
+
             } catch (e) {
-                $.Msg("[SeasonProgress] Failed to process position response: " + e);
+                $.Msg("[SeasonProgress] Failed to parse API data:", e);
             }
         },
-        error: function() {
-            $.Msg("[SeasonProgress] Failed to fetch position");
+        failureCallback: function(err) {
+            $.Msg("[SeasonProgress] Failed to fetch leaderboard API:", err);
         }
     });
-
-    _SetProgressBar(rating, nWins);
-    _ShowHideExpirationWarning(nWins, nTime);
-    _SetInfoIconTooltip(nWins, nTime);
 }
+
+
+
 
 
     function _SetProgressBar(rating, nWins) {
@@ -110,20 +112,9 @@ function SetRating() {
         const elParent = $.GetContextPanel().FindChildInLayoutFile('id-premier-bar-container');
         const elImages = elParent.FindChildInLayoutFile('id-premier-bar-icons');
 
-        if (nWins < _m_nWinsForMedal || nTime >= 0) {
-            elParent.SetHasClass('show-warning', false);
-            elImages.SetPanelEvent('onmouseover', () => {});
-            elImages.SetPanelEvent('onmouseout', () => {});
-            return;
-        }
-
-        if (nTime < 0) {
-            elParent.SetHasClass('show-warning', true);
-            elImages.SetPanelEvent('onmouseover', () => {
-                UiToolkitAPI.ShowTextTooltip('id-premier-bar-icons', '#season_progress_rating_expired');
-            });
-            elImages.SetPanelEvent('onmouseout', () => UiToolkitAPI.HideTextTooltip());
-        }
+        elParent.SetHasClass('show-warning', false);
+        elImages.SetPanelEvent('onmouseover', () => {});
+        elImages.SetPanelEvent('onmouseout', () => {});
     }
 
     function _SetInfoIconTooltip(nWins, nTime) {

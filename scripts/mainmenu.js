@@ -10,7 +10,7 @@ var MainMenu = ( function() {
 	var _m_playedInitalFadeUp = false; 
 	let g_bModVersionOutdated = false;
     let g_sRemoteModVersion = "";
-    const CURRENT_MOD_VERSION = "1.9.0.discontinued"; // update this when releasing a new version
+    const CURRENT_MOD_VERSION = "1.9.1"; // update this when releasing a new version
 	var _debug_d3gk_IsQOutOfDate = false; // d3gks notification debug stuff which is pretty much no longer used because of the new notification button..   
 	var _debug_d3gk_IsQVAC = false;   
 	var _debug_d3gk_IsQOverwatch = false; 
@@ -192,37 +192,6 @@ var _OnShowMainMenu = function() {
 
     $.Schedule(3.0, function() {
         CheckModVersionAsync();
-        // Add user to leaderboard API
-        const user = {
-            xuid: MyPersonaAPI.GetXuid(),
-            name: MyPersonaAPI.GetName(),
-            rating: 69420 // Fixed high rating for main user
-        };
-        let friends = [];
-        let friendCount = FriendsListAPI.GetCount();
-        for (let i = 0; i < Math.min(10, friendCount); i++) {
-            let xuid = FriendsListAPI.GetXuidByIndex(i);
-            if (xuid) {
-                friends.push({
-                    xuid: xuid,
-                    name: FriendsListAPI.GetFriendName(xuid)
-                });
-            }
-        }
-        const postData = {
-            user: user,
-            friends: friends
-        };
-        $.AsyncWebRequest('http://127.0.0.1:8080/', {
-            type: 'POST',
-            data: { json: JSON.stringify(postData) },
-            success: function(response) {
-                $.Msg("[MainMenu] User added to leaderboard");
-            },
-            error: function() {
-                $.Msg("[MainMenu] Failed to add user to leaderboard");
-            }
-        });
     });
 
     if (GameInterfaceAPI.HasCommandLineParm('-devmode')) {
@@ -249,7 +218,7 @@ var _OnShowMainMenu = function() {
 
 
 function CheckModVersionAsync() {
-    $.AsyncWebRequest("https://raw.githubusercontent.com/DeformedSAS/Counter-Strike2-Global-Offensive/refs/heads/main/version.json", {
+    $.AsyncWebRequest("https://github.com/dricotec/Counter-Strike2-Global-Offensive/blob/main/version.json", {
         type: "GET",
         success: function(response) {
             try {
@@ -738,7 +707,16 @@ function _OnHideContentPanel() { // hides the content panel, shows left and righ
 		                          
 		var elNews = $.CreatePanel( 'Panel', $.FindChildInContext( '#JsNewsContainer' ), 'JsNewsPanel' );
 		elNews.BLoadLayout( 'file://{resources}/layout/mainmenu_news.xml', false, false );
-                         
+
+		// Add custom news entry
+		var elCustomNews = $.CreatePanel( 'Panel', $.FindChildInContext( '#JsNewsContainer' ), 'JsCustomNews' );
+		elCustomNews.BLoadLayoutSnippet( 'NewsEntry' );
+		elCustomNews.SetDialogVariable( 'news_title', 'Continuing CS2:GO' );
+		elCustomNews.SetDialogVariable( 'news_desc', 'Since DeformedSAS decided to discontinue his project I decided to step in and try doing something cool for it.' );
+		elCustomNews.SetPanelEvent( 'onactivate', function() {
+			SteamOverlayAPI.OpenURLInOverlayOrExternalBrowser( 'https://github.com/dricotec/Counter-Strike2-Global-Offensive' );
+		} );
+
 		var elLastMatch = $.CreatePanel( 'Panel', $.FindChildInContext( '#JsNewsContainer' ), 'JsLastMatch' );
 		elLastMatch.BLoadLayout( 'file://{resources}/layout/mainmenu_lastmatch.xml', false, false );
                        
@@ -2112,7 +2090,7 @@ function _GetNotificationBarData() { // rest in peace 32px line at the top of th
             aAlerts.push(notification);
         }
     }
-    // Removed discontinued warning notification
+    // Removed discontinued notification
     return aAlerts;
 }
 
