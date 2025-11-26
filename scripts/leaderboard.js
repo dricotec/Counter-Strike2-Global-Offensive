@@ -656,12 +656,10 @@ var Leaderboard;
                 }
             }
         } else if (m_lbType === 'general' && m_leaderboardName && m_leaderboardName.includes('friends')) {
-            // Restore the original code logic. We'll generate the rating for each friend and you, keeping ratings as before,
-            // but do NOT use static variables or any session-specific "caches" or window/global references.
             let leaderboard = [];
             let myXuid = MyPersonaAPI.GetXuid();
             let myName = MyPersonaAPI.GetName();
-            let myRating = Math.floor(Math.random() * 15001) + 10000; // Only this line keeps the "rating stuff"
+            let myRating = Math.floor(Math.random() * 15001) + 10000;
             leaderboard.push({
                 xuid: myXuid,
                 name: myName,
@@ -685,17 +683,15 @@ var Leaderboard;
                     region: region
                 });
             }
-            // Sort by rating descending
+            // Sort by descending
             leaderboard.sort((a, b) => b.rating - a.rating);
-            // Update places
+
             leaderboard.forEach((entry, index) => {
                 entry.place = index + 1;
             });
             _PopulateLeaderboard(elList, leaderboard);
         } else {
-            // Non-friends/general path: fill from LeaderboardsAPI (if desired)
-            // Here we mock or load via LeaderboardsAPI calls if needed.
-            // For now, if you want leaderboard entries from LeaderboardsAPI, implement here.
+            
         }
     }
 
@@ -744,7 +740,7 @@ var Leaderboard;
         }
     
         leaderboard.forEach((entry, index) => {
-            let matchesWon = Math.floor(Math.random() * 71) + 10; // Random 10-80
+            let matchesWon = Math.floor(Math.random() * 71) + 10;
             let matchesLost = Math.floor(Math.random() * 50);
             let winrate = Math.floor((matchesWon / (matchesWon + matchesLost)) * 100);
             let oPlayer = {
@@ -755,7 +751,6 @@ var Leaderboard;
                 matchesWon: matchesWon,
                 matchesTied: 0,
                 matchesLost: matchesLost,
-                // No rank_pct, more minimal/clean
                 region: entry.region
             };
 
@@ -763,7 +758,6 @@ var Leaderboard;
             elEntry.BLoadLayoutSnippet("leaderboard-entry");
             _AddPlayer(elEntry, oPlayer, index);
 
-            // Update UI text after layout load (use schedule to ensure the nodes exist)
             $.Schedule(0.0, () => {
                 let elName = elEntry.FindChildTraverse('leaderboard-entry__name');
                 if (elName) elName.text = oPlayer.displayName;
@@ -775,13 +769,12 @@ var Leaderboard;
             });
         });
 
-        // Update the highest rating emblem with user's current rating
         let highestRatingFrame = $.GetContextPanel().FindChildInLayoutFile('js-highest-rating');
         if (highestRatingFrame) {
             let userEntry = leaderboard.find(e => e.xuid === m_myXuid);
             if (userEntry) {
                 RatingEmblem.SetXuid({ root_panel: highestRatingFrame, rating_type: 'Premier', leaderboard_details: { score: userEntry.rating } });
-                // Set the color like in the leaderboard
+
                 let elImage = highestRatingFrame.FindChildTraverse('jsPremierRatingBg');
                 if (elImage) {
                     let color = GetRatingColor(userEntry.rating);
@@ -824,7 +817,6 @@ var Leaderboard;
     }
     Leaderboard.GoToTop = GoToTop;
 
-    // Register Panorama event handlers for the panel lifecycle and initialize
     (function registerLifecycle() {
         $.RegisterEventHandler('ReadyForDisplay', $.GetContextPanel(), Leaderboard.ReadyForDisplay);
         $.RegisterEventHandler('UnreadyForDisplay', $.GetContextPanel(), Leaderboard.UnReadyForDisplay);
